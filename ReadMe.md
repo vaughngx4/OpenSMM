@@ -35,7 +35,7 @@ Build/rebuild images and start containers:
 
 ## Development
 ### ToDo
-- [ ] Authenticate Twitter API v2 OAuth2
+- [x] Authenticate Twitter API v2 OAuth2
 - [ ] Add scheduling interface and cron scheduling
 - [ ] Store attached images for reuse
 - [ ] Add option to reschedule a post
