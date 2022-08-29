@@ -43,4 +43,4 @@ Build/rebuild images and start containers:
 - [ ] Add option to auto-schedule to next available time slot
 
 ## Contact Us
-You can get a hold of us on Discord <> or Matrix(Discord bridged) <> or send us a message <https://sintelli-tech.com/contact>
+You can get a hold of us on Discord https://discord.gg/TSnvnjE6zP or Matrix(Discord bridged) https://matrix.to/#/!xaTiJIBHgIwTeVOVYt:sintelli-tech.com?via=sintelli-tech.com or send us a message https://sintelli-tech.com/contact
