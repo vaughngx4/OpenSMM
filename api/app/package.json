@@ -11,11 +11,11 @@
     "url": "git+https://github.com/vaughngx4/OpenSMM.git"
   },
   "author": "vaughngx4",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/vaughngx4/OpenSMM/issues"
   },
-  "homepage": "https://github.com/vaughngx4/OpenSMM#readme",
+  "homepage": "https://github.com/vaughngx4/OpenSMM#opensmm",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
