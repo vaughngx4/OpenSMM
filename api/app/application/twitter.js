@@ -1,7 +1,7 @@
 const { TwitterApi } = require("twitter-api-v2");
-//const { authenticateToken } = require("../authentication");
-const { cache, uncache, getCache } = require("../cache");
-const Logger = require("../logger");
+const { authenticateToken } = require("./authentication");
+const { cache, uncache, getCache } = require("./cache");
+const Logger = require("./logger");
 const logger = new Logger("twitter");
 
 const clientId = process.env.TWITTER_CLIENT_ID || null;
@@ -65,7 +65,7 @@ async function route(exp, TwitterAccount) {
           });
           TwitterAccount.find({ accountName: userObject.username }).then(
             async (data) => {
-              if ([] == data) {
+              if (0 == data.length) {
                 twitter
                   .save()
                   .then(() => {
@@ -100,6 +100,25 @@ async function route(exp, TwitterAccount) {
         res
           .status(403)
           .json({ status: "error", message: "Invalid access tokens" });
+      });
+  });
+  exp.get("/twitter/api/accounts", authenticateToken, async function (req, res) {
+    TwitterAccount.find()
+      .then((data) => {
+        let accounts = [];
+        data.forEach((account) => {
+          accounts.push(account.accountName);
+        });
+        res.status(200).json({ status: "success", data: accounts });
+      })
+      .catch((err) => {
+        logger.log("error", `Error getting accounts from database: ${err}`);
+        res
+          .status(500)
+          .json({
+            status: "error",
+            message: "Error getting accounts from database",
+          });
       });
   });
 }

@@ -31,7 +31,7 @@ mongoose
     const TwitterAccount = db.model("TwitterAccount", twitterAccountSchema);
     const TwitterPost = db.model("TwitterPost", twitterPostSchema);
     require("./application/authentication").route(exp, User);
-    require("./application/auth/twitter").route(exp, TwitterAccount);
+    require("./application/twitter").route(exp, TwitterAccount, TwitterPost);
     //require("./application/post/twitter").route(exp, TwitterPost);
   })
   .then(() =>

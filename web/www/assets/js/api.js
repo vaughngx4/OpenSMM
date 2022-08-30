@@ -1,26 +1,27 @@
 import { rtk } from "./tasks.js";
 
 async function get(type, endpoint) {
+  let response;
   const controller = new AbortController();
   setTimeout(() => controller.abort(), 5000);
   const tk = await rtk();
-  let result = await fetch(endpoint, {
+  await fetch(endpoint, {
     method: 'GET',
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + tk,
     },
     signal: controller.signal,
-  });
-  console.log(result);
-  if (!result) {
-    popMsg("red", "#fff", `Failed to fetch ${type} data`);
-    console.log(err);
-    return false;
-  } else {
-    return JSON.parse(result);
-  }
+  })
+    .then(response => response.json())
+      .then((data) => { response = data })
+        .catch((err) => {
+          popMsg("red", "#fff", `Failed to fetch ${type}`);
+          console.log(err);
+          response = false;
+        })
+  return response;
 }
-export async function fetchTwitter() {
-  return await get("Twitter", "/api/twitter");
+export async function getTwitterAccounts() {
+  return await get("Twitter accounts", "/twitter/api/accounts");
 }

@@ -1,10 +1,8 @@
 import { allowToggle } from './topbar.js';
-import { fetchTwitter } from './api.js';
+import { getTwitterAccounts } from './api.js';
 import { popUp, closePopup } from './modal-popup.js'
 import { newDropDown } from './dropdown.js'
 allowToggle();
-
-fetchTwitter(); //debug !!!
 
 // UI
 let appScreen = document.getElementById('appScreen');
@@ -72,4 +70,12 @@ async function addAccount(platform){
         window.open('/twitter/login', '_blank');
     }
 }
+async function popDash(){
+    const result = await getTwitterAccounts();
+    accountCount.innerText = `${result.data.length}`;
+}
 // functions
+
+window.addEventListener('DOMContentLoaded', () => {
+    popDash();
+});
