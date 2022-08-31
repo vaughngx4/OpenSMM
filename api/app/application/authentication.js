@@ -1,13 +1,14 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { cache, uncache, getCache } = require('./cache');
+const { cache, uncache, getCache } = require("./cache");
+const { User } = require("./database");
 const Logger = require("./logger");
 const logger = new Logger("auth");
 
 const secret = process.env.SECRET_1;
 const refresh_secret = process.env.SECRET_2;
 
-async function route(exp, User) {
+async function route(exp) {
   const locked = false;
   function escape(level) {
     if (level == 1) {
@@ -102,7 +103,7 @@ async function route(exp, User) {
   async function invalidateToken(token, user) {
     let status = false;
     if (validateToken(token, user)) {
-      status = await uncache(user.name)
+      status = await uncache(user.name);
     } else {
       status = false;
     }

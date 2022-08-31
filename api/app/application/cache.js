@@ -13,27 +13,36 @@ async function initCache(rc) {
     });
 }
 
-async function cache(key, value){
+async function cache(key, value) {
   rc.set(`${key}`, `${value}`)
-    .then(() => { logger.log('debug', `${key} successfully saved to cache`) })
-    .catch((err) => { logger.log('error', `${key} could not be saved to cache: ${err}`) });
+    .then(() => {
+      logger.log("debug", `${key} successfully saved to cache`);
+    })
+    .catch((err) => {
+      logger.log("error", `${key} could not be saved to cache: ${err}`);
+    });
 }
 
-async function uncache(key){
+async function uncache(key) {
   rc.del(`${key}`)
-    .then(() => { logger.log('debug', `${key} successfully removed from cache`) })
-    .catch((err) => { logger.log('error', `${key} could not be removed from cache: ${err}`) });
+    .then(() => {
+      logger.log("debug", `${key} successfully removed from cache`);
+    })
+    .catch((err) => {
+      logger.log("error", `${key} could not be removed from cache: ${err}`);
+    });
 }
 
-async function getCache(key){
+async function getCache(key) {
   let status = false;
-  await rc.get(`${key}`)
+  await rc
+    .get(`${key}`)
     .then((data) => {
-      logger.log('debug', `${key} successfully retrieved from cache`);
+      logger.log("debug", `${key} successfully retrieved from cache`);
       status = data;
     })
     .catch(() => {
-      logger.log('error', `${key} could not be retrieved from cache: ${err}`)
+      logger.log("error", `${key} could not be retrieved from cache: ${err}`);
       status = false;
     });
   return status;

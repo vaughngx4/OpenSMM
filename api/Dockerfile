@@ -3,7 +3,8 @@ LABEL maintainer="vaughngx4 (vaughng@pm.me)"
 ENV HOME /home/opensmm
 ENV APP_TMP_DATA=/tmp
 RUN apk add --no-cache --upgrade \
-    su-exec
+    su-exec \
+    cron
 WORKDIR /usr/opensmm/app
 COPY ./app ./
 RUN npm install
