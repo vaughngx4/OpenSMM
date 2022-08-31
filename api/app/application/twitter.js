@@ -87,7 +87,7 @@ async function route(exp) {
                     });
                   });
               } else {
-                logger.log('error', 'Twitter account already exists');
+                logger.log("error", "Twitter account already exists");
                 res.status(400).json({
                   status: "error",
                   message: "Twitter account already exists",
@@ -114,7 +114,7 @@ async function route(exp) {
           data.forEach((account) => {
             accounts.push(account.accountName);
           });
-          logger.log('debug', 'Got accounts from database');
+          logger.log("debug", "Got accounts from database");
           res.status(200).json({ status: "success", data: accounts });
         })
         .catch((err) => {
@@ -187,26 +187,26 @@ async function post(
       );
       logger.log("error", "Failed to post tweet");
       Post.findById(id)
-      .then((data) => {
-        data.data.twitter.status = "error";
-        data
-          .save()
-          .then(() => {
-            logger.log("debug", "Changed post status to posted");
-          })
-          .catch((err) => {
-            logger.log(
-              "error",
-              `Failed to update post status in database: ${err}`
-            );
-          });
-      })
-      .catch((err) => {
-        logger.log(
-          "error",
-          `Post with database ID ${id} could not be read: ${err}`
-        );
-      });
+        .then((data) => {
+          data.data.twitter.status = "error";
+          data
+            .save()
+            .then(() => {
+              logger.log("debug", "Changed post status to posted");
+            })
+            .catch((err) => {
+              logger.log(
+                "error",
+                `Failed to update post status in database: ${err}`
+              );
+            });
+        })
+        .catch((err) => {
+          logger.log(
+            "error",
+            `Post with database ID ${id} could not be read: ${err}`
+          );
+        });
     });
   return result;
 }
