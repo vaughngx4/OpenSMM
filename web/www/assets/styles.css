@@ -416,7 +416,37 @@ html {
   transition: 0.3s;
 }
 
-/*----- Dropdown -----*/
+/*----- Prompt -----*/
+.bg-prompt {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	position: fixed;
+	top: 0;
+	justify-content: center;
+	align-items: center;
+	display: none;
+}
+.prompt{
+	position: relative;
+	padding: 10px;
+	height: fit-content;
+	width: fit-content;
+	justify-content: space-between;
+	border-radius: 5px;
+	color: #fff;
+	background: #000;
+}
+.prompt-text{
+	color: #fff;
+	font-size: 16px;
+	text-align: center;
+}
+.prompt-content{
+	align-items: center;
+	justify-content: space-between;
+}
+
 /*----- Modal Popup -----*/
 .bg-modal {
   width: 100%;
