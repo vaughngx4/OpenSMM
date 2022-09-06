@@ -17,12 +17,13 @@
   },
   "homepage": "https://github.com/vaughngx4/OpenSMM#opensmm",
   "dependencies": {
+    "agenda": "^4.3.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.3",
-    "node-cron": "^3.0.2",
     "redis": "^4.3.0",
     "twitter-api-v2": "^1.12.5"
   }

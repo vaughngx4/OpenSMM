@@ -1,2 +1,2 @@
-import { allowToggle } from './topbar.js';
+import { allowToggle } from "./topbar.js";
 allowToggle();

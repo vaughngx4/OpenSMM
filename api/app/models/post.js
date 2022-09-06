@@ -21,7 +21,7 @@ const twitterDataSchema = new Schema({
 
 const postSchema = new Schema(
   {
-    accounts: [accountsSchema],
+    accounts: accountsSchema,
     text: {
       type: String,
       required: false,

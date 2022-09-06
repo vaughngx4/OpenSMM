@@ -18,6 +18,7 @@
     </div>
     <?php include(__DIR__ . '/html/modal-popup.html') ?>
     <?php include(__DIR__ . '/html/popup-message.html') ?>
+    <?php include(__DIR__ . '/html/prompt.html') ?>
   </section>
 
   <script src="assets/js/app.js" type="module" ></script>

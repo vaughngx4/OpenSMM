@@ -1,680 +1,756 @@
 /*----- Global -----*/
 * {
-	margin: 0;
-	padding: 0;
-	font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
 }
 
 html {
-	scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 .app-screen {
-	display: flex;
-	flex-direction: column;
-	padding: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
 
 /*----- Dashboard -----*/
 .accounts {
-	display: flex;
-	flex-direction: row;
-	margin-top: 20px;
-	padding: 20px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  padding: 20px;
 }
+
 .account {
-	display: flex;
-	flex-direction: row;
-	height: 50px;
-	width: 60px;
-	padding: 10px;
-	justify-content: space-around;
-	align-items: center;
-	border: 1px solid #fff;
-	border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  width: 60px;
+  padding: 10px;
+  justify-content: space-around;
+  align-items: center;
+  border: 1px solid #fff;
+  border-radius: 10px;
+}
+
+.post {
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  padding: 10px;
+  border: 1px solid #fff;
+}
+
+.post p {
+  font-size: 14px;
+  font-weight: 300;
+  padding: 10px;
+}
+
+/*----- Inputs -----*/
+.text-area {
+  resize: none;
+  padding: 5px;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: row;
+  width: 330px;
+  justify-content: space-between;
+  padding-left: 15px;
+}
+
+.input-field label {
+  color: #fff;
+  font-size: 16px;
+  align-self: end;
+  text-align: justify;
+  margin-left: 12px;
+  padding-right: 5px;
+}
+
+.input-field input {
+  color: #fff;
+  background: transparent;
+  font-size: 16px;
+  width: 200px;
+  padding: 3px;
+  border: 0;
+  border-bottom: 2px solid;
+  outline: none;
+}
+
+.checkbox {
+  padding: 5px;
 }
 
 /*----- Sidebar -----*/
 .navigation {
-	position: fixed;
-	width: 250px;
-	height: 100%;
-	background-color: #000;
-	transition: 0.5s;
-	overflow: hidden;
-
+  position: fixed;
+  width: 250px;
+  height: 100%;
+  background-color: #000;
+  transition: 0.5s;
+  overflow: hidden;
 }
 
 .navigation.active {
-	width: 50px;
+  width: 50px;
 }
 
 .navigation ul {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .navigation ul li {
-	position: relative;
-	width: 100%;
-	list-style: none;
-	transition: 0.5s;
+  position: relative;
+  width: 100%;
+  list-style: none;
+  transition: 0.5s;
 }
 
 .navigation ul li:hover {
-	background: #0029ff;
+  background: #0029ff;
 }
 
 .navigation ul li:nth-child(1) {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .navigation ul li:nth-child(1):hover {
-	background: #0029ff;
+  background: #0029ff;
 }
 
 .navigation ul li:last-child {
-	position: absolute;
-	bottom: 0px;
+  position: absolute;
+  bottom: 0px;
 }
 
 .navigation ul li a {
-	position: relative;
-	display: block;
-	width: 100%;
-	display: flex;
-	text-decoration: none;
-	color: #fff;
+  position: relative;
+  display: block;
+  width: 100%;
+  display: flex;
+  text-decoration: none;
+  color: #fff;
 }
 
 .navigation ul li a .icon {
-	position: relative;
-	display: block;
-	min-width: 50px;
-	height: 50px;
-	line-height: 50px;
-	text-align: center;
+  position: relative;
+  display: block;
+  min-width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
 }
 
 .navigation ul li a .icon .fa {
-	color: #fff;
-	font-size: 24px;
+  color: #fff;
+  font-size: 24px;
 }
 
 .navigation ul li a .title {
-	position: relative;
-	display: block;
-	padding: 0 10px;
-	height: 50px;
-	line-height: 50px;
-	white-space: nowrap;
-	font-size: 13px;
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 50px;
+  line-height: 50px;
+  white-space: nowrap;
+  font-size: 13px;
 }
 
 /*----- Main/Topbar -----*/
 .body-section {
-	min-height: 100vh;
-	width: 100%;
-	background-color: rgb(15, 15, 15);
-	background-position: center;
-	background-size: cover;
-	position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-color: rgb(15, 15, 15);
+  background-position: center;
+  background-size: cover;
+  position: relative;
 }
 
 .main-container {
-	width: 100%;
-	height: 60%;
-	padding-inline: 2.5%;
+  width: 100%;
+  height: 60%;
+  padding-inline: 2.5%;
 }
 
 .main {
-	position: absolute;
-	width: calc(100% - 250px);
-	left: 250px;
-	min-height: 100vh;
-	transition: 0.5s;
+  position: absolute;
+  width: calc(100% - 250px);
+  left: 250px;
+  min-height: 100vh;
+  transition: 0.5s;
 }
 
 .main.active {
-	width: calc(100% - 50px);
-	left: 50px;
+  width: calc(100% - 50px);
+  left: 50px;
 }
 
 .main .topbar {
-	width: 100%;
-	background: #f5f5f5;
-	height: 50px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  width: 100%;
+  background: #f5f5f5;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .toggle {
-	position: relative;
-	width: 50px;
-	height: 50px;
-	cursor: pointer;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
 }
 
 .toggle .icon {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	line-height: 50px;
-	font-size: 16px;
-	text-align: center;
-	color: #111;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  line-height: 50px;
+  font-size: 16px;
+  text-align: center;
+  color: #111;
 }
 
 .search {
-	position: relative;
-	width: 400px;
-	margin: 0 10px;
+  position: relative;
+  width: 400px;
+  margin: 0 10px;
 }
 
 .search label {
-	position: relative;
-	width: 100%
+  position: relative;
+  width: 100%;
 }
 
 .search label input {
-	width: 100%;
-	height: 40px;
-	border-radius: 40px;
-	padding: 0 20px;
-	padding-left: 35px;
-	outline: none;
-	border: 1px solid rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: 40px;
+  border-radius: 40px;
+  padding: 0 20px;
+  padding-left: 35px;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .search label .fas {
-	position: absolute;
-	left: 15px;
-	top: 4px;
+  position: absolute;
+  left: 15px;
+  top: 4px;
 }
 
 .userimg .fa-solid {
-	color: #000;
-	font-size: 24px;
-	padding: 20px;
+  color: #000;
+  font-size: 24px;
+  padding: 20px;
 }
 
 .accordian__button {
-	display: block;
-	width: 50px;
-	height: 50px;
-	padding: 10px;
-	border: none;
-	outline: none;
-	cursor: pointer;
-	background: transparent;
-	color: #fff;
-	font-size: 22px;
+  display: block;
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: transparent;
+  color: #fff;
+  font-size: 22px;
 }
 
 .accordian__content {
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	margin-left: 15px;
-	max-height: 0;
-	transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-left: 15px;
+  max-height: 0;
+  transition: 0.3s;
 }
 
 .accordian__content.active {
-	max-height: fit-content;
-	overflow: visible;
-	transition: 0.3s;
+  max-height: fit-content;
+  overflow: visible;
+  transition: 0.3s;
 }
 
-.input-field {
-	display: flex;
-	flex-direction: row;
-	width: 330px;
-	justify-content: space-between;
-	padding-left: 15px;
+.overview {
+  left: 250px;
+  margin: auto;
+  text-align: center;
 }
 
-.input-field label {
-	color: #fff;
-	font-size: 16px;
-	align-self: end;
-	text-align: justify;
-	margin-left: 12px;
-	padding-right: 5px;
+.overview h1 {
+  color: #fff;
+  font-size: 36px;
+  font-weight: 600;
 }
 
-.input-field input {
-	color: #fff;
-	background: transparent;
-	font-size: 16px;
-	width: 200px;
-	padding: 3px;
-	border: 0;
-	border-bottom: 2px solid;
-	outline: none;
+.overview p {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 24px;
+  padding-top: 1%;
+}
+
+.overview-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 10px;
+}
+
+.overview-box {
+  display: flex;
+  flex-direction: row;
+  color: #fff;
+  border-bottom: 2px solid;
+  align-content: center;
+  width: 400px;
+  justify-content: space-between;
+}
+
+.overview-box h3 {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 300;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.overview-box h2 {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 3px;
+  align-self: flex-end;
 }
 
 .suggestion {
-	width: 100%;
-	cursor: pointer;
-	padding: 5px;
-	justify-content: center;
+  width: 100%;
+  cursor: pointer;
+  padding: 5px;
+  justify-content: center;
 }
 
 .suggestion:hover {
-	background: rgb(22, 25, 233);
-	color: rgb(255, 255, 255);
+  background: rgb(22, 25, 233);
+  color: rgb(255, 255, 255);
 }
 
 /*----- Dropdown -----*/
 .drop-container {
-	display: flex;
-	flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .drop-container h2 {
-	background-color: #2e2e2e;
-	color: #fff;
-	padding: 5px;
-	padding-inline: 10px;
-	font-size: 16px;
-	border: 0px;
-	border-radius: 25px;
+  background-color: #2e2e2e;
+  color: #fff;
+  padding: 5px;
+  padding-inline: 10px;
+  font-size: 16px;
+  border: 0px;
+  border-radius: 25px;
 }
 
 .drop-btn {
-	background-color: #2e2e2e;
-	color: #fff;
-	padding: 5px;
-	padding-inline: 10px;
-	font-size: 16px;
-	border: 1px solid;
-	border-radius: 25px;
-	cursor: pointer;
-	width: 220px;
-	transition: 0.3s;
+  background-color: #2e2e2e;
+  color: #fff;
+  padding: 5px;
+  padding-inline: 10px;
+  font-size: 16px;
+  border: 1px solid;
+  border-radius: 25px;
+  cursor: pointer;
+  width: 220px;
+  transition: 0.3s;
 }
 
 .drop-btn:hover,
 .drop-btn:focus {
-	background-color: #0029ff;
-	transition: 0.3s;
+  background-color: #0029ff;
+  transition: 0.3s;
 }
 
 .dropdown {
-	position: relative;
-	display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .dropdown-content {
-	display: none;
-	position: absolute;
-	width: 188px;
-	border: 1px solid;
-	z-index: 1;
-	border-radius: 25px;
+  display: none;
+  position: absolute;
+  width: 188px;
+  border: 1px solid;
+  z-index: 1;
+  border-radius: 25px;
 }
 
 .dropdown-item {
-	color: #fff;
-	width: 100%;
-	background-color: #2e2e2e;
-	padding: 12px 16px;
-	text-decoration: none;
-	display: block;
-	cursor: pointer;
-	transition: 0.3s;
+  color: #fff;
+  width: 100%;
+  background-color: #2e2e2e;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .dropdown-content p:last-child {
-	border-bottom-left-radius: 25px;
-	border-bottom-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
 }
 
 .dropdown-content p:hover {
-	background-color: #0029ff;
-	transition: 0.3s;
+  background-color: #0029ff;
+  transition: 0.3s;
 }
 
 /*----- Dropdown -----*/
 /*----- Modal Popup -----*/
 .bg-modal {
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.7);
-	position: fixed;
-	top: 0;
-	justify-content: center;
-	align-items: center;
-	display: none;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0;
+  justify-content: center;
+  align-items: center;
+  display: none;
 }
 
 .modal-content {
-	width: 60%;
-	height: 50%;
-	background-color: rgb(46, 46, 46);
-	border-radius: 10px;
-	text-align: center;
-	color: #fff;
-	padding: 5%;
-	padding-top: 3%;
-	position: absolute;
-	align-content: center;
+  width: 60%;
+  height: 50%;
+  background-color: rgb(46, 46, 46);
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  padding: 5%;
+  padding-top: 3%;
+  position: absolute;
+  align-content: center;
 }
 
 .modal-content p {
-	text-align: justify;
-	width: 100%;
-	color: #fff;
-	height: auto;
-	align-self: center;
+  text-align: justify;
+  width: 100%;
+  color: #fff;
+  height: auto;
+  align-self: center;
 }
 
 .modal-content img {
-	width: 150px;
-	height: 150px;
-	align-self: center;
-	padding: 10%;
+  width: 150px;
+  height: 150px;
+  align-self: center;
+  padding: 10%;
 }
 
 .close {
-	position: absolute;
-	top: 0;
-	right: 14px;
-	font-size: 42px;
-	transform: rotate(45deg);
-	cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 14px;
+  font-size: 42px;
+  transform: rotate(45deg);
+  cursor: pointer;
 }
 
 /*----- Animations -----*/
 @keyframes zoomin {
-	0% {
-		transform: scale(0.0, 0.0);
-		opacity: 0
-	}
+  0% {
+    transform: scale(0, 0);
+    opacity: 0;
+  }
 
-	100% {
-		transform: scale(1, 1);
-		opacity: 1
-	}
+  100% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
 }
 
 @keyframes zoomout {
-	0% {
-		transform: scale(1, 1);
-		opacity: 1
-	}
+  0% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
 
-	100% {
-		transform: scale(0.0, 0.0);
-		opacity: 0
-	}
+  100% {
+    transform: scale(0, 0);
+    opacity: 0;
+  }
 }
 
 @keyframes fadein {
-	0% {
-		opacity: 0
-	}
+  0% {
+    opacity: 0;
+  }
 
-	100% {
-		opacity: 1
-	}
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeout {
-	0% {
-		opacity: 1
-	}
+  0% {
+    opacity: 1;
+  }
 
-	100% {
-		opacity: 0
-	}
+  100% {
+    opacity: 0;
+  }
 }
 
 /*----- Popup -----*/
 .popup-container {
-	display: flex;
-	flex-direction: column;
-	height: fit-content;
-	justify-content: flex-end;
-	padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  justify-content: flex-end;
+  padding: 10px;
 }
 
 .popup {
-	background-color: #0029ff;
-	display: flex;
-	position: absolute;
-	text-align: justify;
-	border-radius: 10px;
-	right: 20px;
-	bottom: 20px;
-	padding: 10px;
-	height: 50px;
-	width: fit-content;
+  background-color: #0029ff;
+  display: flex;
+  position: absolute;
+  text-align: justify;
+  border-radius: 10px;
+  right: 20px;
+  bottom: 20px;
+  padding: 10px;
+  height: 50px;
+  width: fit-content;
 }
 
 .popup p {
-	color: #fff;
-	font-size: 16px;
+  color: #fff;
+  font-size: 16px;
 }
 
 /*----- Scroll Bar -----*/
 /* width */
 ::-webkit-scrollbar {
-	width: 10px;
+  width: 10px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 5px grey;
-	border-radius: 10px;
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: #0029ff;
-	border-radius: 2px;
+  background: #0029ff;
+  border-radius: 2px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-	background: #0029ff;
+  background: #0029ff;
 }
 
 /*----- Login/Minimal -----*/
 .minimal-section {
-	display: flex;
-	flex-direction: column;
-	height: 96vh;
-	width: 100%;
-	background: rgb(15, 15, 15);
-	align-items: center;
-	text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 96vh;
+  width: 100%;
+  background: rgb(15, 15, 15);
+  align-items: center;
+  text-align: center;
 }
 
 .minimal {
-	position: fixed;
-	top: 25vh;
+  position: fixed;
+  top: 25vh;
 }
 
 .minimal h3 {
-	color: #fff;
-	font-size: 32px;
-	padding: 20px;
+  color: #fff;
+  font-size: 32px;
+  padding: 20px;
 }
 
 .details {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	height: 120px;
-	width: 300px;
-	padding: 20px;
-	background: rgb(26, 26, 26);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 120px;
+  width: 300px;
+  padding: 20px;
+  background: rgb(26, 26, 26);
 }
 
 .login-input {
-	border: none;
-	background-color: transparent;
-	resize: none;
-	outline: none;
-	color: #fff;
-	font-size: 14px;
-	border-bottom: 1px solid #fff;
-	transition: 0.3s;
-	margin-top: 5px;
-	margin-bottom: 5px;
+  border: none;
+  background-color: transparent;
+  resize: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  border-bottom: 1px solid #fff;
+  transition: 0.3s;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .login-input:hover {
-	border-bottom: 1px solid #0029ff;
-	transition: 0.3s;
+  border-bottom: 1px solid #0029ff;
+  transition: 0.3s;
 }
 
 .login-button {
-	background: rgb(53, 53, 53);
-	border: 1px solid #fff;
-	color: #fff;
-	font-weight: 600;
-	padding: 5px 20px;
-	margin-top: 20px;
-	cursor: pointer;
-	transition: 0.5s;
+  background: rgb(53, 53, 53);
+  border: 1px solid #fff;
+  color: #fff;
+  font-weight: 600;
+  padding: 5px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: 0.5s;
 }
 
 .login-button:hover {
-	background: #0029ff;
-	transition: 0.5s;
+  background: #0029ff;
+  transition: 0.5s;
 }
 
 .footer {
-	background: #000;
-	color: #fff;
-	text-align: center;
-	padding: 2px 5px;
+  background: #000;
+  color: #fff;
+  text-align: center;
+  padding: 2px 5px;
 }
 
 /*----- Drop up  -----*/
 .dropbtn {
-	background-color: #3a0580;
-	color: white;
-	padding: 16px;
-	font-size: 16px;
-	border: none;
+  background-color: #3a0580;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
 }
 
 .dropup {
-	position: relative;
-	display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .dropup-content {
-	display: none;
-	position: absolute;
-	bottom: 50px;
-	background-color: #313131;
-	min-width: 160px;
-	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-	z-index: 1;
+  display: none;
+  position: absolute;
+  bottom: 50px;
+  background-color: #313131;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 
 .dropup-content .icon-button {
-	color: #fff;
-	padding: 12px 16px;
-	text-decoration: none;
-	display: block;
+  color: #fff;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
 }
 
 .dropup-content .icon-button:hover {
-	background-color: #ddd;
-	color: #000;
+  background-color: #ddd;
+  color: #000;
 }
 
 .dropup:hover .dropup-content {
-	display: block;
+  display: block;
 }
 
 .dropup:hover .dropbtn {
-	background-color: #0029ff;
+  background-color: #0029ff;
 }
 /*----- Generic Buttons -----*/
 .button1 {
-	height: 30px;
-	width: 120px;
-	cursor: pointer;
+  height: 30px;
+  width: 120px;
+  cursor: pointer;
 }
 /*----- Fix For Mobile View -----*/
 @media screen and (prefers-reduced-motion: reduce) {
-	html {
-		scroll-behavior: auto;
-	}
+  html {
+    scroll-behavior: auto;
+  }
 }
 
-@media(max-width: 750px) {
-	.logo {
-		position: relative;
-		flex-direction: column;
-		text-align: center;
-	}
+@media (max-width: 750px) {
+  .logo {
+    position: relative;
+    flex-direction: column;
+    text-align: center;
+  }
 
-	nav {
-		flex-direction: column;
-	}
+  nav {
+    flex-direction: column;
+  }
 
-	.nav-links ul li {
-		display: block;
-	}
+  .nav-links ul li {
+    display: block;
+  }
 
-	.nav-Nav {
-		display: none;
-		position: absolute;
-		background: #0029ff;
-		height: 100vh;
-		width: 150px;
-		top: 0;
-		right: -150px;
-		text-align: left;
-		z-index: 2;
-		transition: 1s;
-	}
+  .nav-Nav {
+    display: none;
+    position: absolute;
+    background: #0029ff;
+    height: 100vh;
+    width: 150px;
+    top: 0;
+    right: -150px;
+    text-align: left;
+    z-index: 2;
+    transition: 1s;
+  }
 
-	.nav-Nav ul {
-		padding: 10px;
-	}
+  .nav-Nav ul {
+    padding: 10px;
+  }
 
-	.bars {
-		display: block;
-		color: #fff;
-		font-size: 22px;
-		cursor: pointer;
-		padding: 10px;
-		text-align: right;
-	}
+  .bars {
+    display: block;
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 10px;
+    text-align: right;
+  }
 
-	nav .far {
-		display: block;
-		color: #fff;
-		margin: 10px;
-		font-size: 22px;
-		cursor: pointer;
-	}
+  nav .far {
+    display: block;
+    color: #fff;
+    margin: 10px;
+    font-size: 22px;
+    cursor: pointer;
+  }
 
-	.row {
-		display: flex;
-		flex-direction: column;
-	}
+  .row {
+    display: flex;
+    flex-direction: column;
+  }
 
-	.modal-content {
-		height: 80%;
-		padding-top: 6%;
-	}
+  .modal-content {
+    height: 80%;
+    padding-top: 6%;
+  }
 
-	.modal-content img {
-		padding: 10%;
-		padding-top: 60%;
-	}
+  .modal-content img {
+    padding: 10%;
+    padding-top: 60%;
+  }
 }

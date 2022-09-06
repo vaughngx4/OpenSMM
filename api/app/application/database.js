@@ -24,4 +24,4 @@ const User = mongoose.model("User", userSchema);
 const TwitterAccount = mongoose.model("TwitterAccount", twitterAccountSchema);
 const Post = mongoose.model("Post", postSchema);
 
-module.exports = { User, TwitterAccount, Post };
+module.exports = { dbURI, User, TwitterAccount, Post };

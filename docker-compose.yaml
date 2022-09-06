@@ -44,6 +44,7 @@ services:
       SECRET_2: ${SECRET_2}
       TWITTER_CLIENT_ID: ${TWITTER_CLIENT_ID}
       TWITTER_CLIENT_SECRET: ${TWITTER_CLIENT_SECRET}
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       DEBUG: ${DEBUG}
     volumes:
       - ./data/api:/data
