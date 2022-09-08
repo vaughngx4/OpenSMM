@@ -340,18 +340,22 @@ async function showPosts() {
     container.appendChild(postText);
     let datetime = document.createElement("p");
     datetime.style.fontWeight = "400";
-    datetime.innerText = post.datetime;
+    datetime.innerText = new Date(post.datetime).toDateString();
     container.appendChild(datetime);
-    let deletePostBtn = iconButton(`<i class="fa-solid fa-trash-can"></i>`);
-    deletePostBtn.style.color = "red";
-    deletePostBtn.style.cursor = "pointer";
-    deletePostBtn.style.padding = "10px";
+    let deletePostBtn = iconButton(`<i class="fa-solid fa-trash-can"></i>`, null, "red");
     deletePostBtn.addEventListener("click", async () => {
       deletePost(post._id);
       popDash();
     });
     container.appendChild(deletePostBtn);
     appScreen.appendChild(container);
+    if("pending" == post.data.twitter.status){
+      container.style.borderRightColor = "blue";
+    } else if("posted" == post.data.twitter.status){
+      container.style.borderRightColor = "green";
+    } else if("error" == post.data.twitter.status){
+      container.style.borderRightColor = "red";
+    }
   });
 }
 

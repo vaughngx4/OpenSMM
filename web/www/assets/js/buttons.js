@@ -1,13 +1,15 @@
 // icon button
-export function iconButton(iconHTML, text) {
+export function iconButton(iconHTML, text, color) {
   text = text || null;
+  color = color || "#fff";
   if (text) {
     text = `<p>${text}</p>`;
   }
   let button = document.createElement("div");
   button.className = "icon-button";
+  button.style.cursor = "pointer";
   let buttonIcon = document.createElement("div");
-  buttonIcon.style.color = "#fff";
+  buttonIcon.style.color = color;
   buttonIcon.innerHTML = iconHTML;
   if (!!text) {
     buttonIcon.innerHTML = iconHTML + text;
