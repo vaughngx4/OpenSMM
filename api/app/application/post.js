@@ -11,42 +11,49 @@ const tzo = process.env.TIMEZONE_OFFSET || "+0";
 async function route(exp) {
   exp.post("/posts", authenticateToken, async function (req, res) {
     const json = req.body;
-    const dateTime = new Date(`${new Date(json.datetime).toUTCString()}${tzo}`);
-    const postJson = {
-      accounts: json.accounts,
-      text: json.text,
-      attachment: json.attachment || null,
-      datetime: dateTime,
-      pollDuration: json.pollDuration || null,
-      pollOptions: json.pollOptions || null,
-      data: {
-        twitter: {
-          status: "pending",
+    const validation = validatePost(json);
+    if (!validation.error) {
+      const dateTime = new Date(
+        `${new Date(json.datetime).toUTCString()}${tzo}`
+      );
+      const postJson = {
+        accounts: json.accounts,
+        text: json.text,
+        attachment: json.attachment || null,
+        datetime: dateTime,
+        pollDuration: json.pollDuration || null,
+        pollOptions: json.pollOptions || null,
+        data: {
+          twitter: {
+            status: "pending",
+          },
         },
-      },
-    };
-    //console.log(validatePost(postJson)); // debug !!!
-    const post = new Post(postJson);
-    post
-      .save()
-      .then((data) => {
-        schedule(data._id.toString(), dateTime, async () => {
-          doPost(data._id);
-        }).then(() => {
-          logger.log("info", "A post was scheduled");
-          res.status(200).json({
-            status: "success",
-            message: "Post scheduled successfully",
+      };
+      const post = new Post(postJson);
+      post
+        .save()
+        .then((data) => {
+          schedule(data._id.toString(), dateTime, async () => {
+            doPost(data._id);
+          }).then(() => {
+            logger.log("info", "A post was scheduled");
+            res.status(200).json({
+              status: "success",
+              message: "Post scheduled successfully",
+            });
+          });
+        })
+        .catch((err) => {
+          logger.log("error", `Could not schedule post: ${err}`);
+          res.status(500).json({
+            status: "error",
+            message: "Could not schedule post",
           });
         });
-      })
-      .catch((err) => {
-        logger.log("error", `Could not schedule post: ${err}`);
-        res.status(500).json({
-          status: "error",
-          message: "Could not schedule post",
-        });
-      });
+    } else {
+      logger.log("error", `Bad request: ${validation.error}`);
+      res.status(401).json({ status: "error", message: validation.error });
+    }
   });
   exp.delete("/posts", authenticateToken, async function (req, res) {
     Post.findByIdAndDelete(req.body._id)
@@ -83,7 +90,7 @@ async function route(exp) {
         });
       });
   });
-  exp.put("/posts", async function (req, res) {});
+  exp.put("/posts", authenticateToken, async function (req, res) {});
 }
 
 async function doPost(postId) {
@@ -91,8 +98,8 @@ async function doPost(postId) {
     .populate({
       path: "accounts",
       populate: {
-        path: "twitter"
-      }
+        path: "twitter",
+      },
     })
     .then((data) => {
       data.accounts.twitter.forEach((account) => {

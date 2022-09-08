@@ -73,7 +73,9 @@ async function route(exp) {
                     logger.log("info", "Twitter account added");
                   })
                   .then(() => {
-                    res.redirect(`https://${domain}`);
+                    res.redirect(
+                      `https://${domain}/?status=success&message=Twitter&20account%20added`
+                    );
                   })
                   .catch((err) => {
                     logger.log(
@@ -81,17 +83,15 @@ async function route(exp) {
                       "Could not save Twitter account to database"
                     );
                     console.log(err);
-                    res.status(500).json({
-                      status: "error",
-                      message: "Could not save Twitter account to database",
-                    });
+                    res.redirect(
+                      `https://${domain}/?status=error&message=Could&20not%20save%20Twitter%20account`
+                    );
                   });
               } else {
                 logger.log("error", "Twitter account already exists");
-                res.status(400).json({
-                  status: "error",
-                  message: "Twitter account already exists",
-                });
+                res.redirect(
+                  `https://${domain}/?status=error&message=Twitter&20account%20already%20exists`
+                );
               }
             }
           );
@@ -147,9 +147,9 @@ async function post(
       );
       let options = {};
       if (!pollDuration) {
-        logger.log("debug", "Tweet is type: Poll");
-      } else {
         logger.log("debug", "Tweet is type: Text");
+      } else {
+        logger.log("debug", "Tweet is type: Poll");
         options = {
           poll: { duration_minutes: pollDuration, options: pollOptions },
         };
@@ -180,10 +180,7 @@ async function post(
         });
     })
     .catch((err) => {
-      logger.log(
-        "error",
-        `Could not create post: ${err}`
-      );
+      logger.log("error", `Could not create post: ${err}`);
       console.log(err);
       logger.log("error", "Failed to post tweet");
       Post.findById(id)
@@ -211,29 +208,32 @@ async function post(
   return result;
 }
 
-async function twitterUserClient(accessTokenCurrent, refreshTokenCurrent, expiresIn, updatedAt) {
-  const expiryDate = new Date(new Date(updatedAt).getTime() + (expiresIn * 1000));
+async function twitterUserClient(
+  accessTokenCurrent,
+  refreshTokenCurrent,
+  expiresIn,
+  updatedAt
+) {
+  const expiryDate = new Date(new Date(updatedAt).getTime() + expiresIn * 1000);
   let gotClient = null;
   if (new Date() > expiryDate) {
     logger.log("debug", "Access token expired, refreshing");
     const appClient = new TwitterApi({ clientId, clientSecret });
-    const {
-      client: refreshedClient,
-      accessToken,
-      refreshToken: newRefreshToken,
-    } = await appClient.refreshOAuth2Token(refreshTokenCurrent);
+    const { client, accessToken, refreshToken } =
+      await appClient.refreshOAuth2Token(refreshTokenCurrent);
     await TwitterAccount.find({ accessToken: accessTokenCurrent })
-      .then((data) => {
-        data[0].accessToken = accessToken;
-        data[0].refreshToken = newRefreshToken;
-        data[0]
+      .then(async (data) => {
+        let account = data[0];
+        account.accessToken = accessToken;
+        account.refreshToken = refreshToken;
+        await account
           .save()
           .then(() => {
-            gotClient = refreshedClient;
             logger.log(
               "info",
-              `Successful token refresh for account ${accountName}`
+              `Successful token refresh for account ${account.accountName}`
             );
+            gotClient = client;
           })
           .catch((err) => {
             logger.log(
@@ -245,10 +245,9 @@ async function twitterUserClient(accessTokenCurrent, refreshTokenCurrent, expire
       .catch((err) => {
         logger.log("error", `Could locate twitter account: ${err}`);
       });
-  }else {
+  } else {
     logger.log("debug", "Access token valid, not refreshing");
-    const client = new TwitterApi(accessTokenCurrent);
-    gotClient = client;
+    gotClient = new TwitterApi(accessTokenCurrent);
   }
   return gotClient;
 }

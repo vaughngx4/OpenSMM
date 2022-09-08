@@ -38,10 +38,13 @@ Build/rebuild images and start containers:
 - [x] Authenticate Twitter API v2 OAuth2
 - ~~Add scheduling interface and cron scheduling~~
 - [x] Add scheduling support
-- [ ] Add poll support
+- [x] Add poll support
 - [ ] Add attachment support
+- [x] Add validation to api
+- [ ] Add validation to UI
 - [ ] Clean up UI and popup responses
-- [ ] Store attached images for reuse
+- ~~Store attached images for reuse~~
+- [ ] Store attachments for reuse
 - [ ] Add option to reschedule a post
 - [ ] Add option to add time slots
 - [ ] Add option to auto-schedule to next available time slot

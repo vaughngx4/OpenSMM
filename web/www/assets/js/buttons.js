@@ -106,6 +106,35 @@ export function accordian(text, items, iconHTML, endContent) {
   return container;
 }
 
+// multi add
+export function multiAdd(outerContainer, className){
+  let container = document.createElement('div');
+  container.className = "multi-add";
+  let input = document.createElement('input');
+  container.appendChild(input);
+  let add = document.createElement('button');
+  add.innerText = "+";
+  container.appendChild(add);
+  outerContainer.appendChild(container);
+  add.addEventListener('click', () => {
+    mad(input, add, container, outerContainer, className);
+  });
+}
+
+// multi add event
+function mad(input, add, container, outerContainer, className){
+  input.readOnly = "true";
+  input.style.background = "gray";
+  input.className = className || "";
+  add.innerText = "-"
+  add.style.background = "red"
+  add.removeEventListener('click', mad);
+  add.addEventListener('click', () => {
+    container.remove();
+  });
+  multiAdd(outerContainer, className);
+}
+
 // drop accordian
 async function dropThis(content, button, arrow) {
   content.classList.toggle("active");

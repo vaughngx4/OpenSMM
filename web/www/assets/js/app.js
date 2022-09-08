@@ -1,9 +1,17 @@
 import { allowToggle } from "./topbar.js";
-import { getTwitterAccounts, postScheduledPost, getPosts, deletePost } from "./api.js";
+import {
+  getTwitterAccounts,
+  postScheduledPost,
+  getPosts,
+  deletePost,
+} from "./api.js";
 import { popUp, closePopup } from "./modal-popup.js";
-import { dropDown, accordian, iconButton } from "./buttons.js";
+import { dropDown, accordian, iconButton, multiAdd } from "./buttons.js";
 import { prompt, closePrompt } from "./prompt.js";
+//import Validate from "./validate.js";
+import { popMsg } from "./popup-message.js";
 
+//const validate = new Validate();
 loading();
 allowToggle();
 
@@ -52,6 +60,49 @@ appScreen.appendChild(postBtn);
 // UI
 
 // functions
+// get url parameters
+function getUrlParams() {
+  let vars = {};
+  window.location.href.replace(
+    /[?&]+([^=&]+)=([^&]*)/gi,
+    function (m, key, value) {
+      vars[key] = value;
+    }
+  );
+  if (Object.keys(vars).length === 0) {
+    return false;
+  } else {
+    return vars;
+  }
+}
+
+// load params as prompt
+async function loadMessage() {
+  const params = getUrlParams();
+  if (params) {
+    let elem = document.createElement('div');
+    elem.style.display = "flex";
+    elem.style.flexDirection = "column";
+    elem.style.alignItems = "center";
+    let image = document.createElement("img");
+    image.style.height = "80px";
+    image.style.width = "80px";
+    image.style.padding = "10px";
+    let text = "Error!";
+    image.src = "/assets/img/error.png";
+    if ("success" == params["status"]) {
+      text = "Success!";
+      image.src = "/assets/img/success.png";
+    }
+    elem.appendChild(image);
+    let message = document.createElement('p');
+    message.style.color = "#fff";
+    message.style.padding = "10px";
+    message.innerText = decodeURIComponent(params["message"]);
+    elem.appendChild(message);
+    prompt(text, "notify", elem);
+  }
+}
 async function choosePlatform() {
   let elem = document.createElement("div");
   elem.style.display = "flex";
@@ -108,6 +159,8 @@ async function newPost() {
   postText.style.height = "25vh";
   postText.style.width = "25vw";
   col1.appendChild(postText);
+
+  // date time selection
   let dateSelector = document.createElement("div");
   dateSelector.style.display = "flex";
   dateSelector.style.flexDirection = "row";
@@ -122,6 +175,8 @@ async function newPost() {
   dateInput.style.marginLeft = "10px";
   dateSelector.appendChild(dateInput);
   col2.appendChild(dateSelector);
+
+  // account selection
   let accountsLabel = document.createElement("label");
   accountsLabel.innerText = "Post to";
   col2.appendChild(accountsLabel);
@@ -178,6 +233,47 @@ async function newPost() {
     toggleChkMaster(twitterChk, twitterAccountSelections);
   });
   col2.appendChild(accountSelection);
+
+  // poll options
+  let pollLabel = document.createElement("label");
+  pollLabel.style.color = "#fff";
+  pollLabel.innerText = "Poll Settings (optional)";
+  pollLabel.style.paddingTop = "10px";
+  col1.appendChild(pollLabel);
+  let pollDuration = document.createElement("div");
+  pollDuration.style.display = "flex";
+  pollDuration.style.flexDirection = "row";
+  pollDuration.style.padding = "10px";
+  let pollDurationLabel = document.createElement("label");
+  pollDurationLabel.style.color = "#fff";
+  pollDurationLabel.innerText = "Duration: ";
+  pollDurationLabel.htmlFor = "pollDuration";
+  pollDurationLabel.style.marginRight = "5px";
+  pollDuration.appendChild(pollDurationLabel);
+  let pollDurationMins = document.createElement("input");
+  pollDurationMins.name = "pollDuration";
+  pollDurationMins.type = "number";
+  pollDurationMins.min = "1";
+  pollDurationMins.style.height = "18px";
+  pollDurationMins.style.width = "60px";
+  pollDuration.appendChild(pollDurationMins);
+  let pollDurationText = document.createElement("p");
+  pollDurationText.style.color = "#fff";
+  pollDurationText.innerText = "minutes";
+  pollDuration.appendChild(pollDurationText);
+  col1.appendChild(pollDuration);
+  let pollOpts = document.createElement("div");
+  pollOpts.style.display = "flex";
+  pollOpts.style.flexDirection = "column";
+  let pollOptsLabel = document.createElement("label");
+  pollOptsLabel.style.color = "#fff";
+  pollOptsLabel.innerText = "Poll Options";
+  pollOptsLabel.style.marginBottom = "10px";
+  pollOpts.appendChild(pollOptsLabel);
+  multiAdd(pollOpts, "newpolloption");
+  col1.appendChild(pollOpts);
+
+  // schedule button
   let scheduleBtn = document.createElement("button");
   scheduleBtn.className = "button1";
   scheduleBtn.innerText = "Schedule Post";
@@ -190,23 +286,49 @@ async function newPost() {
         selectedAccounts.twitter.push(opt.querySelector("h3").innerText);
       }
     });
+    let pollDuration = pollDurationMins.value || null;
+    let pollOptions = [];
+    let pollOptElems = document.querySelectorAll(".newpolloption");
+    pollOptElems.forEach((elem) => {
+      pollOptions.push(elem.value);
+    });
+    if (pollOptions.length < 1) {
+      pollOptions = null;
+      pollDuration = null;
+    }
+    let post = {};
+    if (!pollDuration || !pollOptions) {
+      post = {
+        accounts: selectedAccounts,
+        text: postText.value,
+        datetime: dateInput.value,
+      };
+    } else {
+      post = {
+        accounts: selectedAccounts,
+        text: postText.value,
+        datetime: dateInput.value,
+        pollDuration,
+        pollOptions,
+      };
+    }
     closePopup();
     loading();
-    await postScheduledPost({
-      // poll options not yet added but api supports it
-      accounts: selectedAccounts,
-      text: postText.value,
-      datetime: dateInput.value,
-    });
+    const res = await postScheduledPost(post);
     closePrompt();
     popDash();
+    if ("success" == res.status) {
+      popMsg("green", "#fff", res.message);
+    } else if ("error" == res.status) {
+      popMsg("red", "#fff", res.message);
+    }
   });
   container.appendChild(postInfo);
   container.appendChild(scheduleBtn);
   popUp("New Post", container, "80vh", "60vw");
 }
 
-async function showPosts(){
+async function showPosts() {
   const result = await getPosts();
   const posts = result.data;
   posts.forEach((post) => {
@@ -224,8 +346,8 @@ async function showPosts(){
     deletePostBtn.style.color = "red";
     deletePostBtn.style.cursor = "pointer";
     deletePostBtn.style.padding = "10px";
-    deletePostBtn.addEventListener('click', async () => {
-      deletePost(post._id)
+    deletePostBtn.addEventListener("click", async () => {
+      deletePost(post._id);
       popDash();
     });
     container.appendChild(deletePostBtn);
@@ -276,4 +398,5 @@ async function loading() {
 window.addEventListener("DOMContentLoaded", () => {
   popDash();
   closePrompt();
+  loadMessage();
 });

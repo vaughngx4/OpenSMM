@@ -6,7 +6,7 @@ async function initCache(rc) {
   await rc
     .connect()
     .then(() => {
-      logger.log("info", "Connected to cache");
+      logger.log("info", "Redis connection established");
     })
     .catch((err) => {
       logger.log("error", `Could not connect to cache: ${err}`);
@@ -14,23 +14,33 @@ async function initCache(rc) {
 }
 
 async function cache(key, value) {
-  rc.set(`${key}`, `${value}`)
+  let status = false;
+  await rc
+    .set(`${key}`, `${value}`)
     .then(() => {
       logger.log("debug", `${key} successfully saved to cache`);
+      status = true;
     })
     .catch((err) => {
       logger.log("error", `${key} could not be saved to cache: ${err}`);
+      status = false;
     });
+  return status;
 }
 
 async function uncache(key) {
-  rc.del(`${key}`)
+  let status = false;
+  await rc
+    .del(`${key}`)
     .then(() => {
       logger.log("debug", `${key} successfully removed from cache`);
+      status = true;
     })
     .catch((err) => {
       logger.log("error", `${key} could not be removed from cache: ${err}`);
+      status = false;
     });
+  return status;
 }
 
 async function getCache(key) {
