@@ -138,7 +138,6 @@ async function post(
   pollOptions = pollOptions || null;
   await TwitterAccount.find({ accountName })
     .then(async (data) => {
-      console.log(data);
       const client = await twitterUserClient(
         data[0].accessToken,
         data[0].refreshToken,

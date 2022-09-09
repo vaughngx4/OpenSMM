@@ -329,6 +329,13 @@ async function newPost() {
 }
 
 async function showPosts() {
+  let outerContainer = document.createElement('div');
+  outerContainer.style.display = "flex";
+  outerContainer.style.flexDirection = "column"
+  outerContainer.style.height = "300px";
+  outerContainer.style.width = "450px";
+  outerContainer.style.overflowY = "scroll";
+  outerContainer.className = "posts-container";
   const result = await getPosts();
   const posts = result.data;
   posts.forEach((post) => {
@@ -336,19 +343,24 @@ async function showPosts() {
     container.className = "post";
     let postText = document.createElement("p");
     postText.innerText = post.text;
-    postText.padding = "5px";
     container.appendChild(postText);
     let datetime = document.createElement("p");
     datetime.style.fontWeight = "400";
-    datetime.innerText = new Date(post.datetime).toDateString();
+    datetime.innerText = new Date(post.datetime).toLocaleString();
     container.appendChild(datetime);
     let deletePostBtn = iconButton(`<i class="fa-solid fa-trash-can"></i>`, null, "red");
     deletePostBtn.addEventListener("click", async () => {
-      deletePost(post._id);
-      popDash();
+      let delText = document.createElement('p');
+      delText.style.color = "#fff";
+      delText.style.fontWeight = "300";
+      delText.innerHTML = "This won't delete the post from social media,<br> only from the database and/or schedule.";
+      prompt("Are you sure?", "confirm", delText, () => {
+        deletePost(post._id);
+        popDash();
+      })
     });
     container.appendChild(deletePostBtn);
-    appScreen.appendChild(container);
+    outerContainer.appendChild(container);
     if("pending" == post.data.twitter.status){
       container.style.borderRightColor = "blue";
     } else if("posted" == post.data.twitter.status){
@@ -357,16 +369,17 @@ async function showPosts() {
       container.style.borderRightColor = "red";
     }
   });
+  appScreen.appendChild(outerContainer);
 }
 
 async function popDash() {
   const result = await getTwitterAccounts();
   accountCount.innerText = `${result.data.length}`;
-  const posts = document.querySelectorAll(".post");
+  const posts = document.querySelectorAll(".posts-container");
   posts.forEach((post) => {
     post.remove();
   });
-  showPosts();
+  await showPosts();
 }
 
 async function toggleChkMaster(master, elem) {

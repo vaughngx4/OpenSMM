@@ -38,15 +38,18 @@ html {
 .post {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   width: 400px;
   padding: 10px;
-  border: 1px solid #fff;
+  border: 2px solid #fff;
 }
 
 .post p {
   font-size: 14px;
   font-weight: 300;
   padding: 10px;
+  width: 300px;
+  color: #fff;
 }
 
 /*----- Inputs -----*/
