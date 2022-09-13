@@ -12,6 +12,10 @@ OpenSMM(Open Social Media Marketing) is a self-hosted social media marketing pla
 - Seek help on Discord(links at the bottom) for general support.
 - All errors (should) print to Docker logs, if you encounter any that you can't fix(not config related) or something goes wrong but no errors are printed, open an issue.
 
+### What Works
+- Twitter text type scheduled posts
+- Twitter poll type scheduled posts
+
 ## :large_blue_diamond: Installation
 The application is built for Docker, we will have images on Docker Hub when the application is usable. Here's how to get it running for now:
 
