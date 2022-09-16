@@ -276,7 +276,7 @@ body .body-section {
 }
 
 .main .topbar {
-  width: 100%;
+  width: calc(100% - 80px);
   background: var(--light-blue);
   height: 50px;
   display: flex;
@@ -286,6 +286,7 @@ body .body-section {
   margin-top: 20px;
   position: relative;
   right: 20px;
+  left: 50px;
 }
 
 .toggle {

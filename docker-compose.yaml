@@ -5,9 +5,9 @@ services:
   opensmm-web:
     image: sintelli/opensmm-web:latest
     container_name: opensmm-web
-    ports:
-      - "80:80"
-      - "443:443"
+    # ports:
+      # - "80:80"
+      # - "443:443"
     restart: unless-stopped
     depends_on:
       - opensmm-api
@@ -22,6 +22,7 @@ services:
     networks:
       opensmm:
         ipv4_address: ${DOCKER_SUBNET}.2
+      docker_swag:
 
   opensmm-api:
     image: sintelli/opensmm-api:latest
@@ -66,8 +67,8 @@ services:
       - ./data/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./data/mongo/db:/data/db
     # Ports exposed for debugging purposes
-    ports:
-      - "27017:27017"
+    # ports:
+    #   - "27017:27017"
     restart: unless-stopped
     networks:
       opensmm:
@@ -93,3 +94,5 @@ networks:
       config:
         - subnet: ${DOCKER_SUBNET}.0/16
           gateway: ${DOCKER_SUBNET}.1
+  docker_swag:
+    external: true
