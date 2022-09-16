@@ -803,6 +803,8 @@ body .body-section {
   text-align: center;
   padding: 2px 5px;
   max-height: 25px;
+  position: relative;
+  z-index: 999;
 }
 
 /*----- Drop up  -----*/
