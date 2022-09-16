@@ -187,9 +187,9 @@ async function newPost() {
   let twitterChk = document.createElement("input");
   twitterChk.className = "checkbox";
   twitterChk.type = "checkbox";
-  const result = await getTwitterAccounts();
-  const twitterAccounts = result.data;
-  //const twitterAccounts = ["sintelli_tech"];
+  // const result = await getTwitterAccounts();
+  // const twitterAccounts = result.data;
+  const twitterAccounts = ["sintelli_tech"];
   let options = [];
   twitterAccounts.forEach((item) => {
     let opt = document.createElement("div");
