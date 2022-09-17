@@ -121,6 +121,12 @@ export function multiAdd(outerContainer, className){
   add.addEventListener('click', () => {
     mad(input, add, container, outerContainer, className);
   });
+  input.addEventListener('keydown', (event) => {
+    if("Enter" == event.key){
+      mad(input, add, container, outerContainer, className);
+    }
+  });
+  input.focus();
 }
 
 // multi add event
