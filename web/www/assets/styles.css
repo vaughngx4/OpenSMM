@@ -10,7 +10,11 @@
   --lighter-blue4: #817cc9;
   --lighter-blue5: #c8c4ff;
   --highlight-blue: #5A38D9;
+  --neutral-blue: rgb(79, 111, 255);
+  --green: rgb(77, 204, 151);
+  --red: rgb(204, 77, 94);
 }
+
 
 * {
   margin: 0;
@@ -55,7 +59,12 @@ html {
   justify-content: space-between;
   width: 400px;
   padding: 10px;
-  border: 2px solid #fff;
+  border: 2px solid var(--lighter-blue5);
+  background-color: var(--lighter-blue3);
+  border-radius: 15px;
+  margin-top: 20px;
+  box-shadow: var(--blue) 5px 5px 5px;
+  border-right: 5px solid;
 }
 
 .post p {
@@ -63,7 +72,12 @@ html {
   font-weight: 300;
   padding: 10px;
   width: 300px;
-  color: #fff;
+  color: var(--lighter-blue5);
+}
+
+.post .icon-button {
+  margin-top: 8px;
+  color: black;
 }
 
 /*----- Inputs -----*/
@@ -76,7 +90,7 @@ html {
 }
 
 .modal-content input {
-  background-color: var(--dark-blue);
+  background-color: var(--blue);
   border-radius: 10px;
   padding: 5px;
 }
@@ -117,6 +131,28 @@ html {
 .checkbox {
   padding: 5px;
 }
+
+input[type=checkbox] {
+  /* border-radius: 15px; */
+  width: 25px;
+  height: 25px;
+  width: 1.3em;
+  height: 1.3em;
+  background-color: white;
+  border-radius: 5px;
+  vertical-align: middle;
+  border: 2px solid var(--lighter-blue4);
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=checkbox]:checked {
+  background-color: var(--highlight-blue);
+  border: 2px solid var(--lighter-blue4);  
+}
+
 
 /*----- Sidebar -----*/
 .navigation {
@@ -162,6 +198,17 @@ html {
   margin-left: 25px;
 }
 
+.navigation.active ul li a .icon-logo {
+  background-color: unset;
+}
+
+.opensmm-logo {
+  width: 50px;
+  height: 50px;
+  background-image: url('img/50x50-logo.jpg');
+  border-radius: 10px;
+}
+
 .navigation .title {
   transition: all 1s;
 }
@@ -184,6 +231,7 @@ html {
   list-style: none;
   transition: 0.5s;
   margin-bottom: 5px;
+  z-index: 99;
 }
 
 .navigation ul li:hover {
@@ -244,12 +292,14 @@ html {
 }
 
 /*----- Main/Topbar -----*/
+
 .body-section {
   min-height: calc(100vh - 29px);
   width: 100%;
   background-position: center;
   background-size: cover;
   position: relative;
+  height: fit-content;
 }
 
 body .body-section {
@@ -263,11 +313,12 @@ body .body-section {
 }
 
 .main {
-  position: absolute;
+  position: relative;
   width: calc(100% - 250px);
   left: 250px;
   min-height: 100vh;
   transition: 0.5s;
+  padding-top: 20px;
 }
 
 .main.active {
@@ -283,7 +334,6 @@ body .body-section {
   justify-content: space-between;
   align-items: center;
   border-radius: 15px;
-  margin-top: 20px;
   position: relative;
   right: 20px;
   left: 50px;
@@ -366,7 +416,7 @@ body .body-section {
   outline: none;
   cursor: pointer;
   background: transparent;
-  color: #fff;
+  color: var(--lighter-blue5);
   font-size: 22px;
 }
 
@@ -414,15 +464,38 @@ body .body-section {
 .overview-box {
   display: flex;
   flex-direction: row;
-  color: #fff;
+  color: var(--lighter-blue5);
   border-bottom: 2px solid;
   align-content: center;
   width: 400px;
   justify-content: space-between;
+  margin: 0 auto;
+}
+
+@media screen and (max-width:1700px) {
+  .overview-box {
+    width: 300px;
+  }
+}
+
+@media screen and (max-width:1300px) {
+  .overview-box {
+    width: 200px;
+  }
+}
+
+@media screen and (max-width:920px) {
+  .overview-box {
+    width: fit-content;
+  }
+}
+
+.overview-box > div > .checkbox {
+  margin-top: 15px;
 }
 
 .overview-box h3 {
-  color: #fff;
+  color: var(--lighter-blue5);
   font-size: 16px;
   font-weight: 300;
   padding: 3px;
@@ -430,7 +503,7 @@ body .body-section {
 }
 
 .overview-box h2 {
-  color: #fff;
+  color: var(--lighter-blue5);
   font-size: 16px;
   font-weight: 600;
   padding: 3px;
@@ -466,12 +539,12 @@ body .body-section {
 }
 
 .drop-btn {
-  background-color: #2e2e2e;
-  color: #fff;
+  background-color: var(--lighter-blue2);
+  color: var(--lighter-blue5);
   padding: 5px;
   padding-inline: 10px;
   font-size: 16px;
-  border: 1px solid;
+  border: 2px solid var(--lighter-blue3);
   border-radius: 25px;
   cursor: pointer;
   width: 220px;
@@ -480,7 +553,7 @@ body .body-section {
 
 .drop-btn:hover,
 .drop-btn:focus {
-  background-color: #0029ff;
+  background-color: var(--highlight-blue);
   transition: 0.3s;
 }
 
@@ -493,15 +566,15 @@ body .body-section {
   display: none;
   position: absolute;
   width: 188px;
-  border: 1px solid;
+  border: none;
   z-index: 1;
   border-radius: 25px;
 }
 
 .dropdown-item {
-  color: #fff;
+  color: var(--lighter-blue5);
   width: 100%;
-  background-color: #2e2e2e;
+  background-color: var(--lighter-blue3);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
@@ -515,7 +588,7 @@ body .body-section {
 }
 
 .dropdown-content p:hover {
-  background-color: #0029ff;
+  background-color: var(--highlight-blue);
   transition: 0.3s;
 }
 
@@ -538,16 +611,46 @@ body .body-section {
 	justify-content: space-between;
 	border-radius: 5px;
 	color: #fff;
-	background: #000;
+	background: var(--dark-blue);
+  padding: 20px;
+  border-radius: 25px;
 }
 .prompt-text{
-	color: #fff;
+	color: var(--lighter-blue5);
 	font-size: 16px;
 	text-align: center;
+  background-color: var(--darker-blue);
+  border-radius: 15px;
+  padding: 5px;
+  margin-top: -40px;
+  margin-bottom: 20px;
 }
 .prompt-content{
 	align-items: center;
 	justify-content: space-between;
+}
+
+.prompt-content p {
+  color: var(--lighter-blue5);
+  margin-bottom: 20px;
+}
+
+.confirm, .cancel, .done, .okay {
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 10px;
+  color: var(--darker-blue);
+  border: 2px solid var(--lighter-blue);
+  box-shadow: var(--darker-blue) 5px 5px 2px;
+  cursor: pointer;
+}
+
+.confirm, .okay {
+  background-color: var(--green);
+}
+
+.cancel, .done {
+  background-color: var(--red);
 }
 
 /*----- Multi Add -----*/
@@ -572,7 +675,7 @@ body .body-section {
   font-size: 16px;
   font-weight: 600;
   color: #000;
-  background: green;
+  background: var(--green);
 }
 
 /*----- Modal Popup -----*/
@@ -593,18 +696,19 @@ body .body-section {
   background-color: var(--dark-blue);
   border-radius: 10px;
   text-align: center;
-  color: #fff;
+  color: var(--lighter-blue5);
   padding: 5%;
   padding-top: 3%;
   position: absolute;
   align-content: center;
   box-shadow: var(--lighter-blue) 7px 7px 20px;
+  z-index: 999;
 }
 
 .modal-content p {
   text-align: justify;
   width: 100%;
-  color: #fff;
+  color: var(--lighter-blue5);
   height: auto;
   align-self: center;
 }
@@ -706,6 +810,7 @@ body .body-section {
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
+  background-color: var(--dark-blue);
 }
 
 /* Track */
@@ -716,8 +821,8 @@ body .body-section {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #0029ff;
-  border-radius: 2px;
+  background: var(--highlight-blue);
+  border-radius: 20px;
 }
 
 /* Handle on hover */
@@ -729,11 +834,15 @@ body .body-section {
 .minimal-section {
   display: flex;
   flex-direction: column;
-  height: 96vh;
+  height: calc(100vh - 29px);
   width: 100%;
   background: var(--darker-blue);
   align-items: center;
   text-align: center;
+  background-image: url('img/widescreen-logo-4320.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .minimal {
@@ -805,7 +914,7 @@ body .body-section {
   padding: 2px 5px;
   max-height: 25px;
   position: relative;
-  z-index: 999;
+  z-index: 1;
 }
 
 /*----- Drop up  -----*/
@@ -955,6 +1064,44 @@ body .body-section {
 }
 
 
+.post-legend-box {
+  width: 15px;
+  height: 15px;
+}
+
+
+.post-legend ul {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.post-legend ul li {
+  display: inline-block;
+  list-style-type: none; 
+  margin-right: 100px;
+  display: flex;
+  flex-direction: row;
+}
+
+.post-legend ul li p {
+  margin-right: 10px;
+  font-size: 12px;
+}
+
+.pending-legend-box {
+  background-color: var(--neutral-blue);
+}
+
+.posted-legend-box {
+  background-color: var(--green);
+}
+
+.error-legend-box {
+  background-color: var(--red);
+}
+
+
 #infoHeading {
   background-color: var(--darker-blue);
   border-radius: 15px;
@@ -962,8 +1109,19 @@ body .body-section {
   margin-top: -60px;
   margin-bottom: 50px;
   color: var(--lighter-blue5);
+  font-size: 28px;
 }
 
 label,p {
   color: var(--lighter-blue5);
 }
+
+
+.post-info > div {
+  background-color: var(--lighter-blue2);
+  border-radius: 15px;
+  margin-right: 20px;
+  padding: 20px;
+  box-shadow: var(--darker-blue) 8px 8px 5px;
+}
+

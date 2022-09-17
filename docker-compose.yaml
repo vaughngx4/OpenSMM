@@ -5,9 +5,9 @@ services:
   opensmm-web:
     image: sintelli/opensmm-web:latest
     container_name: opensmm-web
-    # ports:
-      # - "80:80"
-      # - "443:443"
+    ports:
+      - "80:80"
+      - "443:443"
     restart: unless-stopped
     depends_on:
       - opensmm-api
@@ -22,7 +22,6 @@ services:
     networks:
       opensmm:
         ipv4_address: ${DOCKER_SUBNET}.2
-      docker_swag:
 
   opensmm-api:
     image: sintelli/opensmm-api:latest
@@ -94,5 +93,3 @@ networks:
       config:
         - subnet: ${DOCKER_SUBNET}.0/16
           gateway: ${DOCKER_SUBNET}.1
-  docker_swag:
-    external: true

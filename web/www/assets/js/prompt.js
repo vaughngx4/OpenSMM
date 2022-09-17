@@ -32,13 +32,8 @@ async function doPrompt(text, type, element, callback) {
   if (type == "confirm" && callback != "none") {
     //create confirm and cancel buttons
     var confirm = document.createElement("button");
-    confirm.style.fontSize = "16px";
-    confirm.style.padding = "5px";
-    confirm.style.borderRadius = "3px";
+    confirm.classList.add('confirm');
     confirm.innerHTML = "Confirm";
-    confirm.style.color = "#fff";
-    confirm.style.background = "green";
-    confirm.style.cursor = "pointer";
     confirm.addEventListener("click", (event) => {
       closePrompt();
       result = callback();
@@ -46,13 +41,8 @@ async function doPrompt(text, type, element, callback) {
     });
     btnBox.appendChild(confirm);
     var cancel = document.createElement("button");
-    cancel.style.fontSize = "16px";
-    cancel.style.padding = "5px";
-    cancel.style.borderRadius = "3px";
+    cancel.classList.add('cancel');
     cancel.innerHTML = "Cancel";
-    cancel.style.color = "#fff";
-    cancel.style.background = "red";
-    cancel.style.cursor = "pointer";
     cancel.addEventListener("click", (event) => {
       closePrompt();
       return false;
@@ -64,26 +54,16 @@ async function doPrompt(text, type, element, callback) {
     );
   } else if (type == "notify") {
     var okay = document.createElement("button");
-    okay.style.fontSize = "16px";
-    okay.style.padding = "5px";
-    okay.style.borderRadius = "3px";
+    okay.classList.add('okay')
     okay.innerHTML = "Okay";
-    okay.style.color = "#fff";
-    okay.style.background = "green";
-    okay.style.cursor = "pointer";
     okay.addEventListener("click", (event) => {
       closePrompt();
     });
     btnBox.appendChild(okay);
   } else if (type == "warn") {
     var done = document.createElement("button");
-    done.style.fontSize = "16px";
-    done.style.padding = "5px";
-    done.style.borderRadius = "3px";
+    done.classList.add('done');
     done.innerHTML = "Done";
-    done.style.color = "#fff";
-    done.style.background = "red";
-    done.style.cursor = "pointer";
     done.addEventListener("click", (event) => {
       closePrompt();
     });

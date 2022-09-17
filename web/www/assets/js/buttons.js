@@ -129,7 +129,7 @@ function mad(input, add, container, outerContainer, className){
   input.style.background = "gray";
   input.className = className || "";
   add.innerText = "-"
-  add.style.background = "red"
+  add.style.background = "var(--red)";
   add.removeEventListener('click', mad);
   add.addEventListener('click', () => {
     container.remove();
