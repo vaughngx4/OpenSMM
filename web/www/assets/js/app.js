@@ -323,7 +323,7 @@ async function newPost() {
 }
 
 
-showPosts() //Remove this 
+//showPosts() // debug !!! 
 
 async function showPosts() {
   let outerContainer = document.createElement('div');
