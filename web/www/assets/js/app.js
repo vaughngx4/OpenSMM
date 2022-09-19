@@ -41,7 +41,6 @@ accountIcon.style.fontSize = "20px";
 twitterAccount.appendChild(accountIcon);
 accounts.appendChild(twitterAccount);
 let accountCount = document.createElement("h1");
-accountCount.style.color = "#fff";
 accountCount.innerText = "0";
 twitterAccount.appendChild(accountCount);
 
@@ -131,10 +130,12 @@ async function addAccount(platform) {
 
 async function newPost() {
   let container = document.createElement("div");
+  container.classList.add('post-info-container');
   container.style.display = "flex";
   container.style.flexDirection = "column";
   container.style.alignItems = "center";
   let postInfo = document.createElement("div");
+  postInfo.classList.add('post-info');
   postInfo.style.display = "flex";
   postInfo.style.flexDirection = "row";
   postInfo.style.paddingBottom = "50px";
@@ -189,7 +190,7 @@ async function newPost() {
   twitterChk.type = "checkbox";
   const result = await getTwitterAccounts();
   const twitterAccounts = result.data;
-  //const twitterAccounts = ["sintelli_tech"];
+  // const twitterAccounts = ["sintelli_tech"];
   let options = [];
   twitterAccounts.forEach((item) => {
     let opt = document.createElement("div");
@@ -236,19 +237,15 @@ async function newPost() {
 
   // poll options
   let pollLabel = document.createElement("label");
-  pollLabel.style.color = "#fff";
   pollLabel.innerText = "Poll Settings (optional)";
-  pollLabel.style.paddingTop = "10px";
   col1.appendChild(pollLabel);
   let pollDuration = document.createElement("div");
   pollDuration.style.display = "flex";
   pollDuration.style.flexDirection = "row";
   pollDuration.style.padding = "10px";
   let pollDurationLabel = document.createElement("label");
-  pollDurationLabel.style.color = "#fff";
   pollDurationLabel.innerText = "Duration: ";
   pollDurationLabel.htmlFor = "pollDuration";
-  pollDurationLabel.style.marginRight = "5px";
   pollDuration.appendChild(pollDurationLabel);
   let pollDurationMins = document.createElement("input");
   pollDurationMins.name = "pollDuration";
@@ -258,7 +255,6 @@ async function newPost() {
   pollDurationMins.style.width = "60px";
   pollDuration.appendChild(pollDurationMins);
   let pollDurationText = document.createElement("p");
-  pollDurationText.style.color = "#fff";
   pollDurationText.innerText = "minutes";
   pollDuration.appendChild(pollDurationText);
   col1.appendChild(pollDuration);
@@ -266,9 +262,7 @@ async function newPost() {
   pollOpts.style.display = "flex";
   pollOpts.style.flexDirection = "column";
   let pollOptsLabel = document.createElement("label");
-  pollOptsLabel.style.color = "#fff";
   pollOptsLabel.innerText = "Poll Options";
-  pollOptsLabel.style.marginBottom = "10px";
   pollOpts.appendChild(pollOptsLabel);
   multiAdd(pollOpts, "newpolloption");
   col1.appendChild(pollOpts);
@@ -318,15 +312,18 @@ async function newPost() {
     closePrompt();
     popDash();
     if ("success" == res.status) {
-      popMsg("green", "#fff", res.message);
+      popMsg("var(--green)", "#fff", res.message);
     } else if ("error" == res.status) {
-      popMsg("red", "#fff", res.message);
+      popMsg("var(--red)", "#fff", res.message);
     }
   });
   container.appendChild(postInfo);
   container.appendChild(scheduleBtn);
-  popUp("New Post", container, "80vh", "60vw");
+  popUp("New Post", container, "70vh", "60vw");
 }
+
+
+showPosts() //Remove this 
 
 async function showPosts() {
   let outerContainer = document.createElement('div');
@@ -348,10 +345,9 @@ async function showPosts() {
     datetime.style.fontWeight = "400";
     datetime.innerText = new Date(post.datetime).toLocaleString();
     container.appendChild(datetime);
-    let deletePostBtn = iconButton(`<i class="fa-solid fa-trash-can"></i>`, null, "red");
+    let deletePostBtn = iconButton(`<i class="fa-solid fa-trash-can"></i>`, null, "var(--red)");
     deletePostBtn.addEventListener("click", async () => {
       let delText = document.createElement('p');
-      delText.style.color = "#fff";
       delText.style.fontWeight = "300";
       delText.innerHTML = "This won't delete the post from social media,<br> only from the database and/or schedule.";
       prompt("Are you sure?", "confirm", delText, () => {
@@ -362,14 +358,64 @@ async function showPosts() {
     container.appendChild(deletePostBtn);
     outerContainer.appendChild(container);
     if("pending" == post.data.twitter.status){
-      container.style.borderRightColor = "blue";
+      container.style.borderRightColor = "var(--neutral-blue)";
     } else if("posted" == post.data.twitter.status){
-      container.style.borderRightColor = "green";
+      container.style.borderRightColor = "var(--green)";
     } else if("error" == post.data.twitter.status){
-      container.style.borderRightColor = "red";
+      container.style.borderRightColor = "var(--red)";
     }
   });
   appScreen.appendChild(outerContainer);
+
+
+  // Post Legend 
+
+  let postLegend = document.createElement("div");
+  postLegend.classList.add('post-legend');
+  let postLegendList = document.createElement('ul');
+  appScreen.appendChild(postLegend);
+  postLegend.appendChild(postLegendList)
+
+  // Pending
+  let pendingPostLegendListItem = document.createElement('li');
+  let pendingPostLegend = document.createElement('p');
+  pendingPostLegend.innerHTML = "Pending:";
+  let pendingPostLegendBox = document.createElement('div');
+  pendingPostLegendBox.classList.add('pending-legend-box');
+  pendingPostLegendBox.classList.add('post-legend-box');
+
+  postLegendList.appendChild(pendingPostLegendListItem);
+  pendingPostLegendListItem.appendChild(pendingPostLegend);
+  pendingPostLegendListItem.appendChild(pendingPostLegendBox);
+
+
+  // Posted
+  let postedPostLegendListItem = document.createElement('li');
+  let postedPostLegend = document.createElement('p');
+  postedPostLegend.innerHTML = "Posted:";
+  let postedPostLegendBox = document.createElement('div');
+  postedPostLegendBox.classList.add('posted-legend-box');
+  postedPostLegendBox.classList.add('post-legend-box')
+
+  postLegendList.appendChild(postedPostLegendListItem);
+  postedPostLegendListItem.appendChild(postedPostLegend);
+  postedPostLegendListItem.appendChild(postedPostLegendBox);
+
+
+
+  // Error
+  let errorPostLegendListItem = document.createElement('li');
+  let errorPostLegend = document.createElement('p');
+  errorPostLegend.innerHTML = "Error:";
+  let errorPostLegendBox = document.createElement('div');
+  errorPostLegendBox.classList.add('error-legend-box');
+  errorPostLegendBox.classList.add('post-legend-box')
+
+  postLegendList.appendChild(errorPostLegendListItem);
+  errorPostLegendListItem.appendChild(errorPostLegend);
+  errorPostLegendListItem.appendChild(errorPostLegendBox);
+  
+
 }
 
 async function popDash() {
