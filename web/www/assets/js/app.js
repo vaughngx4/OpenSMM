@@ -463,3 +463,6 @@ window.addEventListener("DOMContentLoaded", () => {
   closePrompt();
   loadMessage();
 });
+
+// Debug !!!
+// popMsg()
