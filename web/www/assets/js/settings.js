@@ -1,8 +1,8 @@
 import { allowToggle } from "./topbar.js";
 allowToggle();
 
-themeSelector()
-changeTheme()
+themeSelector();
+changeTheme();
 
 function themeSelector() {
     const submitTheme = document.querySelector('#change-theme-submit');        
@@ -28,7 +28,7 @@ function themeSelector() {
 function addStyleSheet(selectedTheme) {
     localStorage.setItem("theme", selectedTheme);
     let li = document.createElement('link');
-    li.classList.add('theme-style-sheet')
+    li.classList.add('theme-style-sheet');
     li.type = 'text/css';     
     let href="assets/themes-css/" + selectedTheme + '.css';
     li.setAttribute('href', href);
@@ -45,7 +45,6 @@ export function changeTheme() {
             addStyleSheet(setTheme);
         }        
     }
-
 }
 
 function removeStyleSheet() {
