@@ -1,20 +1,19 @@
 /*----- Global -----*/
 :root {
-  --blue: #211D44;
+  --blue: #211d44;
   --dark-blue: #171430;
   --darker-blue: #100e22;
-  --light-blue: #24204B;
-  --lighter-blue: #292555;  
+  --light-blue: #24204b;
+  --lighter-blue: #292555;
   --lighter-blue2: #363361;
   --lighter-blue3: #575394;
   --lighter-blue4: #817cc9;
   --lighter-blue5: #c8c4ff;
-  --highlight-blue: #5A38D9;
+  --highlight-blue: #5a38d9;
   --neutral-blue: rgb(79, 111, 255);
   --green: rgb(77, 204, 151);
   --red: rgb(204, 77, 94);
 }
-
 
 * {
   margin: 0;
@@ -80,6 +79,34 @@ html {
   color: black;
 }
 
+.accounts-view {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  padding: 2px;
+  width: 100%;
+  min-height: 70%;
+  border: 1px solid var(--lighter-blue5);
+  border-radius: 15px;
+  align-items: center;
+  overflow-y: scroll;
+}
+
+.selected-account {
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+  height: 30px;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--lighter-blue5);
+}
+
+.selected-account i {
+  padding-inline: 5px;
+  font-size: 12px;
+  margin-top: 20px;
+}
+
 /*----- Inputs -----*/
 .text-area {
   resize: none;
@@ -132,7 +159,7 @@ html {
   padding: 5px;
 }
 
-input[type=checkbox] {
+input[type="checkbox"] {
   /* border-radius: 15px; */
   width: 25px;
   height: 25px;
@@ -148,11 +175,10 @@ input[type=checkbox] {
   cursor: pointer;
 }
 
-input[type=checkbox]:checked {
+input[type="checkbox"]:checked {
   background-color: var(--highlight-blue);
-  border: 2px solid var(--lighter-blue4);  
+  border: 2px solid var(--lighter-blue4);
 }
-
 
 /*----- Sidebar -----*/
 .navigation {
@@ -341,7 +367,6 @@ body .body-section {
   cursor: pointer;
   z-index: 99;
   right: 0px;
-
 }
 
 .toggle .icon {
@@ -467,19 +492,19 @@ body .body-section {
   margin: 0 auto;
 }
 
-@media screen and (max-width:1700px) {
+@media screen and (max-width: 1700px) {
   .overview-box {
     width: 300px;
   }
 }
 
-@media screen and (max-width:1300px) {
+@media screen and (max-width: 1300px) {
   .overview-box {
     width: 200px;
   }
 }
 
-@media screen and (max-width:920px) {
+@media screen and (max-width: 920px) {
   .overview-box {
     width: fit-content;
   }
@@ -589,40 +614,40 @@ body .body-section {
 
 /*----- Prompt -----*/
 .bg-prompt {
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.7);
-	position: fixed;
-	top: 0;
-	justify-content: center;
-	align-items: center;
-	display: none;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0;
+  justify-content: center;
+  align-items: center;
+  display: none;
 }
-.prompt{
-	position: relative;
-	padding: 10px;
-	height: fit-content;
-	width: fit-content;
-	justify-content: space-between;
-	border-radius: 5px;
-	color: #fff;
-	background: var(--dark-blue);
+.prompt {
+  position: relative;
+  padding: 10px;
+  height: fit-content;
+  width: fit-content;
+  justify-content: space-between;
+  border-radius: 5px;
+  color: #fff;
+  background: var(--dark-blue);
   padding: 20px;
   border-radius: 25px;
 }
-.prompt-text{
-	color: var(--lighter-blue5);
-	font-size: 16px;
-	text-align: center;
+.prompt-text {
+  color: var(--lighter-blue5);
+  font-size: 16px;
+  text-align: center;
   background-color: var(--darker-blue);
   border-radius: 15px;
   padding: 5px;
   margin-top: -40px;
   margin-bottom: 20px;
 }
-.prompt-content{
-	align-items: center;
-	justify-content: space-between;
+.prompt-content {
+  align-items: center;
+  justify-content: space-between;
 }
 
 .prompt-content p {
@@ -630,7 +655,10 @@ body .body-section {
   margin-bottom: 20px;
 }
 
-.confirm, .cancel, .done, .okay {
+.confirm,
+.cancel,
+.done,
+.okay {
   font-size: 16px;
   padding: 5px;
   border-radius: 10px;
@@ -640,27 +668,29 @@ body .body-section {
   cursor: pointer;
 }
 
-.confirm, .okay {
+.confirm,
+.okay {
   background-color: var(--green);
 }
 
-.cancel, .done {
+.cancel,
+.done {
   background-color: var(--red);
 }
 
 /*----- Multi Add -----*/
-.multi-add{
+.multi-add {
   display: flex;
   flex-direction: row;
 }
-.multi-add input{
+.multi-add input {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
   padding: 2px;
 }
-.multi-add button{
+.multi-add button {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   border-top-left-radius: 0px;
@@ -953,7 +983,8 @@ body .body-section {
   background-color: #0029ff;
 }
 /*----- Generic Buttons -----*/
-.button1, #loginBtn {
+.button1,
+#loginBtn {
   height: 30px;
   width: 120px;
   cursor: pointer;
@@ -966,7 +997,8 @@ body .body-section {
   color: var(--lighter-blue5);
 }
 
-.button1:hover, #loginBtn:hover {
+.button1:hover,
+#loginBtn:hover {
   background-color: var(--lighter-blue3);
   margin-right: 0px;
   margin-left: 10px;
@@ -1088,12 +1120,10 @@ body .body-section {
   box-shadow: var(--darker-blue) 7px 7px 5px;
 }
 
-
 .post-legend-box {
   width: 15px;
   height: 15px;
 }
-
 
 .post-legend ul {
   display: flex;
@@ -1103,7 +1133,7 @@ body .body-section {
 
 .post-legend ul li {
   display: inline-block;
-  list-style-type: none; 
+  list-style-type: none;
   margin-right: 100px;
   display: flex;
   flex-direction: row;
@@ -1126,7 +1156,6 @@ body .body-section {
   background-color: var(--red);
 }
 
-
 #infoHeading {
   background-color: var(--darker-blue);
   border-radius: 15px;
@@ -1137,10 +1166,10 @@ body .body-section {
   font-size: 28px;
 }
 
-label,p {
+label,
+p {
   color: var(--lighter-blue5);
 }
-
 
 .post-info > div {
   background-color: var(--lighter-blue2);
