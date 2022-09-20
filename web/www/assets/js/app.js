@@ -79,7 +79,7 @@ function getUrlParams() {
 async function loadMessage() {
   const params = getUrlParams();
   if (params) {
-    let elem = document.createElement('div');
+    let elem = document.createElement("div");
     elem.style.display = "flex";
     elem.style.flexDirection = "column";
     elem.style.alignItems = "center";
@@ -94,7 +94,7 @@ async function loadMessage() {
       image.src = "/assets/img/success.png";
     }
     elem.appendChild(image);
-    let message = document.createElement('p');
+    let message = document.createElement("p");
     message.style.color = "#fff";
     message.style.padding = "10px";
     message.innerText = decodeURIComponent(params["message"]);
@@ -130,36 +130,45 @@ async function addAccount(platform) {
 
 async function newPost() {
   let container = document.createElement("div");
-  container.classList.add('post-info-container');
+  container.classList.add("post-info-container");
   container.style.display = "flex";
   container.style.flexDirection = "column";
   container.style.alignItems = "center";
   let postInfo = document.createElement("div");
-  postInfo.classList.add('post-info');
+  postInfo.classList.add("post-info");
   postInfo.style.display = "flex";
   postInfo.style.flexDirection = "row";
-  postInfo.style.paddingBottom = "50px";
+  postInfo.style.paddingBottom = "20px";
   postInfo.style.justifyContent = "space-around";
+  postInfo.style.width = "100%";
   let col1 = document.createElement("div");
   col1.style.display = "flex";
   col1.style.flexDirection = "column";
   col1.style.alignItems = "center";
+  col1.style.width = "30%";
   postInfo.appendChild(col1);
   let col2 = document.createElement("div");
   col2.style.display = "flex";
   col2.style.flexDirection = "column";
   col2.style.alignItems = "center";
+  col2.style.width = "70%";
   postInfo.appendChild(col2);
+
+  // text label
   let textLabel = document.createElement("label");
   textLabel.htmlFor = "postText";
   textLabel.innerText = "Text";
-  col1.appendChild(textLabel);
+  col2.appendChild(textLabel);
+
+  // text
   let postText = document.createElement("textarea");
   postText.className = "text-area";
   postText.name = "postText";
   postText.style.height = "25vh";
   postText.style.width = "25vw";
-  col1.appendChild(postText);
+  postText.style.color = "#fff";
+  postText.style.paddingInline = "10px";
+  col2.appendChild(postText);
 
   // date time selection
   let dateSelector = document.createElement("div");
@@ -173,14 +182,22 @@ async function newPost() {
   let dateInput = document.createElement("input");
   dateInput.type = "datetime-local";
   //dateInput.value = new Date().toString;
+  dateInput.style.color = "#fff";
   dateInput.style.marginLeft = "10px";
   dateSelector.appendChild(dateInput);
   col2.appendChild(dateSelector);
 
-  // account selection
+  // accounts
   let accountsLabel = document.createElement("label");
   accountsLabel.innerText = "Post to";
-  col2.appendChild(accountsLabel);
+  col1.appendChild(accountsLabel);
+
+  // accounts view
+  let accountsView = document.createElement("div");
+  accountsView.classList.add("accounts-view");
+  col1.appendChild(accountsView);
+
+  // account selection
   let accountSelection = document.createElement("div");
   accountSelection.style.display = "flex";
   accountSelection.style.flexDirection = "column";
@@ -190,7 +207,7 @@ async function newPost() {
   twitterChk.type = "checkbox";
   const result = await getTwitterAccounts();
   const twitterAccounts = result.data;
-  // const twitterAccounts = ["sintelli_tech"];
+  // const twitterAccounts = ["sintelli_tech", "mindglowing"]; // debug !!!
   let options = [];
   twitterAccounts.forEach((item) => {
     let opt = document.createElement("div");
@@ -233,12 +250,50 @@ async function newPost() {
   twitterChk.addEventListener("click", async () => {
     toggleChkMaster(twitterChk, twitterAccountSelections);
   });
-  col2.appendChild(accountSelection);
+  let selectedAccounts = {
+    twitter: [],
+  };
+  let accountSelectionButton = document.createElement("button");
+  accountSelectionButton.innerText = "Choose Accounts";
+  accountSelectionButton.classList.add("button1");
+  col1.appendChild(accountSelectionButton);
+  accountSelectionButton.addEventListener("click", () => {
+    prompt("Choose Accounts", "confirm", accountSelection, () => {
+      selectedAccounts = {
+        twitter: [],
+      };
+      twitterAccountSelections.querySelectorAll(".option").forEach((opt) => {
+        if (true == opt.querySelector(".checkbox").checked) {
+          selectedAccounts.twitter.push(opt.querySelector("h3").innerText);
+        }
+      });
+      accountsView.innerHTML = "";
+      for (const key in selectedAccounts) {
+        selectedAccounts[key].forEach((acc) => {
+          let account = document.createElement("div");
+          account.classList.add("selected-account");
+          // user images are not yet implemented in the api
+          // let img = document.createElement("img");
+          // img.src=`/${key}/attachments/userimg`;
+          // account.appendChild(img);
+          let accTypeBadge = document.createElement("i");
+          accTypeBadge.className = `fa-brands fa-${key}`;
+          account.appendChild(accTypeBadge);
+          let username = document.createElement("p");
+          username.innerText = acc;
+          account.appendChild(username);
+          accountsView.appendChild(account);
+        });
+      }
+    });
+  });
 
-  // poll options
-  let pollLabel = document.createElement("label");
-  pollLabel.innerText = "Poll Settings (optional)";
-  col1.appendChild(pollLabel);
+  // poll settings
+  let pollSettings = document.createElement("div");
+  pollSettings.style.display = "flex";
+  pollSettings.style.flexDirection = "column";
+  pollSettings.style.alignItems = "center";
+  pollSettings.style.padding = "15px";
   let pollDuration = document.createElement("div");
   pollDuration.style.display = "flex";
   pollDuration.style.flexDirection = "row";
@@ -257,55 +312,62 @@ async function newPost() {
   let pollDurationText = document.createElement("p");
   pollDurationText.innerText = "minutes";
   pollDuration.appendChild(pollDurationText);
-  col1.appendChild(pollDuration);
+  pollSettings.appendChild(pollDuration);
   let pollOpts = document.createElement("div");
   pollOpts.style.display = "flex";
   pollOpts.style.flexDirection = "column";
+  pollOpts.style.alignItems = "center";
+  pollOpts.style.padding = "15px";
   let pollOptsLabel = document.createElement("label");
   pollOptsLabel.innerText = "Poll Options";
   pollOpts.appendChild(pollOptsLabel);
   multiAdd(pollOpts, "newpolloption");
-  col1.appendChild(pollOpts);
+  pollSettings.appendChild(pollOpts);
+
+  let post = {};
+  // poll options button
+  let pOBtn = document.createElement("button");
+  pOBtn.className = "button1";
+  pOBtn.innerText = "Poll Settings";
+  pOBtn.addEventListener("click", () => {
+    prompt("Poll Settings(Optional)", "confirm", pollSettings, () => {
+      let pollDuration = pollDurationMins.value || null;
+      let pollOptions = [];
+      let pollOptElems = document.querySelectorAll(".newpolloption");
+      pollOptElems.forEach((elem) => {
+        pollOptions.push(elem.value);
+      });
+      if (pollOptions.length < 1) {
+        pollOptions = null;
+        pollDuration = null;
+      }
+      if (!pollDuration || !pollOptions) {
+        post = {
+          accounts: selectedAccounts,
+          text: postText.value,
+          datetime: dateInput.value,
+        };
+      } else {
+        post = {
+          accounts: selectedAccounts,
+          text: postText.value,
+          datetime: dateInput.value,
+          pollDuration,
+          pollOptions,
+        };
+      }
+    });
+  });
+  col2.appendChild(pOBtn);
 
   // schedule button
   let scheduleBtn = document.createElement("button");
   scheduleBtn.className = "button1";
   scheduleBtn.innerText = "Schedule Post";
   scheduleBtn.addEventListener("click", async () => {
-    let selectedAccounts = {
-      twitter: [],
-    };
-    twitterAccountSelections.querySelectorAll(".option").forEach((opt) => {
-      if (true == opt.querySelector(".checkbox").checked) {
-        selectedAccounts.twitter.push(opt.querySelector("h3").innerText);
-      }
-    });
-    let pollDuration = pollDurationMins.value || null;
-    let pollOptions = [];
-    let pollOptElems = document.querySelectorAll(".newpolloption");
-    pollOptElems.forEach((elem) => {
-      pollOptions.push(elem.value);
-    });
-    if (pollOptions.length < 1) {
-      pollOptions = null;
-      pollDuration = null;
-    }
-    let post = {};
-    if (!pollDuration || !pollOptions) {
-      post = {
-        accounts: selectedAccounts,
-        text: postText.value,
-        datetime: dateInput.value,
-      };
-    } else {
-      post = {
-        accounts: selectedAccounts,
-        text: postText.value,
-        datetime: dateInput.value,
-        pollDuration,
-        pollOptions,
-      };
-    }
+    post["accounts"] = selectedAccounts;
+    post["text"] = postText.value;
+    post["datetime"] = dateInput.value;
     closePopup();
     loading();
     const res = await postScheduledPost(post);
@@ -322,13 +384,12 @@ async function newPost() {
   popUp("New Post", container, "70vh", "60vw");
 }
 
-
-//showPosts() // debug !!! 
+//showPosts() // debug !!!
 
 async function showPosts() {
-  let outerContainer = document.createElement('div');
+  let outerContainer = document.createElement("div");
   outerContainer.style.display = "flex";
-  outerContainer.style.flexDirection = "column"
+  outerContainer.style.flexDirection = "column";
   outerContainer.style.height = "300px";
   outerContainer.style.width = "450px";
   outerContainer.style.overflowY = "scroll";
@@ -345,77 +406,76 @@ async function showPosts() {
     datetime.style.fontWeight = "400";
     datetime.innerText = new Date(post.datetime).toLocaleString();
     container.appendChild(datetime);
-    let deletePostBtn = iconButton(`<i class="fa-solid fa-trash-can"></i>`, null, "var(--red)");
+    let deletePostBtn = iconButton(
+      `<i class="fa-solid fa-trash-can"></i>`,
+      null,
+      "var(--red)"
+    );
     deletePostBtn.addEventListener("click", async () => {
-      let delText = document.createElement('p');
+      let delText = document.createElement("p");
       delText.style.fontWeight = "300";
-      delText.innerHTML = "This won't delete the post from social media,<br> only from the database and/or schedule.";
+      delText.innerHTML =
+        "This won't delete the post from social media,<br> only from the database and/or schedule.";
       prompt("Are you sure?", "confirm", delText, () => {
         deletePost(post._id);
         popDash();
-      })
+      });
     });
     container.appendChild(deletePostBtn);
     outerContainer.appendChild(container);
-    if("pending" == post.data.twitter.status){
+    if ("pending" == post.data.twitter.status) {
       container.style.borderRightColor = "var(--neutral-blue)";
-    } else if("posted" == post.data.twitter.status){
+    } else if ("posted" == post.data.twitter.status) {
       container.style.borderRightColor = "var(--green)";
-    } else if("error" == post.data.twitter.status){
+    } else if ("error" == post.data.twitter.status) {
       container.style.borderRightColor = "var(--red)";
     }
   });
   appScreen.appendChild(outerContainer);
 
-
-  // Post Legend 
+  // Post Legend
 
   let postLegend = document.createElement("div");
-  postLegend.classList.add('post-legend');
-  let postLegendList = document.createElement('ul');
+  postLegend.classList.add("post-legend");
+  let postLegendList = document.createElement("ul");
   appScreen.appendChild(postLegend);
-  postLegend.appendChild(postLegendList)
+  postLegend.appendChild(postLegendList);
 
   // Pending
-  let pendingPostLegendListItem = document.createElement('li');
-  let pendingPostLegend = document.createElement('p');
+  let pendingPostLegendListItem = document.createElement("li");
+  let pendingPostLegend = document.createElement("p");
   pendingPostLegend.innerHTML = "Pending:";
-  let pendingPostLegendBox = document.createElement('div');
-  pendingPostLegendBox.classList.add('pending-legend-box');
-  pendingPostLegendBox.classList.add('post-legend-box');
+  let pendingPostLegendBox = document.createElement("div");
+  pendingPostLegendBox.classList.add("pending-legend-box");
+  pendingPostLegendBox.classList.add("post-legend-box");
 
   postLegendList.appendChild(pendingPostLegendListItem);
   pendingPostLegendListItem.appendChild(pendingPostLegend);
   pendingPostLegendListItem.appendChild(pendingPostLegendBox);
 
-
   // Posted
-  let postedPostLegendListItem = document.createElement('li');
-  let postedPostLegend = document.createElement('p');
+  let postedPostLegendListItem = document.createElement("li");
+  let postedPostLegend = document.createElement("p");
   postedPostLegend.innerHTML = "Posted:";
-  let postedPostLegendBox = document.createElement('div');
-  postedPostLegendBox.classList.add('posted-legend-box');
-  postedPostLegendBox.classList.add('post-legend-box')
+  let postedPostLegendBox = document.createElement("div");
+  postedPostLegendBox.classList.add("posted-legend-box");
+  postedPostLegendBox.classList.add("post-legend-box");
 
   postLegendList.appendChild(postedPostLegendListItem);
   postedPostLegendListItem.appendChild(postedPostLegend);
   postedPostLegendListItem.appendChild(postedPostLegendBox);
 
-
-
   // Error
-  let errorPostLegendListItem = document.createElement('li');
-  let errorPostLegend = document.createElement('p');
+  let errorPostLegendListItem = document.createElement("li");
+  let errorPostLegend = document.createElement("p");
   errorPostLegend.innerHTML = "Error:";
-  let errorPostLegendBox = document.createElement('div');
-  errorPostLegendBox.classList.add('error-legend-box');
-  errorPostLegendBox.classList.add('post-legend-box')
+  let errorPostLegendBox = document.createElement("div");
+  errorPostLegendBox.classList.add("error-legend-box");
+  errorPostLegendBox.classList.add("post-legend-box");
 
   postLegendList.appendChild(errorPostLegendListItem);
   errorPostLegendListItem.appendChild(errorPostLegend);
   errorPostLegendListItem.appendChild(errorPostLegendBox);
-  
-
 }
 
 async function popDash() {
