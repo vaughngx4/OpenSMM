@@ -368,7 +368,7 @@ async function newPost() {
   popUp("New Post", container);
 }
 
-showPosts() // debug !!!
+// showPosts() // debug !!!
 
 async function showPosts() {
   let outerContainer = document.createElement("div");
