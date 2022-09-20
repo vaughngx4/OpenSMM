@@ -1263,6 +1263,7 @@ p {
   .navigation.active {
     background-color: unset;
     width: 50px;
+    background: unset;
   }
 
   .navigation {
