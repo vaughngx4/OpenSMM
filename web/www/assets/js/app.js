@@ -1,4 +1,3 @@
-import { allowToggle } from "./topbar.js";
 import {
   getTwitterAccounts,
   postScheduledPost,
@@ -15,7 +14,6 @@ changeTheme()
 
 //const validate = new Validate();
 loading();
-allowToggle();
 
 // UI
 let appScreen = document.getElementById("appScreen");
