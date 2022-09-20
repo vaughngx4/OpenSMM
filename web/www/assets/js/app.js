@@ -1,5 +1,4 @@
 import { allowToggle } from "./topbar.js";
-import { changeTheme } from "./settings.js";
 import {
   getTwitterAccounts,
   postScheduledPost,
@@ -11,6 +10,8 @@ import { dropDown, accordian, iconButton, multiAdd } from "./buttons.js";
 import { prompt, closePrompt } from "./prompt.js";
 //import Validate from "./validate.js";
 import { popMsg } from "./popup-message.js";
+import { changeTheme } from "./settings.js";
+changeTheme()
 
 //const validate = new Validate();
 loading();
@@ -537,5 +538,3 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 // popMsg() // debug !!!
-
-changeTheme()
