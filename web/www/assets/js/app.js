@@ -367,18 +367,46 @@ async function newPost() {
   popUp("New Post", container);
 }
 
-//showPosts() // debug !!!
+// showPosts() // debug !!!
 
 async function showPosts() {
   let outerContainer = document.createElement("div");
-  outerContainer.style.display = "flex";
-  outerContainer.style.flexDirection = "column";
-  outerContainer.style.height = "300px";
-  outerContainer.style.width = "450px";
-  outerContainer.style.overflowY = "scroll";
   outerContainer.className = "posts-container";
   const result = await getPosts();
   const posts = result.data;
+  // const date = new Date(); // debug !!!
+  // const posts = [ // debug !!!
+  //   {
+  //     _id: "12345",
+  //     text: "some post text",
+  //     datetime: date,
+  //     data: {
+  //       twitter: {
+  //         status: "pending",
+  //       },
+  //     },
+  //   },
+  //   {
+  //     _id: "56345",
+  //     text: "some post text",
+  //     datetime: date,
+  //     data: {
+  //       twitter: {
+  //         status: "posted",
+  //       },
+  //     },
+  //   },
+  //   {
+  //     _id: "12346453465",
+  //     text: "some post text",
+  //     datetime: date,
+  //     data: {
+  //       twitter: {
+  //         status: "error",
+  //       },
+  //     },
+  //   },
+  // ];
   posts.forEach((post) => {
     let container = document.createElement("div");
     container.className = "post";
