@@ -524,5 +524,4 @@ window.addEventListener("DOMContentLoaded", () => {
   loadMessage();
 });
 
-// Debug !!!
-// popMsg()
+// popMsg() // debug !!!
