@@ -16,6 +16,6 @@ export function popMsg(bgColor, textColor, msg) {
   popupText.innerHTML = msg;
   popupContainer.appendChild(popup);
   // Debug !!!
-  timedDestruction(popup, 1500000);
-  // timedDestruction(popup, 5000);
+  // timedDestruction(popup, 1500000);
+  timedDestruction(popup, 5000);
 }
