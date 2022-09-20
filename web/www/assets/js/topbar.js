@@ -22,13 +22,14 @@ function toggleOnly() {
 
 export function allowToggle() {
   let isActive = localStorage.getItem("sidebar-active");
-  if (isActive == "true") {
+  if (isActive == "true" || window.innerWidth < '750') {
     toggleOnly();
   }
   toggle.addEventListener("click", (event) => {
     toggleMenu();
   });
 }
+
 export function topbarMarker(title, color, details) {
   let markers = document.getElementById("topbarMarkers");
   let newMarker = document.createElement("div");

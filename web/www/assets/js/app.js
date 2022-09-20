@@ -119,7 +119,7 @@ async function choosePlatform() {
     closePopup();
   });
   elem.appendChild(goBtn);
-  popUp("Add Account", elem, "20vh", "40vw");
+  popUp("Add Account", elem);
 }
 
 async function addAccount(platform) {
@@ -136,22 +136,11 @@ async function newPost() {
   container.style.alignItems = "center";
   let postInfo = document.createElement("div");
   postInfo.classList.add("post-info");
-  postInfo.style.display = "flex";
-  postInfo.style.flexDirection = "row";
-  postInfo.style.paddingBottom = "20px";
-  postInfo.style.justifyContent = "space-around";
-  postInfo.style.width = "100%";
   let col1 = document.createElement("div");
-  col1.style.display = "flex";
-  col1.style.flexDirection = "column";
-  col1.style.alignItems = "center";
-  col1.style.width = "30%";
+  col1.classList.add('post-info-col1')
   postInfo.appendChild(col1);
   let col2 = document.createElement("div");
-  col2.style.display = "flex";
-  col2.style.flexDirection = "column";
-  col2.style.alignItems = "center";
-  col2.style.width = "70%";
+  col2.classList.add('post-info-col2')
   postInfo.appendChild(col2);
 
   // text label
@@ -164,17 +153,14 @@ async function newPost() {
   let postText = document.createElement("textarea");
   postText.className = "text-area";
   postText.name = "postText";
-  postText.style.height = "25vh";
-  postText.style.width = "25vw";
-  postText.style.color = "#fff";
-  postText.style.paddingInline = "10px";
   col2.appendChild(postText);
 
   // date time selection
   let dateSelector = document.createElement("div");
-  dateSelector.style.display = "flex";
-  dateSelector.style.flexDirection = "row";
-  dateSelector.style.padding = "20px";
+  dateSelector.classList.add('date-selector');
+  // dateSelector.style.display = "flex";
+  // dateSelector.style.flexDirection = "row";
+  // dateSelector.style.padding = "20px";
   let dateLabel = document.createElement("label");
   dateLabel.innerText = "Scheduled Date: ";
   dateLabel.htmlFor = "scheduledDate";
@@ -182,7 +168,6 @@ async function newPost() {
   let dateInput = document.createElement("input");
   dateInput.type = "datetime-local";
   //dateInput.value = new Date().toString;
-  dateInput.style.color = "#fff";
   dateInput.style.marginLeft = "10px";
   dateSelector.appendChild(dateInput);
   col2.appendChild(dateSelector);
@@ -199,9 +184,7 @@ async function newPost() {
 
   // account selection
   let accountSelection = document.createElement("div");
-  accountSelection.style.display = "flex";
-  accountSelection.style.flexDirection = "column";
-  accountSelection.style.width = "25vw";
+  accountSelection.classList.add('account-selection');
   let twitterChk = document.createElement("input");
   twitterChk.className = "checkbox";
   twitterChk.type = "checkbox";
@@ -381,7 +364,7 @@ async function newPost() {
   });
   container.appendChild(postInfo);
   container.appendChild(scheduleBtn);
-  popUp("New Post", container, "70vh", "60vw");
+  popUp("New Post", container);
 }
 
 //showPosts() // debug !!!

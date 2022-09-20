@@ -139,7 +139,6 @@ function mad(oldContainer, outerContainer, className){
   container.appendChild(add);
   outerContainer.appendChild(container);
   input.readOnly = "true";
-  input.style.background = "gray";
   input.className = className || "";
   input.value = oldContainer.querySelector("input").value;
   add.innerText = "-"

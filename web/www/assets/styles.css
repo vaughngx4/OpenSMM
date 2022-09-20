@@ -107,10 +107,59 @@ html {
   margin-top: 20px;
 }
 
+/*----- New Post -----*/
+
+.post-info {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 20px;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.post-info > div {
+  background-color: var(--lighter-blue2);
+  border-radius: 15px;
+  margin-right: 20px;
+  padding: 20px;
+  box-shadow: var(--darker-blue) 8px 8px 5px;
+}
+
+.post-info-col1,
+.post-info-col2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.post-info-col1 {
+  width: 30%;
+}
+
+.post-info-col2 {
+  width: 70%;
+}
+
+.account-selection {
+  display: flex;
+  flex-direction: column;
+  width: 25vw;
+}
+
+.date-selector {
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+}
+
 /*----- Inputs -----*/
 .text-area {
+  height: 25vh;
+  width: 25vw;
+  color: var(--lighter-blue5);
   resize: none;
-  padding: 5px;
+  padding: 20px;
   background-color: var(--dark-blue);
   border: 1px solid var(--lighter-blue4);
   border-radius: 25px;
@@ -120,6 +169,7 @@ html {
   background-color: var(--blue);
   border-radius: 10px;
   padding: 5px;
+  color: var(--lighter-blue5);
 }
 
 .modal-content input:focus {
@@ -184,7 +234,7 @@ input[type="checkbox"]:checked {
 .navigation {
   position: fixed;
   width: 250px;
-  height: calc(100% - 40px);
+  height: calc(100% - 55px);
   background-color: var(--blue);
   transition: 0.5s;
   /* overflow: hidden; */
@@ -650,6 +700,19 @@ body .body-section {
   justify-content: space-between;
 }
 
+.prompt-content input {
+  border-radius: 10px;
+  background-color: var(--lighter-blue3);
+  padding: 3px;
+  color: var(--lighter-blue5);
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.prompt-content input:focus {
+  border: 1px solid var(--lighter-blue4);
+}
+
 .prompt-content p {
   color: var(--lighter-blue5);
   margin-bottom: 20px;
@@ -717,7 +780,7 @@ body .body-section {
 
 .modal-content {
   width: 60%;
-  height: 50%;
+  height: fit-content;
   background-color: var(--dark-blue);
   border-radius: 10px;
   text-align: center;
@@ -810,7 +873,7 @@ body .body-section {
 }
 
 .popup {
-  background-color: #0029ff;
+  background-color: var(--lighter-blue3);
   display: flex;
   position: absolute;
   text-align: justify;
@@ -823,7 +886,7 @@ body .body-section {
 }
 
 .popup p {
-  color: #fff;
+  color: var(--lighter-blue5);
   font-size: 16px;
 }
 
@@ -1004,6 +1067,74 @@ body .body-section {
   margin-left: 10px;
 }
 
+
+.sidebar {
+  position: relative;
+  z-index: 999;
+}
+
+#appScreen {
+  margin: 50px;
+  background-color: var(--lighter-blue2);
+  width: fit-content;
+  height: fit-content;
+  padding: 20px;
+  border-radius: 25px;
+  box-shadow: var(--darker-blue) 7px 7px 5px;
+}
+
+.post-legend-box {
+  width: 15px;
+  height: 15px;
+}
+
+.post-legend ul {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.post-legend ul li {
+  display: inline-block;
+  list-style-type: none;
+  margin-right: 100px;
+  display: flex;
+  flex-direction: row;
+}
+
+.post-legend ul li p {
+  margin-right: 10px;
+  font-size: 12px;
+}
+
+.pending-legend-box {
+  background-color: var(--neutral-blue);
+}
+
+.posted-legend-box {
+  background-color: var(--green);
+}
+
+.error-legend-box {
+  background-color: var(--red);
+}
+
+#infoHeading {
+  background-color: var(--darker-blue);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: -80px;
+  margin-bottom: 50px;
+  color: var(--lighter-blue5);
+  font-size: 28px;
+}
+
+label,
+p {
+  color: var(--lighter-blue5);
+}
+
+
 /*----- Fix For Mobile View -----*/
 @media screen and (prefers-reduced-motion: reduce) {
   html {
@@ -1066,7 +1197,8 @@ body .body-section {
   }
 
   .modal-content {
-    height: 80%;
+    /* height: 80%; */
+    max-height: 75%;
     padding-top: 6%;
   }
 
@@ -1097,86 +1229,79 @@ body .body-section {
     position: relative;
     display: block;
     z-index: 999;
+    margin-top: 10px;
   }
 
   .toggle {
     z-index: 999;
   }
 
-}
+  .main,
+  .main.active {
+    left: 50px;
+  }
 
-.sidebar {
-  position: relative;
-  z-index: 999;
-}
+  .main.active {
+    width: calc(100% - 50px);
+  }
 
-#appScreen {
-  margin: 50px;
-  background-color: var(--lighter-blue2);
-  width: fit-content;
-  height: fit-content;
-  padding: 20px;
-  border-radius: 25px;
-  box-shadow: var(--darker-blue) 7px 7px 5px;
-}
+  .main {
+    width: calc(100% - 50px);
+  }
 
-.post-legend-box {
-  width: 15px;
-  height: 15px;
-}
 
-.post-legend ul {
-  display: flex;
-  flex-direction: row;
-  margin-top: 20px;
-}
+  .post-info {
+    display: block;
+  }
 
-.post-legend ul li {
-  display: inline-block;
-  list-style-type: none;
-  margin-right: 100px;
-  display: flex;
-  flex-direction: row;
-}
 
-.post-legend ul li p {
-  margin-right: 10px;
-  font-size: 12px;
-}
+  .post-info-col1,
+  .post-info-col2 {
+    width: calc(100% - 40px);
+  }
 
-.pending-legend-box {
-  background-color: var(--neutral-blue);
-}
+  .post-info-col1 {
+    margin-bottom: 20px;
+  }
 
-.posted-legend-box {
-  background-color: var(--green);
-}
+  .modal-content {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
 
-.error-legend-box {
-  background-color: var(--red);
-}
+  .text-area {
+    width: calc(100% - 40px);
+    min-height: 50px;
+    height: fit-content;
+  }
 
-#infoHeading {
-  background-color: var(--darker-blue);
-  border-radius: 15px;
-  padding: 20px;
-  margin-top: -60px;
-  margin-bottom: 50px;
-  color: var(--lighter-blue5);
-  font-size: 28px;
-}
+  .prompt {
+    width: 80%;
+  }
 
-label,
-p {
-  color: var(--lighter-blue5);
-}
+  .account-selection {
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
+  .overview-box,
+  .overview-container {
+    width: 100%;
+  }
 
-.post-info > div {
-  background-color: var(--lighter-blue2);
-  border-radius: 15px;
-  margin-right: 20px;
-  padding: 20px;
-  box-shadow: var(--darker-blue) 8px 8px 5px;
+  #infoHeading {
+    margin-top: -50px;
+  }
+
+  .date-selector {
+    display: block;
+  }
+
+  .date-selector input {
+    margin-top: 10px;
+  }
+
 }
 
 
+/* Do not add anything under here */
