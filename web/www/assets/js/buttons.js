@@ -130,16 +130,16 @@ export function multiAdd(outerContainer, className){
 }
 
 // multi add event
+
 function mad(input, add, container, outerContainer, className){
   input.readOnly = "true";
-  input.style.background = "gray";
   input.className = className || "";
   add.innerText = "-"
   add.style.background = "var(--red)";
   add.removeEventListener('click', mad);
   add.addEventListener('click', () => {
     container.remove();
-  });
+  })
   multiAdd(outerContainer, className);
 }
 
