@@ -119,27 +119,34 @@ export function multiAdd(outerContainer, className){
   container.appendChild(add);
   outerContainer.appendChild(container);
   add.addEventListener('click', () => {
-    mad(input, add, container, outerContainer, className);
+    mad(container, outerContainer, className)
   });
   input.addEventListener('keydown', (event) => {
     if("Enter" == event.key){
-      mad(input, add, container, outerContainer, className);
+      mad(container, outerContainer, className);
     }
   });
   input.focus();
 }
 
 // multi add event
-
-function mad(input, add, container, outerContainer, className){
+function mad(oldContainer, outerContainer, className){
+  let container = document.createElement('div');
+  container.className = "multi-add";
+  let input = document.createElement('input');
+  container.appendChild(input);
+  let add = document.createElement('button');
+  container.appendChild(add);
+  outerContainer.appendChild(container);
   input.readOnly = "true";
   input.className = className || "";
+  input.value = oldContainer.querySelector("input").value;
   add.innerText = "-"
   add.style.background = "var(--red)";
-  add.removeEventListener('click', mad);
   add.addEventListener('click', () => {
     container.remove();
-  })
+  });
+  oldContainer.remove();
   multiAdd(outerContainer, className);
 }
 
