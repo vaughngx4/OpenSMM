@@ -810,7 +810,7 @@ body .body-section {
 }
 
 .popup {
-  background-color: #0029ff;
+  background-color: var(--lighter-blue3);
   display: flex;
   position: absolute;
   text-align: justify;
@@ -823,7 +823,7 @@ body .body-section {
 }
 
 .popup p {
-  color: #fff;
+  color: var(--lighter-blue5);
   font-size: 16px;
 }
 
