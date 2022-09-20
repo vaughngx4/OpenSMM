@@ -7,6 +7,8 @@
 ## Description
 OpenSMM(Open Social Media Marketing) is a self-hosted social media marketing platform built to assist small businesses manage their social media more easily.
 
+![desktop-ui](docs/images/desktop-ui-1.gif "")
+
 ## :red_circle: Please Note:
 - This project is in early development stages.
 - Seek help on Discord(links at the bottom) for general support.
