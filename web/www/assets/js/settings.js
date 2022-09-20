@@ -38,12 +38,14 @@ function addStyleSheet(selectedTheme) {
 }
 
 export function changeTheme() {
-    let setTheme = localStorage.theme;
-    if(setTheme == "default") {
-
-    } else {
-        addStyleSheet(setTheme);
+    let styleSheet =  document.querySelector('.theme-style-sheet');
+    if(styleSheet == null) {
+        let setTheme = localStorage.theme;
+        if(setTheme !== "default") {
+            addStyleSheet(setTheme);
+        }        
     }
+
 }
 
 function removeStyleSheet() {
