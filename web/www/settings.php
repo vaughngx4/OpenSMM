@@ -13,7 +13,9 @@
     <div class="main">
       <?php include(__DIR__ . '/html/topbar.html') ?>
       <div id="app" class="app">
-          <div id="appScreen" class="app-screen"></div>
+          <div id="appScreen" class="app-screen">
+          <?php include(__DIR__ . '/html/settings.html') ?>
+          </div>
       </div>
     </div>
     <?php include(__DIR__ . '/html/modal-popup.html') ?>

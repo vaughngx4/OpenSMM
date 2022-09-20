@@ -1,4 +1,5 @@
 import { allowToggle } from "./topbar.js";
+import { changeTheme } from "./settings.js";
 import {
   getTwitterAccounts,
   postScheduledPost,
@@ -367,7 +368,7 @@ async function newPost() {
   popUp("New Post", container);
 }
 
-// showPosts() // debug !!!
+showPosts() // debug !!!
 
 async function showPosts() {
   let outerContainer = document.createElement("div");
@@ -536,3 +537,5 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 // popMsg() // debug !!!
+
+changeTheme()
