@@ -224,14 +224,10 @@ input[type="checkbox"]:checked {
   margin-left: 25px;
 }
 
-.navigation.active ul li a .icon-logo {
-  background-color: unset;
-}
-
 .opensmm-logo {
   width: 50px;
   height: 50px;
-  background-image: url("img/50x50-logo.jpg");
+  background-image: url('img/logo-50x50-t.webp');
   border-radius: 10px;
 }
 
@@ -342,7 +338,6 @@ body .body-section {
   position: relative;
   width: calc(100% - 250px);
   left: 250px;
-  min-height: 100vh;
   transition: 0.5s;
   padding-top: 20px;
 }
@@ -811,10 +806,6 @@ body .body-section {
 
 /*----- Popup -----*/
 .popup-container {
-  display: flex;
-  flex-direction: column;
-  height: fit-content;
-  justify-content: flex-end;
   padding: 10px;
 }
 
@@ -869,15 +860,16 @@ body .body-section {
   background: var(--darker-blue);
   align-items: center;
   text-align: center;
-  background-image: url("img/widescreen-logo-4320.webp");
+  background-image: url('img/widescreen-logo-4320-n.webp');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
 }
 
 .minimal {
-  position: fixed;
-  top: 25vh;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .minimal h3 {
@@ -1082,6 +1074,40 @@ body .body-section {
     padding: 10%;
     padding-top: 60%;
   }
+
+  .search {
+    width: 100px;
+    right: 100px;
+  }
+
+  .navigation.active {
+    background-color: unset;
+    width: 50px;
+  }
+
+  .navigation {
+    width: calc(100vw - 20px) ;
+  }
+
+  .navigation.active ul {
+    opacity: 0;
+  }
+
+  .toggle .icon {
+    position: relative;
+    display: block;
+    z-index: 999;
+  }
+
+  .toggle {
+    z-index: 999;
+  }
+
+}
+
+.sidebar {
+  position: relative;
+  z-index: 999;
 }
 
 #appScreen {
@@ -1152,3 +1178,5 @@ p {
   padding: 20px;
   box-shadow: var(--darker-blue) 8px 8px 5px;
 }
+
+

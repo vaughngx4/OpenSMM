@@ -207,7 +207,7 @@ async function newPost() {
   twitterChk.type = "checkbox";
   const result = await getTwitterAccounts();
   const twitterAccounts = result.data;
-  // const twitterAccounts = ["sintelli_tech", "mindglowing"]; // debug !!!
+  // const twitterAccounts = ["sintelli_tech", "mindglowingart"]; // debug !!!
   let options = [];
   twitterAccounts.forEach((item) => {
     let opt = document.createElement("div");
@@ -523,3 +523,5 @@ window.addEventListener("DOMContentLoaded", () => {
   closePrompt();
   loadMessage();
 });
+
+// popMsg() // debug !!!
