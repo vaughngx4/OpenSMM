@@ -107,6 +107,14 @@ html {
   margin-top: 20px;
 }
 
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  width: 450px;
+  overflow-y: scroll;
+}
+
 /*----- New Post -----*/
 
 .post-info {
@@ -1086,6 +1094,7 @@ body .body-section {
 .post-legend-box {
   width: 15px;
   height: 15px;
+  border-radius: 5px;
 }
 
 .post-legend ul {
@@ -1299,6 +1308,29 @@ p {
 
   .date-selector input {
     margin-top: 10px;
+  }
+
+  .posts-container {
+    width: calc(80vw - 80px);
+  }
+
+  .post {
+    max-width: 45vw;
+  }
+
+  .post-legend ul {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-legend ul li {
+    margin-top: 10px;
+  }
+
+
+  #appScreen {
+    margin: 5%;
+    margin-top: 50px;
   }
 
 }
