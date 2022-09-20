@@ -44,6 +44,7 @@ services:
       SECRET_2: ${SECRET_2}
       TWITTER_CLIENT_ID: ${TWITTER_CLIENT_ID}
       TWITTER_CLIENT_SECRET: ${TWITTER_CLIENT_SECRET}
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       DEBUG: ${DEBUG}
     volumes:
       - ./data/api:/data
@@ -65,8 +66,8 @@ services:
       - ./data/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./data/mongo/db:/data/db
     # Ports exposed for debugging purposes
-    ports:
-      - "27017:27017"
+    # ports:
+    #   - "27017:27017"
     restart: unless-stopped
     networks:
       opensmm:
