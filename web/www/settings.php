@@ -14,7 +14,17 @@
       <?php include(__DIR__ . '/html/topbar.html') ?>
       <div id="app" class="app">
           <div id="appScreen" class="app-screen">
-          <?php include(__DIR__ . '/html/settings.html') ?>
+            <h3 class="info-heading">Themes</h3>
+            <div class="theme-option">
+                <label for="default">Default (Dark Blue)</label>
+                <input type="radio" id="default-theme" name="theme" value="default">
+            </div>
+            <div class="theme-option">
+                <label for="dark-blue-gradient">Dark Blue Gradient</label>
+                <input type="radio" id="dark-blue-gradient" name="theme" value="dark-blue-gradient">
+            </div>
+
+            <button type="button" id="change-theme-submit">Submit</button>
           </div>
       </div>
     </div>

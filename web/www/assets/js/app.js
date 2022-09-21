@@ -9,8 +9,10 @@ import { dropDown, accordian, iconButton, multiAdd } from "./buttons.js";
 import { prompt, closePrompt } from "./prompt.js";
 //import Validate from "./validate.js";
 import { popMsg } from "./popup-message.js";
-import { changeTheme } from "./settings.js";
-changeTheme()
+import { changeTheme } from "./themes.js";
+import { allowToggle } from "./topbar.js";
+allowToggle();
+changeTheme();
 
 //const validate = new Validate();
 loading();
@@ -137,10 +139,10 @@ async function newPost() {
   let postInfo = document.createElement("div");
   postInfo.classList.add("post-info");
   let col1 = document.createElement("div");
-  col1.classList.add('post-info-col1')
+  col1.classList.add("post-info-col1");
   postInfo.appendChild(col1);
   let col2 = document.createElement("div");
-  col2.classList.add('post-info-col2')
+  col2.classList.add("post-info-col2");
   postInfo.appendChild(col2);
 
   // text label
@@ -157,7 +159,7 @@ async function newPost() {
 
   // date time selection
   let dateSelector = document.createElement("div");
-  dateSelector.classList.add('date-selector');
+  dateSelector.classList.add("date-selector");
   // dateSelector.style.display = "flex";
   // dateSelector.style.flexDirection = "row";
   // dateSelector.style.padding = "20px";
@@ -184,7 +186,7 @@ async function newPost() {
 
   // account selection
   let accountSelection = document.createElement("div");
-  accountSelection.classList.add('account-selection');
+  accountSelection.classList.add("account-selection");
   let twitterChk = document.createElement("input");
   twitterChk.className = "checkbox";
   twitterChk.type = "checkbox";
