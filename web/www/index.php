@@ -22,6 +22,5 @@
   </section>
 
   <script src="assets/js/app.js" type="module" ></script>
-
 </body>
 <?php include(__DIR__ . '/html/footer.html') ?>

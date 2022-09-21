@@ -68,7 +68,7 @@ html {
 
 .post p {
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 600;
   padding: 10px;
   width: 300px;
   color: var(--lighter-blue5);
@@ -217,6 +217,29 @@ html {
   padding: 5px;
 }
 
+input[type="submit"],
+#change-theme-submit  {
+  background-color: var(--light-blue);
+  border-radius: 10px;
+  border: none;
+  box-shadow: var(--dark-blue) 5px 5px 2px;
+  padding: 5px;
+  color: var(--lighter-blue5);
+  margin-top: 20px;
+  transition: 1s all;
+}
+
+input[type="submit"]:hover,
+#change-theme-submit:hover {
+  margin-left: 15px;
+  cursor: pointer;
+  background-color: var(--highlight-blue);
+}
+
+.theme-option {
+  margin-bottom: 10px;
+}
+
 input[type="checkbox"] {
   /* border-radius: 15px; */
   width: 25px;
@@ -231,6 +254,10 @@ input[type="checkbox"] {
   -webkit-appearance: none;
   outline: none;
   cursor: pointer;
+}
+
+input[type="radio"] {
+  background-color: var(--dark-blue);
 }
 
 input[type="checkbox"]:checked {
@@ -784,6 +811,7 @@ body .body-section {
   justify-content: center;
   align-items: center;
   display: none;
+  z-index: 9999;
 }
 
 .modal-content {
@@ -1010,6 +1038,10 @@ body .body-section {
   z-index: 1;
 }
 
+.footer a {
+  color: var(--lighter-blue4);
+}
+
 /*----- Drop up  -----*/
 .dropbtn {
   background-color: #3a0580;
@@ -1071,6 +1103,7 @@ body .body-section {
 .button1:hover,
 #loginBtn:hover {
   background-color: var(--lighter-blue3);
+  background: var(--highlight-blue);
   margin-right: 0px;
   margin-left: 10px;
 }
@@ -1128,7 +1161,8 @@ body .body-section {
   background-color: var(--red);
 }
 
-#infoHeading {
+#infoHeading,
+.info-heading {
   background-color: var(--darker-blue);
   border-radius: 15px;
   padding: 20px;
@@ -1136,6 +1170,11 @@ body .body-section {
   margin-bottom: 50px;
   color: var(--lighter-blue5);
   font-size: 28px;
+}
+
+.info-heading {
+  margin-top: -40px;
+  margin-bottom: 20px;
 }
 
 label,
@@ -1224,6 +1263,7 @@ p {
   .navigation.active {
     background-color: unset;
     width: 50px;
+    background: unset;
   }
 
   .navigation {
