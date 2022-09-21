@@ -16,11 +16,11 @@
           <div id="appScreen" class="app-screen">
             <h3 class="info-heading">Themes</h3>
             <div class="theme-option">
-                <label for="default">Default (Dark Blue)</label>
+                <label for="default">Blue Nova (Default)</label>
                 <input type="radio" id="default-theme" name="theme" value="default">
             </div>
             <div class="theme-option">
-                <label for="dark-blue-gradient">Dark Blue Gradient</label>
+                <label for="dark-blue-gradient">Blue Nova (Gradient)</label>
                 <input type="radio" id="dark-blue-gradient" name="theme" value="dark-blue-gradient">
             </div>
 

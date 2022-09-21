@@ -17,6 +17,7 @@ export function removeStyleSheet() {
 }
 
 export function changeTheme() {
+  setDefaultIfNone();
   let styleSheet = document.querySelector(".theme-style-sheet");
   if (styleSheet == null) {
     let setTheme = localStorage.theme;
@@ -25,3 +26,11 @@ export function changeTheme() {
     }
   }
 }
+
+function setDefaultIfNone() {
+  const currentTheme = localStorage.getItem("theme");
+  if ("undefined" == currentTheme || "null" == currentTheme){
+    localStorage.setItem("theme", "default");
+  }
+}
+
