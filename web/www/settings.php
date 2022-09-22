@@ -16,8 +16,8 @@
           <div id="appScreen" class="app-screen">
             <h3 class="info-heading">Themes</h3>
             <div class="theme-option">
-                <label for="default">Blue Nova (Default)</label>
-                <input type="radio" id="default-theme" name="theme" value="default">
+                <label for="default-theme">Blue Nova (Default)</label>
+                <input type="radio" id="default-theme" name="theme" value="default-theme">
             </div>
             <div class="theme-option">
                 <label for="dark-blue-gradient">Blue Nova (Gradient)</label>
