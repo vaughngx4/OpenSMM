@@ -28,7 +28,7 @@ function themeSelector() {
           break;
         }
       }
-      if (selectedTheme == "default") {
+      if (selectedTheme == "default-theme") {
         removeStyleSheet();
       } else {
         addStyleSheet(selectedTheme);

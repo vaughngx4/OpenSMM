@@ -13,7 +13,7 @@ export function addStyleSheet(selectedTheme) {
 export function removeStyleSheet() {
   let removeTheme = document.querySelector(".theme-style-sheet");
   removeTheme.remove();
-  localStorage.setItem("theme", "default");
+  localStorage.setItem("theme", "default-theme");
 }
 
 export function changeTheme() {
@@ -21,7 +21,7 @@ export function changeTheme() {
   let styleSheet = document.querySelector(".theme-style-sheet");
   if (styleSheet == null) {
     let setTheme = localStorage.theme;
-    if (setTheme !== "default") {
+    if (setTheme !== "default-theme") {
       addStyleSheet(setTheme);
     }
   }
@@ -30,7 +30,7 @@ export function changeTheme() {
 function setDefaultIfNone() {
   const currentTheme = localStorage.getItem("theme");
   if ("undefined" == currentTheme || "null" == currentTheme){
-    localStorage.setItem("theme", "default");
+    localStorage.setItem("theme", "default-theme");
   }
 }
 

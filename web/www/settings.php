@@ -24,7 +24,7 @@
                 <input type="radio" id="dark-blue-gradient" name="theme" value="dark-blue-gradient">
             </div>
 
-            <button type="button" id="change-theme-submit">Submit</button>
+            <button type="button" id="change-theme-submit">Change Theme</button>
           </div>
       </div>
     </div>
