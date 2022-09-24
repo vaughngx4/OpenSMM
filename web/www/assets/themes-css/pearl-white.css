@@ -51,9 +51,7 @@ button:hover,
 .button1,
 .navigation ul li a,
 .toggle .icon,
-.search label input,
 .userimg .fa-solid,
-.search label input::placeholder,
 .fa-search::before,
 .prompt-text,
 .prompt-content p,
@@ -65,6 +63,11 @@ label, p,
 .modal-content p,
 .info-heading {
     color: var(--pearl-darker-grey);
+}
+
+.search label input,
+.search label input::placeholder {
+    color: var(--pearl-white);
 }
 
 
