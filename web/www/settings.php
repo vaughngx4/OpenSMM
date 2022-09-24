@@ -31,6 +31,11 @@
                 <label for="pearl-white">Pearl White</label>
                 <input type="radio" id="pearl-white" name="theme" value="pearl-white">
             </div>
+            <div class="theme-option">
+                <label for="space-grey">Space Grey</label>
+                <input type="radio" id="space-grey" name="theme" value="space-grey">
+            </div>
+
             <button type="button" id="change-theme-submit">Change Theme</button>
           </div>
       </div>
