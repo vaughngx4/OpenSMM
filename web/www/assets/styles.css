@@ -710,6 +710,7 @@ body .body-section {
   justify-content: center;
   align-items: center;
   display: none;
+  z-index: 9999;
 }
 .prompt {
   position: relative;
