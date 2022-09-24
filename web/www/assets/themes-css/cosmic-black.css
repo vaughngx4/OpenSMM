@@ -25,7 +25,8 @@ body .body-section,
 .main .topbar,
 .navigation,
 #appScreen,
-.post-info > div {
+.post-info > div,
+.popup {
     background: linear-gradient(0deg, var(--cosmic-darker-blue) 0%, var(--cosmic-blue-grey) 100%);
 }
 
@@ -66,7 +67,9 @@ label, p,
 .modal-content input,
 .drop-btn,
 .modal-content p,
-.info-heading {
+.info-heading,
+.post p,
+.popup p {
     color: var(--cosmic-highlight-blue);
 }
 
@@ -76,7 +79,8 @@ label, p,
 .navigation ul li:first-child,
 .accounts-view,
 .text-area,
-.drop-btn {
+.drop-btn,
+.post {
     border-color: var(--cosmic-lighter-blue);
 }
 

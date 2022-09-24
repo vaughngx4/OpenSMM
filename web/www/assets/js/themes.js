@@ -12,7 +12,9 @@ export function addStyleSheet(selectedTheme) {
 
 export function removeStyleSheet() {
   let removeTheme = document.querySelector(".theme-style-sheet");
-  removeTheme.remove();
+  if(removeTheme){
+    removeTheme.remove();
+  }
   localStorage.setItem("theme", "default-theme");
 }
 

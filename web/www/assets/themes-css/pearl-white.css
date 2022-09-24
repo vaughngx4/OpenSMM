@@ -31,7 +31,8 @@ body .body-section,
 #loginBtn,
 button,
 .dropdown-item,
-.navigation.active a .icon {
+.navigation.active a .icon,
+.popup {
     color: var(--pearl-darker-grey);
     background-color: unset;
     background: linear-gradient(0deg, var(--pearl-white) 0%, var(--pearl-lighter-grey) 100%);
@@ -62,7 +63,9 @@ label, p,
 .modal-content input,
 .drop-btn,
 .modal-content p,
-.info-heading {
+.info-heading,
+.post p,
+.popup p {
     color: var(--pearl-darker-grey);
 }
 
@@ -78,6 +81,7 @@ label, p,
 .accounts-view,
 .text-area,
 .drop-btn,
+.post,
 .prompt-content input {
     border-color: var(--pearl-lighter-grey);
 }
