@@ -23,7 +23,14 @@
                 <label for="blue-nova-gradient">Blue Nova (Gradient)</label>
                 <input type="radio" id="blue-nova-gradient" name="theme" value="blue-nova-gradient">
             </div>
-
+            <div class="theme-option">
+                <label for="cosmic-black">Cosmic Black</label>
+                <input type="radio" id="cosmic-black" name="theme" value="cosmic-black">
+            </div>
+            <div class="theme-option">
+                <label for="pearl-white">Pearl White</label>
+                <input type="radio" id="pearl-white" name="theme" value="pearl-white">
+            </div>
             <button type="button" id="change-theme-submit">Change Theme</button>
           </div>
       </div>

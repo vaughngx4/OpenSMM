@@ -28,11 +28,8 @@ function themeSelector() {
           break;
         }
       }
-      if (selectedTheme == "default-theme") {
-        removeStyleSheet();
-      } else {
-        addStyleSheet(selectedTheme);
-      }
+      removeStyleSheet();
+      addStyleSheet(selectedTheme);
     });
   }
 }
