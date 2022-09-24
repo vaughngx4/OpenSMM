@@ -20,8 +20,8 @@
                 <input type="radio" id="default-theme" name="theme" value="default-theme">
             </div>
             <div class="theme-option">
-                <label for="dark-blue-gradient">Blue Nova (Gradient)</label>
-                <input type="radio" id="dark-blue-gradient" name="theme" value="dark-blue-gradient">
+                <label for="blue-nova-gradient">Blue Nova (Gradient)</label>
+                <input type="radio" id="blue-nova-gradient" name="theme" value="blue-nova-gradient">
             </div>
 
             <button type="button" id="change-theme-submit">Change Theme</button>
