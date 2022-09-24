@@ -32,7 +32,8 @@ body .body-section,
 .button1, 
 #loginBtn,
 button,
-.dropdown-item {
+.dropdown-item,
+.navigation.active a .icon {
     color: var(--cosmic-highlight-blue);
     background-color: unset;
     background: linear-gradient(0deg, var(--cosmic-blue) 0%, var(--cosmic-light-blue) 100%);

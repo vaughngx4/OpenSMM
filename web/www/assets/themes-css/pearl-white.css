@@ -30,7 +30,8 @@ body .body-section,
 .button1, 
 #loginBtn,
 button,
-.dropdown-item {
+.dropdown-item,
+.navigation.active a .icon {
     color: var(--pearl-darker-grey);
     background-color: unset;
     background: linear-gradient(0deg, var(--pearl-white) 0%, var(--pearl-lighter-grey) 100%);
