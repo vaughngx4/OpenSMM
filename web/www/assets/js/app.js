@@ -374,8 +374,8 @@ async function newPost() {
 async function showPosts() {
   let outerContainer = document.createElement("div");
   outerContainer.className = "posts-container";
-  // const result = await getPosts();
-  // const posts = result.data;
+  const result = await getPosts();
+  const posts = result.data;
   // const date = new Date(); // debug !!!
   // const posts = [ // debug !!!
   //   {
