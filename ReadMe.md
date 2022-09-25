@@ -77,9 +77,9 @@ Build/rebuild images and start containers:
 ```
 1.2 Comment the first 2 lines and uncomment the last line like this:
 ```
-  const result = await getTwitterAccounts();
-  const twitterAccounts = result.data;
-  // const twitterAccounts = ["sintelli_tech", "mindglowingart"]; // debug !!!
+  //const result = await getTwitterAccounts();
+  //const twitterAccounts = result.data;
+  const twitterAccounts = ["sintelli_tech", "mindglowingart"]; // debug !!!
 ```
 1.3 When pushing to development, please bring back to state 1.1
 
