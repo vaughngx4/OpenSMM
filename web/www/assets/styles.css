@@ -10,6 +10,7 @@
   --lighter-blue4: #817cc9;
   --lighter-blue5: #c8c4ff;
   --highlight-blue: #5a38d9;
+  --highlight-blue2: #e2e0ff;
   --neutral-blue: rgb(79, 111, 255);
   --green: rgb(77, 204, 151);
   --red: rgb(204, 77, 94);
@@ -29,6 +30,10 @@ html {
   display: flex;
   flex-direction: column;
   padding: 20px;
+}
+
+button {
+  background-color: var(--light-blue);
 }
 
 /*----- Dashboard -----*/
@@ -219,18 +224,18 @@ html {
 
 input[type="submit"],
 #change-theme-submit  {
-  background-color: var(--light-blue);
+  /* background-color: var(--light-blue); */
   border-radius: 10px;
   border: none;
   box-shadow: var(--dark-blue) 5px 5px 2px;
   padding: 5px;
-  color: var(--lighter-blue5);
+  /* color: var(--lighter-blue5); */
   margin-top: 20px;
   transition: 1s all;
 }
 
 input[type="submit"]:hover,
-#change-theme-submit:hover {
+button:hover {
   margin-left: 15px;
   cursor: pointer;
   background-color: var(--highlight-blue);
@@ -649,7 +654,6 @@ body .body-section {
 .drop-btn {
   background-color: var(--lighter-blue2);
   color: var(--lighter-blue5);
-  padding: 5px;
   padding-inline: 10px;
   font-size: 16px;
   border: 2px solid var(--lighter-blue3);
@@ -661,6 +665,7 @@ body .body-section {
 
 .drop-btn:hover,
 .drop-btn:focus {
+  margin-left: unset;
   background-color: var(--highlight-blue);
   transition: 0.3s;
 }
@@ -710,6 +715,7 @@ body .body-section {
   justify-content: center;
   align-items: center;
   display: none;
+  z-index: 9999;
 }
 .prompt {
   position: relative;
@@ -761,7 +767,6 @@ body .body-section {
 .done,
 .okay {
   font-size: 16px;
-  padding: 5px;
   border-radius: 10px;
   color: var(--darker-blue);
   border: 2px solid var(--lighter-blue);
@@ -771,11 +776,13 @@ body .body-section {
 
 .confirm,
 .okay {
+  background: unset;
   background-color: var(--green);
 }
 
 .cancel,
 .done {
+  background: unset;
   background-color: var(--red);
 }
 
@@ -1089,7 +1096,7 @@ body .body-section {
   background-color: #0029ff;
 }
 /*----- Generic Buttons -----*/
-.button1,
+button,
 #loginBtn {
   height: 30px;
   width: 120px;
@@ -1103,7 +1110,7 @@ body .body-section {
   color: var(--lighter-blue5);
 }
 
-.button1:hover,
+button:hover,
 #loginBtn:hover {
   background-color: var(--lighter-blue3);
   background: var(--highlight-blue);
