@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
-const Logger = require('./logger');
+const Logger = require("./logger");
 const { userSchema } = require("../models/user");
 const { twitterAccountSchema } = require("../models/twitter");
 const { postSchema } = require("../models/post");
 
-const logger = new Logger('db');
-const dbUser = process.env.DB_USERNAME || "opensmm";
-const dbPass = process.env.DB_PASSWORD || "opensmm";
-const dbName = process.env.DB_NAME || "opensmm";
+const logger = new Logger("db");
+const dbUser = process.env.DATABASE_USER || "opensmm";
+const dbPass = process.env.DATABASE_PASSWORD || "opensmm";
+const dbName = process.env.DATABASE_NAME || "opensmm";
 const dbURI = `mongodb://${dbUser}:${dbPass}@opensmm-db/${dbName}?retryWrites=true&w=majority`;
 
 mongoose

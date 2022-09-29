@@ -13,6 +13,10 @@ OpenSMM(Open Social Media Marketing) is a self-hosted social media marketing pla
 - This project is in early development stages.
 - Seek help on Discord(links at the bottom) for general support.
 - All errors (should) print to Docker logs, if you encounter any that you can't fix(not config related) or something goes wrong but no errors are printed, open an issue.
+- !!! BREAKING CHANGES !!!
+- Some variable names in the `.env` file have changed to match the compose yaml(for development purposes), please change yours accordingly.
+- `init-mongo.js` has been moved to the project root for ease of use. `quick-setup.sh` was also added to automatically generate `init-mongo.js` from your `.env` variables.
+- The data folder has changed. `data/mongo/db` is now `data/db`. If you wish to keep old data, you will have to make this change.
 
 ### What Works
 - Twitter text type scheduled posts
@@ -33,16 +37,24 @@ cp .env.example .env
 $EDITOR .env
 ```
 
-Copy mongo init script and make changes:
-```bash
-cp init-mongo-template.js data/mongo/init-mongo.js
-$EDITOR data/mongo/init-mongo.js
+Generate mongo init script OR create it yourself:
+```
+./quick-setup.sh
 ```
 
-Build/rebuild images and start containers:
+OR
+
+```bash
+cp init-mongo-template.js init-mongo.js
+$EDITOR init-mongo.js
+```
+
+Build/rebuild images and start containers(cache will be used if no changes are found):
 ```bash
 ./rebuild.sh
 ```
+
+Further documentation can be found [here](https://github.com/vaughngx4/OpenSMM/docs/ReadMe.md "OpenSMM Documentation")
 
 ## :green_circle: Development
 ### ToDo
@@ -59,65 +71,13 @@ Build/rebuild images and start containers:
 - [ ] Add option to reschedule a post
 - [ ] Add option to add time slots
 - [ ] Add option to auto-schedule to next available time slot
-
-### Front End Development VS Code Guide
-
-1. Install "Live Server (Five Server)" on the Extensions Marketplace
-2. Right click the "www" folder and select "Open with Five Server (root)"
-
-#### Debugging
-
-1. How to open the screen behind the "Schedule a Post" button.
-
-1.1 Search for "debug !!!" in app.js and find these lines:
-```
-  const result = await getTwitterAccounts();
-  const twitterAccounts = result.data;
-  // const twitterAccounts = ["sintelli_tech", "mindglowingart"]; // debug !!!
-```
-1.2 Comment the first 2 lines and uncomment the last line like this:
-```
-  //const result = await getTwitterAccounts();
-  //const twitterAccounts = result.data;
-  const twitterAccounts = ["sintelli_tech", "mindglowingart"]; // debug !!!
-```
-1.3 When pushing to development, please bring back to state 1.1
-
-
-2. Show some example posts in the dashboard
-
-2.1 Search for "debug !!!" in app.js and uncomment like this:
-```
-showPosts() // debug !!!
-```
-2.2 Put these 2 lines in comments like this:
-```
-  // const result = await getPosts();
-  // const posts = result.data;
-```
-2.3 Uncomment the following like this:
-```
-  const date = new Date(); // debug !!!
-  const posts = [ // debug !!!
-    ...
-  ];
-```
-2.4 When pushing to development, please reverse these actions
-
-
-3. Show notification
-
-3.1 Search for "debug !!!" in app.js and uncomment the following line like this:
-```
-popMsg() // debug !!!
-```
-3.2 Search for "debug !!!" in popup-message.js and comment/uncomment the following lines like this:
-```
-  timedDestruction(popup, 1500000); // debug !!!
-  // timedDestruction(popup, 5000);
-```
-3.3 You can find the notification popup on the main dashboard
-3.4 When pushing to development, please reverse these actions
+- [ ] Add Facebook Page support
+- [ ] Add LinkedIn Page support
+- [ ] Add YouTube support
+- [ ] Add Pinterest support
+- [ ] Add Discord support
+- [ ] Add Instagram support
+- [ ] Add Instagram Business Support
 
 ## :coffee: Buy Us a Coffee
 If you like what we're doing and want to see more, feel free to leave us a donation! Currently only accepting GitHub Sponsorships.

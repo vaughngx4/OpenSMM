@@ -1,5 +1,5 @@
 import { rtk } from "./tasks.js";
-import { popMsg } from './popup-message.js';
+import { popMsg } from "./popup-message.js";
 
 async function httpGet(type, endpoint) {
   let response;
@@ -81,9 +81,35 @@ export async function getTwitterAccounts() {
 export async function postScheduledPost(data) {
   return await httpPost("post data", "/posts", data);
 }
-export async function getPosts(){
+export async function getPosts() {
   return await httpGet("posts", "/posts");
 }
-export async function deletePost(id){
-  return await httpDelete("post", "/posts", { _id: id});
+export async function deletePost(id) {
+  return await httpDelete("post", "/posts", { _id: id });
+}
+export async function fileUpload(file) {
+  let response;
+  const stream = await file.stream();
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), 50000);
+  const tk = await rtk();
+  await fetch("/files/upload", {
+    method: "POST",
+    body: stream,
+    headers: {
+      Authorization: "Bearer " + tk,
+    },
+    duplex: "half",
+    signal: controller.signal,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      response = data;
+    })
+    .catch((err) => {
+      popMsg("red", "#fff", `Upload failed`);
+      console.log(err);
+      response = false;
+    });
+  return response;
 }

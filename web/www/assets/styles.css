@@ -166,6 +166,14 @@ button {
   padding: 20px;
 }
 
+.post-options {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  justify-content: space-around;
+  width: 100%;
+}
+
 /*----- Inputs -----*/
 .text-area {
   height: 25vh;
@@ -760,6 +768,12 @@ body .body-section {
 .prompt-content p {
   color: var(--lighter-blue5);
   margin-bottom: 20px;
+}
+
+.prompt-form {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
 }
 
 .confirm,

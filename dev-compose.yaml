@@ -25,6 +25,7 @@ services:
   opensmm-api:
     image: sintelli/opensmm-api:latest
     container_name: opensmm-api
+    command: "nodemon app.js"
     restart: unless-stopped
     depends_on:
       - opensmm-db
@@ -48,6 +49,7 @@ services:
     volumes:
       - ./data/api:/data
       - ./data/logs:/logs
+      - ./api/app:/usr/opensmm/app
     security_opt:
       - no-new-privileges:true
     networks:
@@ -63,6 +65,8 @@ services:
     volumes:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./data/db:/data/db
+    # ports:
+    #   - "27017:27017"
     restart: unless-stopped
     networks:
       - opensmm

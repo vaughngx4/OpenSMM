@@ -3,6 +3,7 @@ import {
   postScheduledPost,
   getPosts,
   deletePost,
+  fileUpload,
 } from "./api.js";
 import { popUp, closePopup } from "./modal-popup.js";
 import { dropDown, accordian, iconButton, multiAdd } from "./buttons.js";
@@ -309,6 +310,10 @@ async function newPost() {
   multiAdd(pollOpts, "newpolloption");
   pollSettings.appendChild(pollOpts);
 
+  // post options
+  let postOptions = document.createElement("div");
+  postOptions.className = "post-options";
+
   let post = {};
   // poll options button
   let pOBtn = document.createElement("button");
@@ -343,7 +348,30 @@ async function newPost() {
       }
     });
   });
-  col2.appendChild(pOBtn);
+  postOptions.appendChild(pOBtn);
+
+  // add attachment button
+  let attachBtn = document.createElement("button");
+  attachBtn.className = "button1";
+  attachBtn.innerText = "Add Attachment";
+  attachBtn.addEventListener("click", () => {
+    let fUpload = document.createElement("form");
+    fUpload.className = "prompt-form";
+    let fInput = document.createElement("input");
+    fInput.type = "file";
+    fUpload.appendChild(fInput);
+    prompt("Add Attachment", "confirm", fUpload, async () => {
+      closePrompt();
+      loading();
+      const result = await fileUpload(fInput.files[0]);
+      post["attachment"] = result.data;
+      console.log(post); // debug !!!
+      closePrompt();
+    });
+  });
+  postOptions.appendChild(attachBtn);
+
+  col2.appendChild(postOptions);
 
   // schedule button
   let scheduleBtn = document.createElement("button");

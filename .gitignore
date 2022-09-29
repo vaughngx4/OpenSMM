@@ -3,3 +3,4 @@ data
 api/app/node_modules
 api/app/package-lock.json
 web/www/assets/fontawesome
+init-mongo.js
