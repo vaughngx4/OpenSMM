@@ -5,12 +5,12 @@
 - npm needs to be installed to run the API
 
 ## Table of Contents
-- [Frontend Development Using VS Code (Without API and/or API Data)](#greencircle-frontend-development-using-vs-code-without-api-andor-api-data)
+- [Frontend Development Using VS Code (Without API and/or API Data)](#green_circle-frontend-development-using-vs-code-without-api-andor-api-data)
   - [How to open the screen behind the "Schedule a Post" button](#how-to-open-the-screen-behind-the-schedule-a-post-button)
   - [Show some example posts in the dashboard](#show-some-example-posts-in-the-dashboard)
   - [Show notification](#show-notification)
 
-- [API Development With Frontend](#greencircle-api-development-with-frontend)
+- [API Development With Frontend](#green_circle-api-development-with-frontend)
   - [Running the development environment](#running-the-development-environment)
 
 ## :green_circle: Frontend Development Using VS Code (Without API and/or API Data)
