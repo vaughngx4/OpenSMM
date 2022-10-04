@@ -22,6 +22,9 @@ OpenSMM(Open Social Media Marketing) is a self-hosted social media marketing pla
 - Twitter text type scheduled posts
 - Twitter poll type scheduled posts
 
+## Documentation
+- Documentation is a work in progress [click to view docs](docs/ReadMe.md "OpenSMM Documentation")
+
 ## :large_blue_diamond: Installation
 The application is built for Docker, we will have images on Docker Hub when the application is usable. Here's how to get it running for now:
 
@@ -53,8 +56,6 @@ Build/rebuild images and start containers(cache will be used if no changes are f
 ```bash
 ./rebuild.sh
 ```
-
-Further documentation can be found [here](https://github.com/vaughngx4/OpenSMM/docs/ReadMe.md "OpenSMM Documentation")
 
 ## :green_circle: Development
 ### ToDo

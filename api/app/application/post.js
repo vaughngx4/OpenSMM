@@ -1,14 +1,16 @@
-const { post: twitterPost } = require("./twitter");
-const { schedule, unschedule } = require("./schedule");
-const { authenticateToken } = require("./authentication");
-const { validatePost } = require("./validate");
-const Logger = require("./logger");
-const { Post } = require("./database");
+import { post as twitterPost } from "./twitter.js";
+import { schedule, unschedule } from "./schedule.js";
+import auth from "./authentication.js";
+const { authenticateToken } = auth;
+import { validatePost } from "./validate.js";
+import Logger from "./logger.js";
+import db from "./database.js";
+const { Post } = db;
 const logger = new Logger("post");
 
 const tzo = process.env.TIMEZONE_OFFSET || "+0";
 
-async function route(exp) {
+export async function route(exp) {
   exp.post("/posts", authenticateToken, async function (req, res) {
     const json = req.body;
     const validation = validatePost(json);
@@ -93,7 +95,7 @@ async function route(exp) {
   exp.put("/posts", authenticateToken, async function (req, res) {});
 }
 
-async function doPost(postId) {
+export async function doPost(postId) {
   Post.findById(postId)
     .populate({
       path: "accounts",
@@ -118,5 +120,3 @@ async function doPost(postId) {
       logger.log("error", `Post failed: ${err}`);
     });
 }
-
-module.exports = { route, doPost };

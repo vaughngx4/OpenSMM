@@ -1,6 +1,6 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-function validatePost(post) {
+export function validatePost(post) {
   const JoiSchema = Joi.object({
     accounts: {
       twitter: Joi.array().required(), // change to optional when more platforms are added
@@ -14,6 +14,4 @@ function validatePost(post) {
   return JoiSchema.validate(post);
 }
 
-function validateUser(user) {}
-
-module.exports = { validatePost };
+export function validateUser(user) {}

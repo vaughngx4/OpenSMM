@@ -2,8 +2,8 @@
 
 ## Setup
 
-- [Twitter API Setup](https://github.com/vaughngx4/OpenSMM/docs/twitter-api-v2.md "Twitter API setup instructions")
+- [Twitter API Setup](twitter-api-v2.md "Twitter API setup instructions")
 
 ## Development
 
-- [Development Environment Setup](https://github.com/vaughngx4/OpenSMM/docs/development.md "Development environment setup instructions")
+- [Development Environment Setup](development.md "Development environment setup instructions")

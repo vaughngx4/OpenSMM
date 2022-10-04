@@ -1,14 +1,17 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { cache, uncache, getCache } = require("./cache");
-const { User } = require("./database");
-const Logger = require("./logger");
+import { compare, hash } from "bcrypt";
+import jwt from "jsonwebtoken";
+const { sign, verify } = jwt;
+import redis from "./cache.js";
+const { cache, uncache, getCache } = redis;
+import db from "./database.js";
+const { User } = db;
+import Logger from "./logger.js";
 const logger = new Logger("auth");
 
 const secret = process.env.SECRET_1;
 const refresh_secret = process.env.SECRET_2;
 
-async function route(exp) {
+export async function route(exp) {
   const locked = false;
   function escape(level) {
     if (level == 1) {
@@ -26,7 +29,7 @@ async function route(exp) {
       User.find({ username: u })
         .then(async (data) => {
           if (data.length == 1) {
-            const passMatch = await bcrypt.compare(p, data[0].password);
+            const passMatch = await compare(p, data[0].password);
             if (data[0].username == u && passMatch) {
               logger.log("info", "Admin user already exists");
             } else {
@@ -57,7 +60,7 @@ async function route(exp) {
     }
   }
   async function createAdmin(u, p) {
-    const password = await bcrypt.hash(p, 10);
+    const password = await hash(p, 10);
     const user = new User({
       username: u,
       password,
@@ -77,7 +80,7 @@ async function route(exp) {
     await User.find({ username: user })
       .then(async (data) => {
         if (data.length == 1) {
-          const authenticated = await bcrypt.compare(pass, data[0].password);
+          const authenticated = await compare(pass, data[0].password);
           if (authenticated && !locked) {
             status_code = 200;
           } else {
@@ -127,7 +130,7 @@ async function route(exp) {
     if (statusCode == 200) {
       const user = { name: username };
       const accessToken = generateAccessToken(user);
-      const refreshToken = jwt.sign(user, refresh_secret);
+      const refreshToken = sign(user, refresh_secret);
       await makeTokenValid(refreshToken, user)
         .then(() => {
           logger.log("info", `User [${username}] authenticated successfully`);
@@ -148,7 +151,7 @@ async function route(exp) {
   });
   exp.post("/api/re-toke", async function (req, res) {
     const reToke = req.body["refreshToken"];
-    jwt.verify(reToke, refresh_secret, async (err, user) => {
+    verify(reToke, refresh_secret, async (err, user) => {
       if (err) {
         res.status(403).json({ status: "error" });
         logger.log("debug", "Token could not be verified:denied");
@@ -173,7 +176,7 @@ async function route(exp) {
   });
   exp.post("/api/logout", authenticateToken, async function (req, res) {
     const reToke = req.body["refreshToken"];
-    jwt.verify(reToke, refresh_secret, async (err, user) => {
+    verify(reToke, refresh_secret, async (err, user) => {
       if (err) {
         res.status(403).json({ status: "error" });
       } else {
@@ -187,11 +190,11 @@ async function route(exp) {
   });
 }
 
-function authenticateToken(req, res, next) {
+export function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   if (token == null) return res.sendStatus(401);
-  jwt.verify(token, secret, (err, user) => {
+  verify(token, secret, (err, user) => {
     if (err) {
       logger.log("warn", `Invalid access token:denied ${err}`);
       return res.sendStatus(403);
@@ -203,7 +206,7 @@ function authenticateToken(req, res, next) {
 }
 
 function generateAccessToken(user) {
-  return jwt.sign(user, secret, { expiresIn: 10 });
+  return sign(user, secret, { expiresIn: 10 });
 }
 
-module.exports = { route, authenticateToken };
+export default { route, authenticateToken };

@@ -1,27 +1,30 @@
-const mongoose = require("mongoose");
-const Logger = require("./logger");
-const { userSchema } = require("../models/user");
-const { twitterAccountSchema } = require("../models/twitter");
-const { postSchema } = require("../models/post");
+import mongoose from "mongoose";
+const { connect, model } = mongoose;
+import Logger from "./logger.js";
+import { userSchema } from "../models/user.js";
+import { twitterAccountSchema } from "../models/twitter.js";
+import { postSchema } from "../models/post.js";
 
 const logger = new Logger("db");
+
 const dbUser = process.env.DATABASE_USER || "opensmm";
 const dbPass = process.env.DATABASE_PASSWORD || "opensmm";
 const dbName = process.env.DATABASE_NAME || "opensmm";
 const dbURI = `mongodb://${dbUser}:${dbPass}@opensmm-db/${dbName}?retryWrites=true&w=majority`;
 
-mongoose
-  .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    logger.log("info", "Database connection established");
-  })
-  .catch((err) => {
-    logger.log("error", `Failed to connect to database: ${err}`);
-    console.log(err);
-  });
+const User = model("User", userSchema);
+const TwitterAccount = model("TwitterAccount", twitterAccountSchema);
+const Post = model("Post", postSchema);
 
-const User = mongoose.model("User", userSchema);
-const TwitterAccount = mongoose.model("TwitterAccount", twitterAccountSchema);
-const Post = mongoose.model("Post", postSchema);
+function start(){
+  connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      logger.log("info", "Database connection established");
+    })
+    .catch((err) => {
+      logger.log("error", `Failed to connect to database: ${err}`);
+      console.log(err);
+    });
+}
 
-module.exports = { dbURI, User, TwitterAccount, Post };
+export default { start, dbURI, User, TwitterAccount, Post };

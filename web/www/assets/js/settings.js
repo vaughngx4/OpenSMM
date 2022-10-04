@@ -1,5 +1,5 @@
-import { allowToggle } from "./topbar.js";
-import { addStyleSheet, removeStyleSheet, changeTheme } from "./themes.js";
+import { allowToggle } from "./modules/topbar.js";
+import { addStyleSheet, removeStyleSheet, changeTheme } from "./modules/themes.js";
 allowToggle();
 changeTheme();
 

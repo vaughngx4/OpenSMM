@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import pkg from "mongoose";
+const { Schema } = pkg;
 
-const accountsSchema = new Schema({
+export const accountsSchema = new Schema({
   twitter: {
     type: Array,
     required: false,
@@ -19,7 +19,7 @@ const twitterDataSchema = new Schema({
   }
 });
 
-const postSchema = new Schema(
+export const postSchema = new Schema(
   {
     accounts: accountsSchema,
     text: {
@@ -48,5 +48,3 @@ const postSchema = new Schema(
   },
   { timestamps: true }
 );
-
-module.exports = { postSchema, accountsSchema };

@@ -1,8 +1,11 @@
-const { TwitterApi } = require("twitter-api-v2");
-const { authenticateToken } = require("./authentication");
-const { cache, uncache, getCache } = require("./cache");
-const { TwitterAccount, Post } = require("./database");
-const Logger = require("./logger");
+import { TwitterApi } from "twitter-api-v2";
+import auth from "./authentication.js";
+const { authenticateToken } = auth;
+import redis from "./cache.js";
+const { cache, uncache, getCache } = redis;
+import db from "./database.js";
+const { TwitterAccount, Post } = db;
+import Logger from "./logger.js";
 
 const logger = new Logger("twitter");
 const clientId = process.env.TWITTER_CLIENT_ID || null;
@@ -10,7 +13,7 @@ const clientSecret = process.env.TWITTER_CLIENT_SECRET || null;
 const domain = process.env.DOMAIN || "localhost";
 const callbackURL = `https://${domain}/twitter/callback`;
 
-async function route(exp) {
+export async function route(exp) {
   exp.get("/twitter/login", async function (req, res) {
     const client = new TwitterApi({
       clientId: clientId,
@@ -124,7 +127,7 @@ async function route(exp) {
   });
 }
 
-async function post(
+export async function post(
   id,
   accountName,
   text,
@@ -250,5 +253,3 @@ async function twitterUserClient(
   }
   return gotClient;
 }
-
-module.exports = { route, post };

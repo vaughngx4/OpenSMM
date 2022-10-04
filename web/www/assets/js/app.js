@@ -5,13 +5,13 @@ import {
   deletePost,
   fileUpload,
 } from "./api.js";
-import { popUp, closePopup } from "./modal-popup.js";
-import { dropDown, accordian, iconButton, multiAdd } from "./buttons.js";
-import { prompt, closePrompt } from "./prompt.js";
+import { popUp, closePopup } from "./modules/modal-popup.js";
+import { dropDown, accordian, iconButton, multiAdd } from "./modules/buttons.js";
+import { prompt, closePrompt } from "./modules/prompt.js";
 //import Validate from "./validate.js";
-import { popMsg } from "./popup-message.js";
-import { changeTheme } from "./themes.js";
-import { allowToggle } from "./topbar.js";
+import { popMsg } from "./modules/popup-message.js";
+import { changeTheme } from "./modules/themes.js";
+import { allowToggle } from "./modules/topbar.js";
 allowToggle();
 changeTheme();
 
@@ -363,9 +363,14 @@ async function newPost() {
     prompt("Add Attachment", "confirm", fUpload, async () => {
       closePrompt();
       loading();
-      const result = await fileUpload(fInput.files[0]);
-      post["attachment"] = result.data;
-      console.log(post); // debug !!!
+      const result = await fileUpload(fInput.files[0]).catch((err) => {
+        popMsg("red", "#fff", "Upload error");
+        console.error(err);
+      });
+      const response = await result;
+      if (response) {
+        post["attachment"] = response.data;
+      }
       closePrompt();
     });
   });

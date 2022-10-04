@@ -4,9 +4,16 @@
 
 - npm needs to be installed to run the API
 
-// add links to sections here
+## Table of Contents
+- [Frontend Development Using VS Code (Without API and/or API Data)](#greencircle-frontend-development-using-vs-code-without-api-andor-api-data)
+  - [How to open the screen behind the "Schedule a Post" button](#how-to-open-the-screen-behind-the-schedule-a-post-button)
+  - [Show some example posts in the dashboard](#show-some-example-posts-in-the-dashboard)
+  - [Show notification](#show-notification)
 
-## Frontend Development Using VS Code (Without API and/or API Data)
+- [API Development With Frontend](#greencircle-api-development-with-frontend)
+  - [Running the development environment](#running-the-development-environment)
+
+## :green_circle: Frontend Development Using VS Code (Without API and/or API Data)
 
 - The following assumes you already have a local copy of the source code and have it open in VS Code
 - Install "Live Server (Five Server)" on the Extensions Marketplace, "Live Server" will not work
@@ -69,15 +76,24 @@ Search for "debug !!!" in popup-message.js and comment/uncomment the following l
 - You can find the notification popup on the main dashboard
 - When pushing to development, please revert these changes.
 
-## API Development With Frontend
+## :green_circle: API Development With Frontend
 
 - This setup is not intended for frontend development
 - The following assumes you already have a local copy of the source code and have a terminal/cmd open in this directory
 - This setup will use your `.env` and `init-mongo.js` files as well as your `data` folder in the project root
-- You must run `build.sh` first so that you have the latest images.
-
 
 ### Running the development environment
+
+Build images:
+```
+./build.sh
+```
+
+Install node packages in the `api/app` folder:
+```
+cd api/app
+npm install
+```
 
 For ease of use, the API development environment runs in Docker. In the project root, run:
 ```

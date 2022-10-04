@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import pkg from "mongoose";
+const { Schema } = pkg;
 
-const userSchema = new Schema(
+export const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -22,5 +22,3 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
-
-module.exports = { userSchema };
