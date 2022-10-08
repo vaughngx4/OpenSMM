@@ -1303,6 +1303,7 @@ p {
 
   .toggle .icon {
     position: relative;
+    right: 0;
     display: block;
     z-index: 999;
     margin-top: 10px;
