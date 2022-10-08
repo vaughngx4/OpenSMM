@@ -5,9 +5,10 @@ services:
   opensmm-web:
     image: sintelli/opensmm-web:latest
     container_name: opensmm-web
-    ports:
-      - "80:80"
-      - "443:443"
+    # command: "nodemon app.js"
+    # ports:
+      # - "80:80"
+      # - "8090:443"
     restart: unless-stopped
     depends_on:
       - opensmm-api
@@ -17,10 +18,13 @@ services:
       SSL_CRT: ${SSL_CRT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       API_PORT: ${API_PORT}
+    volumes:
+      - ./web/www:/var/www
     security_opt:
       - no-new-privileges:true
     networks:
       - opensmm
+      - docker_swag
 
   opensmm-api:
     image: sintelli/opensmm-api:latest
@@ -86,3 +90,5 @@ services:
 networks:
   opensmm:
     driver: bridge
+  docker_swag:
+    external: true

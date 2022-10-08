@@ -15,9 +15,9 @@
 
 ## :green_circle: Frontend Development Using VS Code (Without API and/or API Data)
 
-- The following assumes you already have a local copy of the source code and have it open in VS Code
-- Install "Live Server (Five Server)" on the Extensions Marketplace, "Live Server" will not work
-- Right click the "web/www" folder and select "Open with Five Server (root)"
+- ~The following assumes you already have a local copy of the source code and have it open in VS Code~
+- ~Install "Live Server (Five Server)" on the Extensions Marketplace, "Live Server" will not work~
+- ~Right click the "web/www" folder and select "Open with Five Server (root)"~
 
 ### How to open the screen behind the "Schedule a Post" button
 
@@ -78,7 +78,7 @@ Search for "debug !!!" in popup-message.js and comment/uncomment the following l
 
 ## :green_circle: API Development With Frontend
 
-- This setup is not intended for frontend development
+- ~This setup is not intended for frontend development~
 - The following assumes you already have a local copy of the source code and have a terminal/cmd open in this directory
 - This setup will use your `.env` and `init-mongo.js` files as well as your `data` folder in the project root
 
