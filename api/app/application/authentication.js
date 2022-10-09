@@ -191,9 +191,17 @@ export async function route(exp) {
 }
 
 export function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.sendStatus(401);
+  let token;
+  if (req.headers["authorization"]) {
+    const authHeader = req.headers["authorization"];
+    token = authHeader && authHeader.split(" ")[1];
+  } else if (req.params.token) {
+    token = req.params.token;
+  }
+  if (token == null) {
+    logger.log("debug", "No auth token provided:denied");
+    return res.sendStatus(401);
+  }
   verify(token, secret, (err, user) => {
     if (err) {
       logger.log("warn", `Invalid access token:denied ${err}`);

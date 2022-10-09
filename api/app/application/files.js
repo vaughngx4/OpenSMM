@@ -44,6 +44,7 @@ export async function route(exp) {
           );
           res.status(500).json({ status: "error", message: "Server error" });
         } else {
+          files.splice(files.indexOf("thumbnails"));
           res.status(200).json({ status: "success", data: files });
         }
       });
@@ -52,7 +53,7 @@ export async function route(exp) {
     }
   });
   exp.get(
-    "/files/thumb/:filename/:index",
+    "/files/thumb/:token/:filename/:index",
     authenticateToken,
     async function (req, res) {
       const file = `/data/fileuploads/${req.user.name}/thumbnails/${req.params.filename}${req.params.index}.webp`;
@@ -63,14 +64,18 @@ export async function route(exp) {
       }
     }
   );
-  exp.get("/files/file/:filename", authenticateToken, async function (req, res) {
-    const file = `/data/fileuploads/${req.user.name}/${req.params.filename}`;
-    if (existsSync(file)) {
-      res.sendFile(file);
-    } else {
-      res.status(500).json({ status: "error", message: "No such file" });
+  exp.get(
+    "/files/file/:filename",
+    authenticateToken,
+    async function (req, res) {
+      const file = `/data/fileuploads/${req.user.name}/${req.params.filename}`;
+      if (existsSync(file)) {
+        res.sendFile(file);
+      } else {
+        res.status(500).json({ status: "error", message: "No such file" });
+      }
     }
-  });
+  );
 }
 
 // only works for authenticated routes due to the username being part of the path
