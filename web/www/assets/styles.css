@@ -115,7 +115,7 @@ button {
 .posts-container {
   display: flex;
   flex-direction: column;
-  height: 300px;
+  height: fit-content;
   width: 450px;
   overflow-y: scroll;
 }

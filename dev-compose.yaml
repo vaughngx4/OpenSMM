@@ -17,6 +17,8 @@ services:
       SSL_CRT: ${SSL_CRT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       API_PORT: ${API_PORT}
+    volumes:
+      - ./web/www:/var/www
     security_opt:
       - no-new-privileges:true
     networks:

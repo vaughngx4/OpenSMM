@@ -42,5 +42,7 @@ COPY ./entrypoint.sh /docker-entrypoint.sh
 EXPOSE 80/tcp
 EXPOSE 443/tcp
 
+VOLUME /var/www
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD /usr/sbin/nginx && php-fpm8 -O && tail -f /dev/null
