@@ -760,6 +760,9 @@ body .body-section {
   padding: 20px;
   border-radius: 25px;
 }
+.prompt img {
+ max-height: 70vh; 
+}
 .prompt-text {
   color: var(--lighter-blue5);
   font-size: 16px;
@@ -1233,9 +1236,28 @@ p {
 /* Gallery */
 
 .gallery {
-  width: 500px;
-  height: 500px;
+  /* width: 500px; */
+  /* height: 500px; */
+  width: 650px;
 }
+
+.grid-sizer,
+.grid-item {
+  width: 200px;
+}
+
+.grid-item { 
+  float: left;
+}
+
+.grid-item img {
+  border-radius: 15px;
+}
+
+.gallery .thumbnail {
+  cursor: pointer;
+}
+
 
 /*----- Fix For Mobile View -----*/
 @media screen and (prefers-reduced-motion: reduce) {

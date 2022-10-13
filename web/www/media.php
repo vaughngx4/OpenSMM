@@ -18,8 +18,11 @@
     </div>
     <?php include(__DIR__ . '/html/modal-popup.html') ?>
     <?php include(__DIR__ . '/html/popup-message.html') ?>
+    <?php include(__DIR__ . '/html/prompt.html') ?>
   </section>
 
+  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+  <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.js"></script>
   <script src="assets/js/media.js" type="module" ></script>
 </body>
 <?php include(__DIR__ . '/html/footer.html') ?>

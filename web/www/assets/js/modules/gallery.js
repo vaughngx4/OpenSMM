@@ -5,41 +5,64 @@
 
 import { getFileNames } from "../api.js";
 import { rtk } from "../tasks.js";
+import { prompt } from "../modules/prompt.js";
 
 export async function gallery(endpoint) {
   const response = await getFileNames();
   const files = response.data;
   let container = document.createElement("div");
-  container.className = "gallery";
+  container.className = "gallery grid";
 
-  let workingRow = row(container);
+  let gridSizer = document.createElement("div");
+  gridSizer.className = 'grid-sizer';
+  container.appendChild(gridSizer);
 
   files.forEach(async (file) => {
     let thumb = document.createElement("img");
     thumb.className = "thumbnail";
     const tk = await rtk();
     thumb.src = `${endpoint}/thumb/${tk}/${file}/0`;
-    workingRow = row(container, workingRow);
-    workingRow.appendChild(thumb);
+    let thumbContainer = document.createElement('div');
+    thumbContainer.className = "grid-item";
+    thumbContainer.appendChild(thumb);
+    container.appendChild(thumbContainer);
+
+    thumb.onclick = function(item) {
+      check_detail(endpoint, item)
+    }
   });
+
+
+  let loadMsnry = setInterval(() => {
+    var grid = document.querySelector('.grid');
+    var msnry = new Masonry( grid, {
+      itemSelector: '.grid-item',
+      columnWidth: '.grid-sizer',
+      horizontalOrder: true,
+      gutter: 10
+    });
+    
+    imagesLoaded( grid ).on( 'progress', function() {
+      msnry.layout();
+      clearInterval(loadMsnry);
+
+    });
+  }, 200);
+  
 
   return container;
 }
 
-function row(container, currentRow) {
-  currentRow = currentRow || null;
-  if (!currentRow) {
-    currentRow = document.createElement("div");
-    currentRow.className = "row";
-    container.appendChild(currentRow);
-  }
-  console.log(container.style.width);
-  const limit = (container.style.width / 180).toFixed(0); // the number here is the total width of the thumbnail + padding (default image width is 150)
-  console.log("Row Limit: " + limit); // debug !!!
-  if (currentRow.children.length >= limit) {
-    currentRow = document.createElement("div");
-    currentRow.className = "row";
-    container.appendChild(currentRow);
-  }
-  return currentRow;
+
+async function check_detail(endpoint, item) {
+  let fileName = item.path[0].src.split('/')[6];
+  const tk = await rtk();
+  
+  let fileDetail = `${endpoint}/file/${tk}/${fileName}`;
+
+  let element = document.createElement("img");
+  element.src = fileDetail;
+
+  prompt(fileName, "warn", element);
+
 }

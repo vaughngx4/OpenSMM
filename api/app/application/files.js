@@ -65,7 +65,7 @@ export async function route(exp) {
     }
   );
   exp.get(
-    "/files/file/:filename",
+    "/files/file/:token/:filename",
     authenticateToken,
     async function (req, res) {
       const file = `/data/fileuploads/${req.user.name}/${req.params.filename}`;
@@ -161,7 +161,10 @@ async function processFile(dir, filename) {
 async function imageThumbs(dir, filename) {
   sharp(dir + filename)
     .webp()
-    .resize(150, 100)
+    .resize({
+      fit: sharp.fit.contain,
+      width: 200
+    })
     .toFile(dir + "thumbnails/" + filename + "0.webp");
 }
 
