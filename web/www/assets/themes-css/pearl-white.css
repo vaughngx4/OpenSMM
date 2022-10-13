@@ -32,7 +32,8 @@ body .body-section,
 button,
 .dropdown-item,
 .navigation.active a .icon,
-.popup {
+.popup,
+.file-input-label-item {
     color: var(--pearl-darker-grey);
     background-color: unset;
     background: linear-gradient(0deg, var(--pearl-white) 0%, var(--pearl-lighter-grey) 100%);
@@ -40,7 +41,8 @@ button,
 
 button:hover,
 .navigation ul li:hover,
-.dropdown-item:hover {
+.dropdown-item:hover,
+.file-input-label-item:hover {
     color: var(--cosmic-highlight-blue2);
     background-color: unset;
     background: linear-gradient(0deg, var(--pearl-light-grey) 0%, var(--pearl-lighter-grey) 100%);
