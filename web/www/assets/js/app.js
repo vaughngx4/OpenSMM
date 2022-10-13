@@ -355,24 +355,57 @@ async function newPost() {
   attachBtn.className = "button1";
   attachBtn.innerText = "Add Attachment";
   attachBtn.addEventListener("click", () => {
-    let fUpload = document.createElement("form");
-    fUpload.className = "prompt-form";
-    let fInput = document.createElement("input");
-    fInput.type = "file";
-    fUpload.appendChild(fInput);
-    prompt("Add Attachment", "confirm", fUpload, async () => {
-      closePrompt();
-      loading();
-      const result = await fileUpload(fInput.files[0]).catch((err) => {
-        popMsg("red", "#fff", "Upload error");
-        console.error(err);
-      });
-      const response = await result;
+  let fUpload = document.createElement("form");
+  fUpload.className = "prompt-form";
+  let fLabel = document.createElement("label");
+  fLabel.className = "file-input-label";
+  fLabel.setAttribute("for", "fileUpload");
+  fUpload.appendChild(fLabel);
+  let fI = document.createElement("i");
+  fI.className = "file-input-label-item";
+  fI.textContent = "Upload";
+  fLabel.appendChild(fI);
+  let fInput = document.createElement("input");
+  fInput.type = "file";
+  fInput.setAttribute('id', 'fileUpload');
+  fUpload.appendChild(fInput);
+
+
+  prompt("Add Attachment", "confirm", fUpload, async () => {
+    closePrompt();
+    loading();
+    const result = await fileUpload(fInput.files[0]).catch((err) => {
+      popMsg("red", "#fff", "Upload error");
+      console.error(err);
+    });
+    const response = await result;
       if (response) {
         post["attachment"] = response.data;
       }
       closePrompt();
     });
+    document.getElementsByClassName('file-input-label-item')[0].onclick = function(){
+      fInput.value = "";
+      let fileNameEl = document.getElementsByClassName('file-name');
+      if(fileNameEl.length > 0) {
+        fileNameEl[0].remove();
+      }
+      let checkFileUpload = setInterval(() => {
+        var fullPath = fInput.value;
+        if (fullPath) {
+            var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+            var filename = fullPath.substring(startIndex);
+            if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+                filename = filename.substring(1);
+                let fName = document.createElement('p');
+                fName.className = "file-name";
+                fName.textContent = filename;
+                fUpload.appendChild(fName);
+                clearInterval(checkFileUpload)
+              }
+          }
+      }, 1000);
+    }
   });
   postOptions.appendChild(attachBtn);
 
