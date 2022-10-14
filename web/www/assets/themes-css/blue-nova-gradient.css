@@ -14,13 +14,15 @@ body .body-section,
 
 .button1, 
 #loginBtn,
-button {
+button,
+.file-input-label-item {
     color: var(--lighter-blue5);
     background-color: unset;
     background: linear-gradient(0deg, var(--lighter-blue) 0%, var(--lighter-blue2) 100%);
 }
 
-button:hover {
+button:hover,
+.file-input-label-item:hover {
     color: var(--highlight-blue2);
     background-color: unset;
     background: linear-gradient(0deg, var(--highlight-blue) 0%, var(--lighter-blue3) 100%);

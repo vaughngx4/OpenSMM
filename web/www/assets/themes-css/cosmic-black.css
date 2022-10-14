@@ -34,7 +34,8 @@ body .body-section,
 #loginBtn,
 button,
 .dropdown-item,
-.navigation.active a .icon {
+.navigation.active a .icon,
+.file-input-label-item {
     color: var(--cosmic-highlight-blue);
     background-color: unset;
     background: linear-gradient(0deg, var(--cosmic-blue) 0%, var(--cosmic-light-blue) 100%);
@@ -42,7 +43,8 @@ button,
 
 button:hover,
 .navigation ul li:hover,
-.dropdown-item:hover {
+.dropdown-item:hover,
+.file-input-label-item:hover {
     color: var(--cosmic-highlight-blue2);
     background-color: unset;
     background: linear-gradient(0deg, var(--cosmic-light-blue) 0%, var(--cosmic-lighter-blue) 100%);
