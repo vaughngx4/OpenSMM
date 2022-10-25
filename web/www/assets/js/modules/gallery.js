@@ -14,7 +14,7 @@ export async function gallery(endpoint) {
   container.className = "gallery grid";
 
   let gridSizer = document.createElement("div");
-  gridSizer.className = 'grid-sizer';
+  gridSizer.className = "grid-sizer";
   container.appendChild(gridSizer);
 
   files.forEach(async (file) => {
@@ -22,47 +22,43 @@ export async function gallery(endpoint) {
     thumb.className = "thumbnail";
     const tk = await rtk();
     thumb.src = `${endpoint}/thumb/${tk}/${file}/0`;
-    let thumbContainer = document.createElement('div');
+    let thumbContainer = document.createElement("div");
     thumbContainer.className = "grid-item";
     thumbContainer.appendChild(thumb);
     container.appendChild(thumbContainer);
 
-    thumb.onclick = function(item) {
-      check_detail(endpoint, item)
-    }
+    thumb.onclick = function (item) {
+      check_detail(endpoint, item);
+    };
   });
 
-
   let loadMsnry = setInterval(() => {
-    var grid = document.querySelector('.grid');
-    var msnry = new Masonry( grid, {
-      itemSelector: '.grid-item',
-      columnWidth: '.grid-sizer',
+    var grid = document.querySelector(".grid");
+    var msnry = new Masonry(grid, {
+      itemSelector: ".grid-item",
+      columnWidth: ".grid-sizer",
       horizontalOrder: true,
-      gutter: 10
+      gutter: 10,
     });
-    
-    imagesLoaded( grid ).on( 'progress', function() {
+
+    imagesLoaded(grid).on("progress", function () {
       msnry.layout();
       clearInterval(loadMsnry);
-
     });
   }, 200);
-  
 
   return container;
 }
 
-
 async function check_detail(endpoint, item) {
-  let fileName = item.path[0].src.split('/')[6];
+  let fileName;
+  if (navigator.userAgent.search("Chrome") > -1) {
+    fileName = item.path[0].src.split("/")[6];
+  } else if (navigator.userAgent.search("Firefox") > -1) {
+    fileName = decodeURI(item.srcElement.src).split("/")[6];
+  }
   const tk = await rtk();
-  
-  let fileDetail = `${endpoint}/file/${tk}/${fileName}`;
-
   let element = document.createElement("img");
-  element.src = fileDetail;
-
+  element.src = `${endpoint}/file/${tk}/${fileName}`;
   prompt(fileName, "warn", element);
-
 }

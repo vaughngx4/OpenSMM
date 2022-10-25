@@ -14,13 +14,12 @@ RUN apk update && apk add --no-cache \
     unzip \
     openssl \
     ca-certificates
-RUN rm -rf /var/cache/apk/*
 
 COPY ./php.ini /etc/php8/php.ini
 
 RUN rm -f /etc/nginx/conf.d/default.conf && \
     mkdir /logs && \
-    mkdir -p /var/www/assets && \
+    mkdir -p /var/www/assets/js/modules/masonry && \
     mkdir /ssl
 
 RUN curl -L https://use.fontawesome.com/releases/v6.1.2/fontawesome-free-6.1.2-web.zip \
@@ -30,7 +29,13 @@ RUN curl -L https://use.fontawesome.com/releases/v6.1.2/fontawesome-free-6.1.2-w
     mv fontawesome-free-* fontawesome && \
     rm -f fa.zip
 
+RUN curl -L https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js \
+    -o /var/www/assets/js/modules/masonry/masonry.pkgd.min.js && \
+    curl -L https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.js \
+    -o /var/www/assets/js/modules/masonry/imagesloaded.pkgd.js
+
 RUN apk del unzip curl
+RUN rm -rf /var/cache/apk/*
 
 COPY ./www /var/www
 COPY ./nginx.conf /etc/nginx/nginx.conf
