@@ -16,7 +16,7 @@ const options = {
 
 const exp = express();
 exp.use(urlencoded({ limit: "50mb", extended: true }));
-//exp.use(express.json());
+exp.use(express.json());
 exp.use(cors(options));
 
 db.start();

@@ -7,7 +7,7 @@ export function validatePost(post) {
     },
     text: Joi.string().optional(),
     attachment: Joi.string().optional(),
-    datetime: Joi.date().required(),
+    datetime: Joi.date().raw().required(),
     pollDuration: Joi.number().optional(),
     pollOptions: Joi.array().optional(),
   }).options({ abortEarly: false });

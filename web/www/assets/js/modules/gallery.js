@@ -7,7 +7,8 @@ import { getFileNames } from "../api.js";
 import { rtk } from "../tasks.js";
 import { prompt } from "../modules/prompt.js";
 
-export async function gallery(endpoint) {
+export async function gallery(endpoint, callback) {
+  callback = callback || null;
   const response = await getFileNames();
   const files = response.data;
   let container = document.createElement("div");
@@ -27,9 +28,11 @@ export async function gallery(endpoint) {
     thumbContainer.appendChild(thumb);
     container.appendChild(thumbContainer);
 
-    thumb.onclick = function (item) {
-      check_detail(endpoint, item);
-    };
+    if(!callback) {
+      thumb.onclick = check_detail(endpoint, item);
+    } else {
+      thumb.onclick = callback(file);
+    }
   });
 
   let loadMsnry = setInterval(() => {

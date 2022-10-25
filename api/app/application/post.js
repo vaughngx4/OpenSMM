@@ -12,7 +12,7 @@ const tzo = process.env.TIMEZONE_OFFSET || "+0";
 
 export async function route(exp) {
   exp.post("/posts", authenticateToken, async function (req, res) {
-    const json = req.body;
+    const json = await req.body;
     const validation = validatePost(json);
     if (!validation.error) {
       const dateTime = new Date(
@@ -53,8 +53,8 @@ export async function route(exp) {
           });
         });
     } else {
-      logger.log("error", `Bad request: ${validation.error}`);
-      res.status(401).json({ status: "error", message: validation.error });
+      logger.log("error", `Bad request: ${validation.error.message}`);
+      res.status(401).json({ status: "error", message: validation.error.message });
     }
   });
   exp.delete("/posts", authenticateToken, async function (req, res) {

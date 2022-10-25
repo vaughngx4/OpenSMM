@@ -336,20 +336,9 @@ async function newPost() {
         pollOptions = null;
         pollDuration = null;
       }
-      if (!pollDuration || !pollOptions) {
-        post = {
-          accounts: selectedAccounts,
-          text: postText.value,
-          datetime: dateInput.value,
-        };
-      } else {
-        post = {
-          accounts: selectedAccounts,
-          text: postText.value,
-          datetime: dateInput.value,
-          pollDuration,
-          pollOptions,
-        };
+      if (pollDuration && pollOptions) {
+        post["pollDuration"] = pollDuration;
+        post["pollOptions"] = pollOptions;
       }
     });
   });
