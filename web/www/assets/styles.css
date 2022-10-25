@@ -1248,6 +1248,8 @@ p {
 
 .grid-item { 
   float: left;
+  display: flex;
+  justify-content: center;
 }
 
 .grid-item img {
@@ -1256,6 +1258,14 @@ p {
 
 .gallery .thumbnail {
   cursor: pointer;
+  padding: 2px;
+  margin: 8px;
+  transition: 0.1s;
+}
+
+.gallery .thumbnail:hover {
+  border: 3px solid var(--darker-blue);
+  transition: 0.1s;
 }
 
 
