@@ -21,6 +21,8 @@
     <?php include(__DIR__ . '/html/prompt.html') ?>
   </section>
 
+  <script src="assets/js/modules/masonry/masonry.pkgd.min.js"></script>
+  <script src="assets/js/modules/masonry/imagesloaded.pkgd.js"></script>
   <script src="assets/js/app.js" type="module" ></script>
 </body>
 <?php include(__DIR__ . '/html/footer.html') ?>

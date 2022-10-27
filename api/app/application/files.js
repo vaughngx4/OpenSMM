@@ -119,7 +119,7 @@ async function fileFromReq(req, res) {
     // check if file type is supported and if yes, process file
     const supported = await processFile(dir, filename);
     if (supported) {
-      res.status(200).json({ status: "success", data: dir + filename });
+      res.status(200).json({ status: "success", data: `${filename} uploaded successfully` });
     } else {
       res
         .status(405)

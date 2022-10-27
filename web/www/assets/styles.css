@@ -1268,6 +1268,15 @@ p {
   transition: 0.1s;
 }
 
+/*----- Tags -----*/
+.tag-dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  left: -45px;
+}
 
 /*----- Fix For Mobile View -----*/
 @media screen and (prefers-reduced-motion: reduce) {

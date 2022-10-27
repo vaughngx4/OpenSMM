@@ -15,6 +15,8 @@ import { prompt, closePrompt } from "./modules/prompt.js";
 //import Validate from "./validate.js";
 import { popMsg } from "./modules/popup-message.js";
 import { loading } from "./modules/loading.js";
+import { gallery } from "./modules/gallery.js";
+import { dot } from "./modules/tags.js";
 import { changeTheme } from "./modules/themes.js";
 import { allowToggle } from "./modules/topbar.js";
 allowToggle();
@@ -115,7 +117,7 @@ async function choosePlatform() {
   elem.style.display = "flex";
   elem.style.flexDirection = "column";
   elem.style.alignItems = "center";
-  const drop = dropDown("-- choose a platform --", ["Twitter"]);
+  const drop = dropDown("-- choose a platform --", ["Twitter (v2)", "Twitter (v1)"]);
   drop.style.marginTop = "20px";
   elem.appendChild(drop);
   let goBtn = document.createElement("button");
@@ -131,8 +133,10 @@ async function choosePlatform() {
 }
 
 async function addAccount(platform) {
-  if ("Twitter" == platform) {
-    window.open("/twitter/login", "_self");
+  if ("Twitter (v1)" == platform) {
+    window.open("/twitter/login/v1", "_self");
+  } else if ("Twitter (v2)" == platform) {
+    window.open("/twitter/login/v2", "_self");
   }
 }
 
@@ -343,6 +347,21 @@ async function newPost() {
     });
   });
   postOptions.appendChild(pOBtn);
+
+  // add attachment button
+  let attachBtn = document.createElement("button");
+  attachBtn.className = "button1";
+  attachBtn.innerText = "Attach Media";
+  attachBtn.addEventListener("click", async () => {
+    let gal = await gallery("/files", (filename) => {
+      post["attachment"] = filename;
+      closePrompt();
+      dot("#3260a8", attachBtn);
+    });
+    prompt("Attach Media", "floating", gal);
+  });
+  postOptions.appendChild(attachBtn);
+
   col2.appendChild(postOptions);
 
   // schedule button

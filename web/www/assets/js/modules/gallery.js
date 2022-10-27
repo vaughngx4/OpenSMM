@@ -28,10 +28,14 @@ export async function gallery(endpoint, callback) {
     thumbContainer.appendChild(thumb);
     container.appendChild(thumbContainer);
 
-    if(!callback) {
-      thumb.onclick = check_detail(endpoint, item);
+    if (!callback) {
+      thumb.onclick = function () {
+        check_detail(endpoint, file);
+      };
     } else {
-      thumb.onclick = callback(file);
+      thumb.onclick = function () {
+        callback(file);
+      };
     }
   });
 
@@ -53,13 +57,7 @@ export async function gallery(endpoint, callback) {
   return container;
 }
 
-async function check_detail(endpoint, item) {
-  let fileName;
-  if (navigator.userAgent.search("Chrome") > -1) {
-    fileName = item.path[0].src.split("/")[6];
-  } else if (navigator.userAgent.search("Firefox") > -1) {
-    fileName = decodeURI(item.srcElement.src).split("/")[6];
-  }
+async function check_detail(endpoint, fileName) {
   const tk = await rtk();
   let element = document.createElement("img");
   element.src = `${endpoint}/file/${tk}/${fileName}`;

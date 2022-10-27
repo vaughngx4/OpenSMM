@@ -19,6 +19,14 @@ export const twitterAccountSchema = new Schema(
       type: String,
       required: true,
     },
+    accessTokenv1: {
+      type: String,
+      required: true,
+    },
+    accessSecretv1: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

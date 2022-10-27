@@ -14,20 +14,20 @@ const domain = process.env.DOMAIN || "localhost";
 const callbackURL = `https://${domain}/twitter/callback`;
 
 export async function route(exp) {
-  exp.get("/twitter/login", async function (req, res) {
+  exp.get("/twitter/login/v2", async function (req, res) {
     const client = new TwitterApi({
       clientId: clientId,
       clientSecret: clientSecret,
     });
     const { url, codeVerifier, state } = client.generateOAuth2AuthLink(
-      callbackURL,
+      callbackURL + "/v2",
       { scope: ["tweet.read", "tweet.write", "users.read", "offline.access"] }
     );
     await cache(`${req.user}-twitter-codeverifier`, codeVerifier);
     await cache(`${req.user}-twitter-state`, state);
     res.redirect(url);
   });
-  exp.get("/twitter/callback", async function (req, res) {
+  exp.get("/twitter/callback/v2", async function (req, res) {
     const { state, code } = req.query;
     const codeVerifier = await getCache(`${req.user}-twitter-codeverifier`);
     const sessionState = await getCache(`${req.user}-twitter-state`);
@@ -51,7 +51,7 @@ export async function route(exp) {
       clientSecret: clientSecret,
     });
     client
-      .loginWithOAuth2({ code, codeVerifier, redirectUri: callbackURL })
+      .loginWithOAuth2({ code, codeVerifier, redirectUri: callbackURL + "/v2" })
       .then(
         async ({
           client: loggedClient,
@@ -60,7 +60,7 @@ export async function route(exp) {
           expiresIn,
         }) => {
           const { data: userObject } = await loggedClient.v2.me();
-          logger.log("debug", `Authorized account ${userObject.username}`);
+          logger.log("info", `Authorized account ${userObject.username}`);
           const twitter = new TwitterAccount({
             accountName: userObject.username,
             accessToken,
@@ -73,17 +73,17 @@ export async function route(exp) {
                 twitter
                   .save()
                   .then(() => {
-                    logger.log("info", "Twitter account added");
+                    logger.log("info", "Twitter (v2) account added");
                   })
                   .then(() => {
                     res.redirect(
-                      `https://${domain}/?status=success&message=Twitter&20account%20added`
+                      `https://${domain}/?status=success&message=Twtter%20account%20added.%20Add%20Twitter%20v1%20account%20for%20additional%20features.`
                     );
                   })
                   .catch((err) => {
                     logger.log(
                       "error",
-                      "Could not save Twitter account to database"
+                      "Could not save Twitter account to database (v2)"
                     );
                     console.log(err);
                     res.redirect(
@@ -91,7 +91,7 @@ export async function route(exp) {
                     );
                   });
               } else {
-                logger.log("error", "Twitter account already exists");
+                logger.log("error", "Twitter account already exists (v2)");
                 res.redirect(
                   `https://${domain}/?status=error&message=Twitter&20account%20already%20exists`
                 );
@@ -101,10 +101,85 @@ export async function route(exp) {
         }
       )
       .catch(() => {
-        logger.log("error", "Invalid access tokens");
+        logger.log("error", "Invalid access tokens (v2)");
         res
           .status(403)
           .json({ status: "error", message: "Invalid access tokens" });
+      });
+  });
+  exp.get("/twitter/login/v1", async function (req, res) {
+    const client = new TwitterApi({
+      appKey: clientId,
+      appSecret: clientSecret,
+    });
+    const { url, oauth_token, oauth_token_secret } =
+      await client.generateAuthLink(callbackURL + "/v1");
+    await cache(`${req.user}-twitter-oauth_token_secret`, oauth_token_secret);
+    res.redirect(url);
+  });
+  exp.get("/twitter/callback/v1", async function (req, res) {
+    const { oauth_token, oauth_verifier } = req.query;
+    const oauth_token_secret = await getCache(
+      `${req.user}-twitter-oauth_token_secret`
+    );
+    uncache(`${req.user}-twitter-oauth_token_secret`);
+    if (!oauth_token || !oauth_verifier || !oauth_token_secret) {
+      logger.log("error", "Access denied by user or session expired (v1)");
+      return res.status(400).json({
+        status: "error",
+        message: "You denied access or session expired",
+      });
+    }
+    const client = new TwitterApi({
+      appKey: clientId,
+      appSecret: clientSecret,
+      accessToken: oauth_token,
+      accessSecret: oauth_token_secret,
+    });
+    client
+      .login(oauth_verifier)
+      .then(async ({ client: loggedClient, accessToken, accessSecret }) => {
+        const username = loggedClient.v1.user.name;
+        logger.log("info", `Authorized account ${username} (v1)`);
+        TwitterAccount.find({ accountName: username }).then(async (data) => {
+          if (data.length > 0) {
+            let twitter = data[0];
+            twitter.accessTokenv1 = accessToken;
+            twitter.accessSecretv1 = accessSecret;
+            twitter
+              .save()
+              .then(() => {
+                logger.log("info", "Twitter (v1) account added");
+              })
+              .then(() => {
+                res.redirect(
+                  `https://${domain}/?status=success&message=Twitter&20v1%20account%20added`
+                );
+              })
+              .catch((err) => {
+                logger.log(
+                  "error",
+                  "Could not save Twitter (v1) account to database"
+                );
+                console.log(err);
+                res.redirect(
+                  `https://${domain}/?status=error&message=Could&20not%20save%20Twitter%20account%20v1`
+                );
+              });
+          } else {
+            logger.log("error", "Twitter account not logged in via API v2");
+            res.redirect(
+              `https://${domain}/?status=error&message=Twitter&20account%20not%20found.%20Have%20you%20logged%20in%20using%20Twitter%20v2%3F`
+            );
+          }
+        });
+      })
+      .catch(() => {
+        logger.log("error", "Invalid verifier or access tokens (v1)");
+        res.status(403).json({
+          status: "error",
+          message: "Invalid verifier or access tokens",
+        });
       });
   });
   exp.get("/twitter/accounts", authenticateToken, async function (req, res) {
@@ -141,7 +216,7 @@ export async function post(
   pollOptions = pollOptions || null;
   await TwitterAccount.find({ accountName })
     .then(async (data) => {
-      const client = await twitterUserClient(
+      const clientv2 = await twitterUserClientv2(
         data[0].accessToken,
         data[0].refreshToken,
         data[0].expiresIn,
@@ -152,13 +227,24 @@ export async function post(
         logger.log("debug", "Tweet is type: Text");
       } else {
         logger.log("debug", "Tweet is type: Poll");
-        options = {
-          poll: { duration_minutes: pollDuration, options: pollOptions },
+        options["poll"] = {
+          duration_minutes: pollDuration,
+          options: pollOptions,
         };
       }
-      const { data: createdTweet } = await client.v2.tweet(text, options);
+      if (attachment) {
+        logger.log("debug", "Tweet has media attached");
+        const clientv1 = new TwitterApi({
+          appKey: clientId,
+          appSecret: clientSecret,
+          accessToken: data[0].accessTokenv1,
+          accessSecret: data[0].accessSecretv1,
+        });
+        options["media_ids"] = await clientv1.v1.uploadMedia(attachment);
+      }
+      const { data: createdTweet } = await clientv2.v2.tweet(text, options);
       logger.log("info", `New tweet created with ID ${createdTweet.id}`);
-      result = createdTweet.id;
+      result = tweet.id;
       Post.findById(id)
         .then((data) => {
           data.data.twitter.status = "posted";
@@ -210,7 +296,7 @@ export async function post(
   return result;
 }
 
-async function twitterUserClient(
+async function twitterUserClientv2(
   accessTokenCurrent,
   refreshTokenCurrent,
   expiresIn,

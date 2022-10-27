@@ -14,6 +14,10 @@ export async function route(exp) {
   exp.post("/posts", authenticateToken, async function (req, res) {
     const json = await req.body;
     const validation = validatePost(json);
+    let attachmentPath = null;
+    if (json.attachment) {
+      attachmentPath = `/data/fileuploads/${req.user.name}/${json.attachment}`;
+    }
     if (!validation.error) {
       const dateTime = new Date(
         `${new Date(json.datetime).toUTCString()}${tzo}`
@@ -21,7 +25,7 @@ export async function route(exp) {
       const postJson = {
         accounts: json.accounts,
         text: json.text,
-        attachment: json.attachment || null,
+        attachment: attachmentPath,
         datetime: dateTime,
         pollDuration: json.pollDuration || null,
         pollOptions: json.pollOptions || null,
@@ -54,7 +58,9 @@ export async function route(exp) {
         });
     } else {
       logger.log("error", `Bad request: ${validation.error.message}`);
-      res.status(401).json({ status: "error", message: validation.error.message });
+      res
+        .status(401)
+        .json({ status: "error", message: validation.error.message });
     }
   });
   exp.delete("/posts", authenticateToken, async function (req, res) {
