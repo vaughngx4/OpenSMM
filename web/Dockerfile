@@ -22,7 +22,7 @@ RUN rm -f /etc/nginx/conf.d/default.conf && \
     mkdir -p /var/www/assets/js/modules/masonry && \
     mkdir /ssl
 
-RUN curl -L https://use.fontawesome.com/releases/v6.1.2/fontawesome-free-6.1.2-web.zip \
+RUN curl -L https://use.fontawesome.com/releases/v6.3.0/fontawesome-free-6.3.0-web.zip \
     -o /var/www/assets/fa.zip && \
     cd /var/www/assets && \
     unzip fa.zip && \
