@@ -15,7 +15,7 @@ RUN apk update && apk add --no-cache \
     openssl \
     ca-certificates
 
-COPY ./php.ini /etc/php8/php.ini
+COPY ./php.ini /etc/php81/php.ini
 
 RUN rm -f /etc/nginx/conf.d/default.conf && \
     mkdir /logs && \
