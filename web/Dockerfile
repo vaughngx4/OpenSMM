@@ -2,14 +2,14 @@ FROM nginx:alpine
 LABEL maintainer="vaughngx4 (vaughng@pm.me)"
 WORKDIR /
 RUN apk update && apk add --no-cache \
-    php8 \
-    php8-fpm \
-    php8-common \
-    php8-cli \
-    php8-session \
-    php8-json \
-    php8-curl \
-    php8-redis \
+    php81 \
+    php81-fpm \
+    php81-common \
+    php81-cli \
+    php81-session \
+    php81-json \
+    php81-curl \
+    php81-redis \
     curl \
     unzip \
     openssl \
@@ -50,4 +50,4 @@ EXPOSE 443/tcp
 VOLUME /var/www
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD /usr/sbin/nginx && php-fpm8 -O && tail -f /dev/null
+CMD /usr/sbin/nginx && php-fpm81 -O && tail -f /dev/null

@@ -6,6 +6,7 @@ import { twitterAccountSchema } from "../models/twitter.js";
 import { postSchema } from "../models/post.js";
 
 const logger = new Logger("db");
+mongoose.set('strictQuery', true);
 
 const dbUser = process.env.DATABASE_USER || "opensmm";
 const dbPass = process.env.DATABASE_PASSWORD || "opensmm";

@@ -47,7 +47,7 @@ services:
       TWITTER_CLIENT_ID: ${TWITTER_CLIENT_ID}
       TWITTER_CLIENT_SECRET: ${TWITTER_CLIENT_SECRET}
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
-      DEBUG: ${DEBUG}
+      LOG_LEVEL: ${LOG_LEVEL}
     volumes:
       - ./data/api:/data
       - ./data/logs:/logs
