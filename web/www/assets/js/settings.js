@@ -1,6 +1,6 @@
-import { allowToggle } from "./modules/topbar.js";
 import { addStyleSheet, removeStyleSheet, changeTheme } from "./modules/themes.js";
-allowToggle();
+import { nav } from "./nav.js";
+nav('settings')
 changeTheme();
 
 // UI

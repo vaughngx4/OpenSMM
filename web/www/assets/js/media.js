@@ -1,10 +1,10 @@
 import { gallery } from "./modules/gallery.js";
 import { changeTheme } from "./modules/themes.js";
-import { allowToggle } from "./modules/topbar.js";
 import { prompt, closePrompt } from "./modules/prompt.js";
 import { loading } from "./modules/loading.js";
 import { fileUpload } from "./api.js";
-allowToggle();
+import { nav } from "./nav.js";
+nav('media')
 changeTheme();
 
 // UI

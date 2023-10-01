@@ -3,7 +3,7 @@ import cors from "cors";
 import Logger from "./application/logger.js";
 import db from "./application/database.js";
 import * as auth from "./application/authentication.js";
-import * as twitter from "./application/twitter.js"; 
+// import * as twitter from "./application/twitter.js"; 
 import * as post from "./application/post.js";
 import * as files from "./application/files.js";
 const logger = new Logger("app");
@@ -21,7 +21,7 @@ exp.use(cors(options));
 
 db.start();
 auth.route(exp);
-twitter.route(exp);
+// twitter.route(exp);
 post.route(exp);
 files.route(exp);
 

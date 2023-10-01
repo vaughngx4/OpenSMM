@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 const { connect, model } = mongoose;
 import Logger from "./logger.js";
 import { userSchema } from "../models/user.js";
-import { twitterAccountSchema } from "../models/twitter.js";
+import { accountSchema } from "../models/account.js";
 import { postSchema } from "../models/post.js";
 
 const logger = new Logger("db");
-mongoose.set('strictQuery', true);
+mongoose.set("strictQuery", true);
 
 const dbUser = process.env.DATABASE_USER || "opensmm";
 const dbPass = process.env.DATABASE_PASSWORD || "opensmm";
@@ -14,10 +14,10 @@ const dbName = process.env.DATABASE_NAME || "opensmm";
 const dbURI = `mongodb://${dbUser}:${dbPass}@opensmm-db/${dbName}?retryWrites=true&w=majority`;
 
 const User = model("User", userSchema);
-const TwitterAccount = model("TwitterAccount", twitterAccountSchema);
+const Account = model("Account", accountSchema);
 const Post = model("Post", postSchema);
 
-function start(){
+function start() {
   connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       logger.log("info", "Database connection established");
@@ -28,4 +28,4 @@ function start(){
     });
 }
 
-export default { start, dbURI, User, TwitterAccount, Post };
+export default { start, dbURI, User, Account, Post };

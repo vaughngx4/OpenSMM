@@ -20,15 +20,10 @@ async function doPrompt(text, type, element, callback) {
   let result = null;
   document.getElementById("promptText").innerHTML = text;
   var container = document.getElementById("promptContent");
-  container.borderRadius = "10px";
   container.innerHTML = ``;
   container.appendChild(element);
   var btnBox = document.createElement("div");
-  btnBox.style.display = "flex";
-  btnBox.style.padding = "5px";
-  btnBox.style.flexDirection = "row";
-  btnBox.style.width = "96%";
-  btnBox.style.justifyContent = "space-around";
+  btnBox.className = "button-box";
   if (type == "confirm" && callback != "none") {
     //create confirm and cancel buttons
     var confirm = document.createElement("button");

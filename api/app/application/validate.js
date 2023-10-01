@@ -1,5 +1,13 @@
 import Joi from "joi";
 
+export function validateLogin(login) {
+  const JoiSchema = Joi.object({
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+  }).options({ abortEarly: false });
+  return JoiSchema.validate(login);
+}
+
 export function validatePost(post) {
   const JoiSchema = Joi.object({
     accounts: {

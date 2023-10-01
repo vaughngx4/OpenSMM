@@ -7,9 +7,27 @@ import db from "./database.js";
 const { User } = db;
 import Logger from "./logger.js";
 const logger = new Logger("auth");
+import { validateLogin } from "./validate.js";
 
 const secret = process.env.SECRET_1;
 const refresh_secret = process.env.SECRET_2;
+
+export async function createUser(u, p, r, t) {
+  t = t || null;
+  const password = await hash(p, 10);
+  const user = new User({
+    username: u.toLowerCase(),
+    password,
+  });
+  user
+    .save()
+    .then(() => {
+      logger.log("info", `User [${u}] created successfully`);
+    })
+    .catch((err) => {
+      logger.log("error", `Error creating user: ${err}`);
+    });
+}
 
 export async function route(exp) {
   const locked = false;
@@ -17,7 +35,7 @@ export async function route(exp) {
     if (level == 1) {
       locked = true;
       logger.log(
-        "warn",
+        "error",
         "ESCAPE LEVEL 1 - AUTHENTICATION HAS BEEN LOCKED, PLEASE FIX ERROR(S) AND RESTART"
       );
     }
@@ -36,7 +54,7 @@ export async function route(exp) {
               User.findByIdAndDelete(data[0]._id)
                 .then(async () => {
                   logger.log("info", "Deleted old admin user");
-                  await createAdmin(u, p);
+                  await createUser(u, p, "admin");
                 })
                 .catch((err) => {
                   logger.log(
@@ -49,7 +67,7 @@ export async function route(exp) {
             logger.log("error", "duplicate admin user found, locking");
             escape(1);
           } else if (data.length == 0) {
-            await createAdmin(u, p);
+            await createUser(u, p, "admin");
           }
         })
         .catch(() => {
@@ -59,46 +77,35 @@ export async function route(exp) {
       logger.log("error", "No admin user set in config");
     }
   }
-  async function createAdmin(u, p) {
-    const password = await hash(p, 10);
-    const user = new User({
-      username: u,
-      password,
-    });
-    user
-      .save()
-      .then(() => {
-        logger.log("info", "Admin user created successfully");
-      })
-      .catch((err) => {
-        logger.log("error", `Error creating admin user: ${err}`);
-      });
-  }
   await initAdmin();
   async function authenticate(user, pass) {
-    let status_code = 500;
+    let status = {};
+    status["code"] = 500;
     await User.find({ username: user })
       .then(async (data) => {
         if (data.length == 1) {
           const authenticated = await compare(pass, data[0].password);
           if (authenticated && !locked) {
-            status_code = 200;
+            status["code"] = 200;
+            status["user"] = {
+              name: data[0].username,
+            };
           } else {
-            status_code = 403;
+            status["code"] = 403;
           }
         } else if (data.length == 0) {
-          status_code = 403;
+          status["code"] = 403;
         } else {
           logger.log("error", "duplicate admin user found, locking");
           escape(1);
-          status_code = 500;
+          status["code"] = 500;
         }
       })
       .catch((err) => {
         logger.log("error", `Authentication error: ${err}`);
-        status_code = 500;
+        status["code"] = 500;
       });
-    return status_code;
+    return status;
   }
   async function makeTokenValid(token, user) {
     return await cache(user.name, token);
@@ -124,29 +131,38 @@ export async function route(exp) {
     return status;
   }
   exp.post("/api/authenticate", async function (req, res) {
-    const username = req.body["username"];
-    const password = req.body["password"];
-    const statusCode = await authenticate(username, password);
-    if (statusCode == 200) {
-      const user = { name: username };
-      const accessToken = generateAccessToken(user);
-      const refreshToken = sign(user, refresh_secret);
-      await makeTokenValid(refreshToken, user)
-        .then(() => {
-          logger.log("info", `User [${username}] authenticated successfully`);
-          res
-            .status(200)
-            .json({ status: "success", accessToken, refreshToken });
-        })
-        .catch((err) => {
-          logger.log("error", "Token caching error: " + err);
-          res.status(500).json({ status: "error" });
-        });
-    } else if (statusCode == 403) {
-      logger.log("info", `User [${username}] authentication failed`);
-      res.status(403).json({ status: "error" });
+    const validation = validateLogin(req.body);
+    const username = validation.value?.username;
+    const password = validation.value?.password;
+    if (!validation.error) {
+      const status = await authenticate(username, password);
+      if (status.code == 200) {
+        const user = status.user;
+        const accessToken = generateAccessToken(user);
+        const refreshToken = sign(user, refresh_secret);
+        await makeTokenValid(refreshToken, user)
+          .then(() => {
+            logger.log("info", `User [${username}] authenticated successfully`);
+            res
+              .status(200)
+              .json({ status: "success", accessToken, refreshToken });
+          })
+          .catch((err) => {
+            logger.log("error", "Token caching error: " + err);
+            res.status(500).json({ status: "error" });
+          });
+      } else if (status.code == 403) {
+        logger.log("info", `User [${username}] authentication failed`);
+        res.status(403).json({ status: "error" });
+      } else {
+        res.status(500).json({ status: "error" });
+      }
     } else {
-      res.status(500).json({ status: "error" });
+      logger.log("error", `Bad request: ${validation.error.message}`);
+      res.status(500).json({
+        status: "error",
+        message: `Bad request: ${validation.error.message}`,
+      });
     }
   });
   exp.post("/api/re-toke", async function (req, res) {
@@ -156,9 +172,6 @@ export async function route(exp) {
         res.status(403).json({ status: "error" });
         logger.log("debug", "Token could not be verified:denied");
       } else {
-        user = {
-          name: user.name,
-        };
         const status = await validateToken(reToke, user);
         if (status == 200) {
           const accessToken = generateAccessToken(user);
@@ -214,7 +227,7 @@ export function authenticateToken(req, res, next) {
 }
 
 function generateAccessToken(user) {
-  return sign(user, secret, { expiresIn: 10 });
+  return sign(user, secret, { expiresIn: 10000 });
 }
 
 export default { route, authenticateToken };

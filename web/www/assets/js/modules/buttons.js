@@ -52,8 +52,8 @@ export function dropDown(defaultText, dropItems) {
     if (!event.target.matches(".drop-btn")) {
       if ((dropContent.style.display = "block")) {
         dropContent.style.display = "none";
-        dropBtn.style.borderBottomLeftRadius = "6px";
-        dropBtn.style.borderBottomRightRadius = "6px";
+        dropBtn.style.borderBottomLeftRadius = "20px";
+        dropBtn.style.borderBottomRightRadius = "20px";
       }
     }
   };

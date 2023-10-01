@@ -2,6 +2,7 @@
 data
 api/app/node_modules
 api/app/package-lock.json
-web/www/assets/fontawesome
-init-mongo.js
+web/www/assets/node_modules
+web/www/assets/package-lock.json
 web/www/assets/js/modules/masonry
+init-mongo.js

@@ -1,9 +1,9 @@
 #!/bin/bash
-IFS="=" read -a db_name_arr <<< $(cat .env | grep DATABASE_NAME | tr -d "'")
+IFS="=" read -ra db_name_arr <<< "$(grep DATABASE_NAME < .env | tr -d "'")"
 db_name=${db_name_arr[1]};
-IFS="=" read -a db_user_arr <<< $(cat .env | grep DATABASE_USER | tr -d "'")
+IFS="=" read -ra db_user_arr <<< "$(grep DATABASE_USER < .env | tr -d "'")"
 db_user=${db_user_arr[1]};
-IFS="=" read -a db_pass_arr <<< $(cat .env | grep DATABASE_PASSWORD | tr -d "'")
+IFS="=" read -ra db_pass_arr <<< "$(grep DATABASE_PASSWORD < .env | tr -d "'")"
 db_pass=${db_pass_arr[1]};
 
 cp init-mongo-template.js init-mongo.js
