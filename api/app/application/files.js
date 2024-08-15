@@ -5,7 +5,9 @@ import { authenticateToken } from "./authentication.js";
 import Logger from "./logger.js";
 import ffmpeg from "fluent-ffmpeg";
 import sharp from "sharp";
+import { isNumeric } from "./validate.js";
 const logger = new Logger("filesystem");
+
 const supportedImageMimes = [
   "image/png",
   "image/jpeg",
@@ -13,6 +15,7 @@ const supportedImageMimes = [
   "image/gif",
   "image/webp",
 ];
+
 const supportedVideoMimes = [
   "video/webm",
   "video/ogg",
@@ -31,20 +34,20 @@ const supportedVideoMimes = [
 ];
 
 export async function route(exp) {
-  exp.put("/files", authenticateToken, async function (req, res) {
+  exp.put("/files/upload/:token", authenticateToken, async function (req, res) {
     await fileFromReq(req, res);
   });
-  exp.get("/files", authenticateToken, async function (req, res) {
-    if (existsSync(`/data/fileuploads/${req.user.name}/`)) {
-      readdir(`/data/fileuploads/${req.user.name}/`, (err, files) => {
+  exp.get("/files/list", authenticateToken, async function (req, res) {
+    if (existsSync(`/data/fileuploads/${req.user._id}/`)) {
+      readdir(`/data/fileuploads/${req.user._id}/`, (err, files) => {
         if (err) {
           logger.log(
             "error",
-            `Error listing files in /data/fileuploads/${req.user.name}/`
+            `Error listing files in /data/fileuploads/${req.user._id}/`
           );
           res.status(500).json({ status: "error", message: "Server error" });
         } else {
-          files.splice(files.indexOf("thumbnails"));
+          files.splice(files.indexOf("thumbnails"), 1);
           res.status(200).json({ status: "success", data: files });
         }
       });
@@ -53,22 +56,31 @@ export async function route(exp) {
     }
   });
   exp.get(
-    "/files/thumb/:token/:filename/:index",
+    "/files/thumbnail/:token/:filename/:index",
     authenticateToken,
     async function (req, res) {
-      const file = `/data/fileuploads/${req.user.name}/thumbnails/${req.params.filename}${req.params.index}.webp`;
-      if (existsSync(file)) {
-        res.sendFile(file);
+      if (isNumeric(req.params.index)) {
+        const file = `/data/fileuploads/${req.user._id}/thumbnails/${req.params.filename}${req.params.index}.webp`;
+        if (existsSync(file)) {
+          res.sendFile(file);
+        } else {
+          res.status(500).json({ status: "error", message: "No such file" });
+        }
       } else {
-        res.status(500).json({ status: "error", message: "No such file" });
+        res
+          .status(400)
+          .json({
+            status: "error",
+            message: "Bad request: thumbnail index must be an integer",
+          });
       }
     }
   );
   exp.get(
-    "/files/file/:token/:filename",
+    "/files/download/:token/:filename",
     authenticateToken,
     async function (req, res) {
-      const file = `/data/fileuploads/${req.user.name}/${req.params.filename}`;
+      const file = `/data/fileuploads/${req.user._id}/${req.params.filename}`;
       if (existsSync(file)) {
         res.sendFile(file);
       } else {
@@ -80,7 +92,7 @@ export async function route(exp) {
 
 // only works for authenticated routes due to the username being part of the path
 async function fileFromReq(req, res) {
-  const dir = `/data/fileuploads/${req.user.name}/`;
+  const dir = `/data/fileuploads/${req.user._id}/`;
   let filename = "unknown.tmp";
   // create folders if they don't already exist
   if (!existsSync(dir + "thumbnails/")) {
@@ -119,7 +131,9 @@ async function fileFromReq(req, res) {
     // check if file type is supported and if yes, process file
     const supported = await processFile(dir, filename);
     if (supported) {
-      res.status(200).json({ status: "success", data: `${filename} uploaded successfully` });
+      res
+        .status(200)
+        .json({ status: "success", data: `${filename} uploaded successfully` });
     } else {
       res
         .status(405)
@@ -163,7 +177,7 @@ async function imageThumbs(dir, filename) {
     .webp()
     .resize({
       fit: sharp.fit.contain,
-      width: 200
+      width: 200,
     })
     .toFile(dir + "thumbnails/" + filename + "0.webp");
 }

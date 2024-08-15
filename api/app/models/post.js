@@ -1,50 +1,47 @@
-import pkg from "mongoose";
-const { Schema } = pkg;
+import { Schema } from "mongoose";
 
-export const accountsSchema = new Schema({
-  twitter: {
-    type: Array,
+const dataSchema = new Schema({
+  account: {
+    // account to be posted to
+    type: Schema.Types.ObjectId,
+    ref: "Account",
+    required: true,
+  },
+  postId: {
+    // id returned by API upon creating the post - may be used to publish after posting
+    type: String,
     required: false,
   },
-});
-
-const twitterDataSchema = new Schema({
-  postId: {
-    type: String,
-    required: false
-  },
   status: {
+    // whether or not the post has been posted/published or if an error has occurred
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 export const postSchema = new Schema(
   {
-    accounts: accountsSchema,
     text: {
+      // text to be published
+      type: String,
+      required: false,
+    },
+    link: {
+      // url to be uncluded with text
       type: String,
       required: false,
     },
     attachment: {
+      // attachment is stored as local path
       type: String,
       required: false,
     },
     datetime: {
+      // date/time to publish, scheduled time may differ - post may be created unpublished
       type: Date,
       required: true,
     },
-    pollDuration: {
-      type: Number,
-      required: false
-    },
-    pollOptions: {
-      type: Array,
-      required: false,
-    },
-    data: {
-      twitter: twitterDataSchema
-    },
+    data: [dataSchema],
   },
   { timestamps: true }
 );

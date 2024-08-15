@@ -1,8 +1,12 @@
 # Documentation
 
+## Notice
+
+Documentation is a work in progress, some information may be missing. Please see Discord for assistance.
+
 ## Setup
 
-- [Twitter API Setup](twitter-api-v2.md "Twitter API setup instructions")
+- [Facebook API Setup](facebook.md "Facebook API setup instructions")
 
 ## Development
 

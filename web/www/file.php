@@ -1,4 +1,18 @@
 <?php
+// session access
+session_start();
+session_regenerate_id();
+if (!isset($_SESSION['token'])) {
+  header("Location: /login");
+}
+
+// custom redirect
+function redirect($url, $statusCode = 307)
+{
+  header('Location: ' . $url, true, $statusCode);
+  die();
+}
+
 function httpPost($url, $data)
 {
   $ch = curl_init();
@@ -17,6 +31,7 @@ function httpPost($url, $data)
     return $response;
   }
 }
+
 function newToken()
 {
   $api_scheme = getenv("API_SCHEME");
@@ -37,14 +52,26 @@ function newToken()
     }
   }
 }
-session_start();
-session_regenerate_id();
-if (!isset($_SESSION['token'])) {
-  header("Location: /login");
-} else {
-  header('Content-Type: application/json');
-  $data = array(
-    'token' => newToken()
-  );
-  echo json_encode($data);
+$request = $_SERVER['REQUEST_URI'];
+
+// get necessary params
+$parts = parse_url($request);
+parse_str($parts['query'], $query);
+$type = $query['type'];
+$fn = $query['filename'];
+$index = $query['index'];
+
+// redirect to download if type is download
+if ($type === 'download') {
+  redirect('/files/download/' . newToken() . "/" . $fn);
+}
+
+// redirect to upload if type is upload
+if ($type === 'upload') {
+  redirect('/files/upload/' . newToken());
+}
+
+// redirect to thumbnail if type is thumbnail
+if ($type === 'thumbnail') {
+  redirect('/files/thumbnail/' . newToken() . '/' . $fn . '/' . $index);
 }

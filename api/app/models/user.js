@@ -1,5 +1,4 @@
-import pkg from "mongoose";
-const { Schema } = pkg;
+import { Schema } from "mongoose";
 
 export const userSchema = new Schema(
   {
@@ -11,13 +10,9 @@ export const userSchema = new Schema(
       type: String,
       required: true,
     },
-    tokens: {
-      type: Array,
-      required: false,
-    },
-    privelages: {
-      type: Array,
-      required: false,
+    role: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

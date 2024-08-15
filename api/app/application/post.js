@@ -1,48 +1,58 @@
-// import { post as twitterPost } from "./twitter.js";
-import { schedule, unschedule } from "./schedule.js";
-import auth from "./authentication.js";
-const { authenticateToken } = auth;
+import { scheduleDateTime, unschedule } from "./schedule.js";
+import { authenticateToken } from "./authentication.js";
 import { validatePost } from "./validate.js";
 import Logger from "./logger.js";
-import db from "./database.js";
-const { Post } = db;
+import { Post } from "./database.js";
+import * as facebook from "./socials/facebook.js";
 const logger = new Logger("post");
 
 const tzo = process.env.TIMEZONE_OFFSET || "+0";
 
 export async function route(exp) {
   exp.post("/posts", authenticateToken, async function (req, res) {
-    const json = await req.body;
+    let json = await req.body;
     const validation = validatePost(json);
-    let attachmentPath = null;
-    if (json.attachment) {
-      attachmentPath = `/data/fileuploads/${req.user.name}/${json.attachment}`;
-    }
+    json = validation.value;
+    let attachmentPaths = [];
     if (!validation.error) {
-      const dateTime = new Date(
+      if (json.attachment) {
+        for (const attachment of json.attachment) {
+          attachmentPaths.push(
+            `/data/fileuploads/${req.user._id}/${attachment}`
+          );
+        }
+      }
+      const datetime = new Date(
         `${new Date(json.datetime).toUTCString()}${tzo}`
       );
-      const postJson = {
-        accounts: json.accounts,
+      let data = [];
+      for (const account of json.accounts) {
+        logger.log("debug", "Account referenced, adding to post data");
+        data.push({
+          account,
+          status: "pending",
+        });
+      }
+      let post = new Post({
         text: json.text,
-        attachment: attachmentPath,
-        datetime: dateTime,
-        pollDuration: json.pollDuration || null,
-        pollOptions: json.pollOptions || null,
-        data: {
-          twitter: {
-            status: "pending",
-          },
-        },
-      };
-      const post = new Post(postJson);
+        datetime: datetime,
+        data: data,
+      });
+      if (attachmentPaths.length > 0) {
+        post["attachment"] = attachmentPaths;
+      }
+      logger.log(
+        "sensitive",
+        "A post is being scheduled and will now be saved to the database",
+        post
+      );
       post
         .save()
         .then((data) => {
-          schedule(data._id.toString(), dateTime, async () => {
+          scheduleDateTime(data._id.toString(), datetime, async () => {
             doPost(data._id);
           }).then(() => {
-            logger.log("info", "A post was scheduled");
+            logger.log("info", "A post was scheduled successfully");
             res.status(200).json({
               status: "success",
               message: "Post scheduled successfully",
@@ -59,7 +69,7 @@ export async function route(exp) {
     } else {
       logger.log("error", `Bad request: ${validation.error.message}`);
       res
-        .status(401)
+        .status(400)
         .json({ status: "error", message: validation.error.message });
     }
   });
@@ -98,31 +108,59 @@ export async function route(exp) {
         });
       });
   });
-  exp.put("/posts", authenticateToken, async function (req, res) {});
 }
 
 export async function doPost(postId) {
   Post.findById(postId)
     .populate({
-      path: "accounts",
-      populate: {
-        path: "twitter",
-      },
+      path: "data",
     })
-    .then((data) => {
-      data.accounts.twitter.forEach((account) => {
-        twitterPost(
-          postId,
-          account,
-          data.text,
-          data.attachment || null,
-          data.pollDuration || null,
-          data.pollOptions || null
-        );
-      });
-      // call post for other socials here like data.accounts.facebook.forEach((account){...});
+    .populate({
+      path: "data.account",
+    })
+    .then(async (data) => {
+      logger.log("debug", "Post found, starting post process...");
+      for (const postData of data.data) {
+        switch (postData.account.platform) {
+          case "facebook":
+            await facebook.post(data, postData.account);
+            break;
+        }
+      }
     })
     .catch((err) => {
       logger.log("error", `Post failed: ${err}`);
+    });
+}
+
+export async function setStatus(post, account, status, postId) {
+  postId = postId || false;
+  Post.findById(post._id)
+    .populate({
+      path: "data",
+      populate: {
+        path: "account",
+        model: "Account",
+      },
+    })
+    .then((data) => {
+      const index = data.data
+        .map((e) => {
+          return e.account._id.toString();
+        })
+        .indexOf(account._id.toString());
+      data.data[index].status = status;
+      if (postId) {
+        data.data[index].postId = postId;
+      }
+      logger.log(
+        "sensitive",
+        "== Post ID and/or status has been changed ==",
+        data
+      );
+      data.save();
+    })
+    .catch((error) => {
+      logger.log("error", `Error setting post status/ID`, error);
     });
 }

@@ -1,4 +1,4 @@
-import { gallery } from "./modules/gallery.js";
+import { Gallery } from "./modules/classes/gallery.js";
 import { changeTheme } from "./modules/themes.js";
 import { prompt, closePrompt } from "./modules/prompt.js";
 import { loading } from "./modules/loading.js";
@@ -73,7 +73,7 @@ uploadBtn.addEventListener("click", () => {
 });
 appScreen.appendChild(uploadBtn);
 
-let media = await gallery("/files");
-appScreen.appendChild(media);
+const gallery = new Gallery("/file");
+appScreen.appendChild(await gallery.create());
 
 // UI

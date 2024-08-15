@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 const { connect, model } = mongoose;
 import Logger from "./logger.js";
 import { userSchema } from "../models/user.js";
-import { accountSchema } from "../models/account.js";
 import { postSchema } from "../models/post.js";
+import { accountSchema } from "../models/account.js";
 
 const logger = new Logger("db");
 mongoose.set("strictQuery", true);
@@ -11,13 +11,13 @@ mongoose.set("strictQuery", true);
 const dbUser = process.env.DATABASE_USER || "opensmm";
 const dbPass = process.env.DATABASE_PASSWORD || "opensmm";
 const dbName = process.env.DATABASE_NAME || "opensmm";
-const dbURI = `mongodb://${dbUser}:${dbPass}@opensmm-db/${dbName}?retryWrites=true&w=majority`;
+export const dbURI = `mongodb://${dbUser}:${dbPass}@opensmm-db/${dbName}?retryWrites=true&w=majority`;
 
-const User = model("User", userSchema);
-const Account = model("Account", accountSchema);
-const Post = model("Post", postSchema);
+export const User = model("User", userSchema);
+export const Post = model("Post", postSchema);
+export const Account = model("Account", accountSchema);
 
-function start() {
+export function start() {
   connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       logger.log("info", "Database connection established");
@@ -28,4 +28,6 @@ function start() {
     });
 }
 
-export default { start, dbURI, User, Account, Post };
+export async function toId(id) {
+  return await mongoose.Types.ObjectId(id);
+}

@@ -1,10 +1,10 @@
 import Agenda from "agenda";
-import db from "./database.js";
-const { dbURI } = db;
+import { dbURI } from "./database.js";
 
 const agenda = new Agenda({ db: { address: dbURI } });
+await agenda.start();
 
-export async function schedule(name, date, callback) {
+export async function scheduleDateTime(name, date, callback) {
   agenda.define(
     `${name}`,
     { priority: "high", concurrency: 10 },
@@ -13,7 +13,6 @@ export async function schedule(name, date, callback) {
       done();
     }
   );
-  await agenda.start();
   await agenda.schedule(date, `${name}`);
 }
 

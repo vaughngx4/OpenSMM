@@ -17,29 +17,41 @@ export async function prompt(text, type, element, callback) {
   return result;
 }
 async function doPrompt(text, type, element, callback) {
+  element = element || null;
   let result = null;
   document.getElementById("promptText").innerHTML = text;
   var container = document.getElementById("promptContent");
+  container.borderRadius = "10px";
   container.innerHTML = ``;
-  container.appendChild(element);
+  if (element) {
+    container.appendChild(element);
+  }
   var btnBox = document.createElement("div");
-  btnBox.className = "button-box";
-  if (type == "confirm" && callback != "none") {
+  btnBox.style.display = "flex";
+  btnBox.style.padding = "5px";
+  btnBox.style.marginTop = "5px";
+  btnBox.style.flexDirection = "row";
+  btnBox.style.width = "96%";
+  btnBox.style.justifyContent = "space-around";
+  if (type == "cancel" || (type == "confirm" && callback != "none")) {
     //create confirm and cancel buttons
-    var confirm = document.createElement("button");
-    confirm.classList.add('confirm');
-    confirm.innerHTML = "Confirm";
-    confirm.addEventListener("click", (event) => {
-      closePrompt();
-      result = callback();
-      return result;
-    });
-    btnBox.appendChild(confirm);
+    if (type == "confirm") {
+      var confirm = document.createElement("button");
+      confirm.classList.add("confirm");
+      confirm.innerHTML = "Confirm";
+      confirm.addEventListener("click", (event) => {
+        // closePrompt();
+        result = callback();
+        return result;
+      });
+      btnBox.appendChild(confirm);
+    }
     var cancel = document.createElement("button");
-    cancel.classList.add('cancel');
+    cancel.classList.add("cancel");
     cancel.innerHTML = "Cancel";
     cancel.addEventListener("click", (event) => {
       closePrompt();
+      // callback();
       return false;
     });
     btnBox.appendChild(cancel);
@@ -49,15 +61,18 @@ async function doPrompt(text, type, element, callback) {
     );
   } else if (type == "notify") {
     var okay = document.createElement("button");
-    okay.classList.add('okay')
+    okay.classList.add("okay");
     okay.innerHTML = "Okay";
     okay.addEventListener("click", (event) => {
       closePrompt();
+      if (callback != "none") {
+        callback();
+      }
     });
     btnBox.appendChild(okay);
   } else if (type == "warn") {
     var done = document.createElement("button");
-    done.classList.add('done');
+    done.classList.add("done");
     done.innerHTML = "Done";
     done.addEventListener("click", (event) => {
       closePrompt();

@@ -1,6 +1,4 @@
 ---
-version: "3.7"
-
 services:
   opensmm-web:
     image: sintelli/opensmm-web:latest
@@ -16,6 +14,8 @@ services:
       SSL_KEY: ${SSL_KEY}
       SSL_CRT: ${SSL_CRT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      API_SCHEME: ${API_SCHEME}
+      API_DOMAIN: ${API_DOMAIN}
       API_PORT: ${API_PORT}
     security_opt:
       - no-new-privileges:true
@@ -31,6 +31,7 @@ services:
       - opensmm-redis
     environment:
       DOMAIN: ${DOMAIN}
+      DOMAIN_PORT: ${DOMAIN_PORT}
       API_CORS_ALLOWED: ${API_CORS_ALLOWED}
       ADMIN_USER: ${ADMIN_USER}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
@@ -39,13 +40,15 @@ services:
       DATABASE_NAME: ${DATABASE_NAME}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       API_PORT: ${API_PORT}
-      SECRET_1: ${SECRET_1}
-      SECRET_2: ${SECRET_2}
+      SECRET: ${SECRET}
+      SECRET2: ${SECRET2}
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       LOG_LEVEL: ${LOG_LEVEL}
+      FACEBOOK_APP_ID: ${FACEBOOK_APP_ID}
+      FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET}
+      FACEBOOK_CONFIG_ID: ${FACEBOOK_CONFIG_ID}
     volumes:
       - ./data/api:/data
-      - ./data/logs:/logs
     security_opt:
       - no-new-privileges:true
     networks:

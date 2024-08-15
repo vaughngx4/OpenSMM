@@ -2,6 +2,7 @@
 data
 api/app/node_modules
 api/app/package-lock.json
+api/app/config/default.json
 web/www/assets/node_modules
 web/www/assets/package-lock.json
 web/www/assets/js/modules/masonry

@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export function validateLogin(login) {
+export  function validateLogin(login) {
   const JoiSchema = Joi.object({
     username: Joi.string().required(),
     password: Joi.string().required(),
@@ -10,16 +10,18 @@ export function validateLogin(login) {
 
 export function validatePost(post) {
   const JoiSchema = Joi.object({
-    accounts: {
-      twitter: Joi.array().required(), // change to optional when more platforms are added
-    },
+    accounts: Joi.array().items(Joi.string()).required(),
     text: Joi.string().optional(),
-    attachment: Joi.string().optional(),
-    datetime: Joi.date().raw().required(),
-    pollDuration: Joi.number().optional(),
-    pollOptions: Joi.array().optional(),
+    attachment: Joi.array().items(Joi.string()).optional().default([]),
+    datetime: Joi.date().iso().required(),
   }).options({ abortEarly: false });
   return JoiSchema.validate(post);
 }
 
-export function validateUser(user) {}
+export function isNumeric(str) {
+  if (typeof str != "string") return false; // we only process strings!
+  return (
+    !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+    !isNaN(parseFloat(str))
+  ); // ...and ensure strings of whitespace fail
+}

@@ -1,155 +1,23 @@
-import {
-  getTwitterAccounts,
-  postScheduledPost,
-  getPosts,
-  deletePost,
-} from "./api.js";
+import { postScheduledPost, getPosts, deletePost, getAccounts } from "./api.js";
 import { popUp, closePopup } from "./modules/modal-popup.js";
-import {
-  dropDown,
-  accordian,
-  iconButton,
-  multiAdd,
-} from "./modules/buttons.js";
+import { accordian, iconButton, dropDown } from "./modules/buttons.js";
 import { prompt, closePrompt } from "./modules/prompt.js";
-//import Validate from "./validate.js";
 import { popMsg } from "./modules/popup-message.js";
 import { loading } from "./modules/loading.js";
-import { gallery } from "./modules/gallery.js";
-import { dot } from "./modules/tags.js";
+import { Gallery } from "./modules/classes/gallery.js";
+import { NotificationBadge } from "./modules/classes/notification-count.js";
 import { changeTheme } from "./modules/themes.js";
-import { rtk } from "./tasks.js";
 import { nav } from "./nav.js";
-nav('home')
+import { loadParamsMessage } from "./modules/params.js";
+nav("home");
 changeTheme();
 
-//const validate = new Validate();
 loading();
 
-// UI
 let appScreen = document.getElementById("appScreen");
 appScreen.className = "app-screen";
 
-// add account button
-let addBtn = document.createElement("button");
-addBtn.className = "button1";
-addBtn.innerText = "Add Account";
-addBtn.addEventListener("click", async () => {
-  choosePlatform();
-});
-appScreen.appendChild(addBtn);
-let accounts = document.createElement("div");
-accounts.className = "accounts";
-appScreen.appendChild(accounts);
-
-// accounts overview
-let twitterAccount = document.createElement("div");
-twitterAccount.className = "account";
-twitterAccount.style.background = "#1DA1F2";
-let accountIcon = document.createElement("ion-icon");
-accountIcon.className = "icon";
-accountIcon.name = "logo-twitter";
-twitterAccount.appendChild(accountIcon);
-accounts.appendChild(twitterAccount);
-let accountCount = document.createElement("h1");
-accountCount.className = "text";
-accountCount.innerText = "0";
-twitterAccount.appendChild(accountCount);
-
-// schedule post button
-let postBtn = document.createElement("button");
-postBtn.className = "button1";
-postBtn.innerText = "Schedule a Post";
-postBtn.style.marginTop = "20px";
-postBtn.style.marginBottom = "15px";
-postBtn.addEventListener("click", async () => {
-  newPost();
-});
-appScreen.appendChild(postBtn);
-
-// posts view shows next
-// UI
-
-// functions
-// get url parameters
-function getUrlParams() {
-  let vars = {};
-  window.location.href.replace(
-    /[?&]+([^=&]+)=([^&]*)/gi,
-    function (m, key, value) {
-      vars[key] = value;
-    }
-  );
-  if (Object.keys(vars).length === 0) {
-    return false;
-  } else {
-    return vars;
-  }
-}
-
-// load params as prompt
-async function loadMessage() {
-  const params = getUrlParams();
-  if (params) {
-    let elem = document.createElement("div");
-    elem.style.display = "flex";
-    elem.style.flexDirection = "column";
-    elem.style.alignItems = "center";
-    let image = document.createElement("img");
-    image.style.height = "80px";
-    image.style.width = "80px";
-    image.style.padding = "10px";
-    let text = "Error!";
-    image.src = "/assets/img/error.png";
-    if ("success" == params["status"]) {
-      text = "Success!";
-      image.src = "/assets/img/success.png";
-    }
-    elem.appendChild(image);
-    let message = document.createElement("p");
-    message.style.color = "#fff";
-    message.style.padding = "10px";
-    message.innerText = decodeURIComponent(params["message"]);
-    elem.appendChild(message);
-    prompt(text, "notify", elem);
-  }
-}
-async function choosePlatform() {
-  let elem = document.createElement("div");
-  elem.style.display = "flex";
-  elem.style.flexDirection = "column";
-  elem.style.alignItems = "center";
-  const drop = dropDown("-- choose a platform --", ["Twitter"]);
-  drop.style.marginTop = "20px";
-  elem.appendChild(drop);
-  let btnBox = document.createElement("div");
-  btnBox.className = "button-box";
-  elem.appendChild(btnBox);
-  let goBtn = document.createElement("button");
-  goBtn.className = "confirm";
-  goBtn.innerText = "Add";
-  goBtn.style.marginTop = "40px";
-  goBtn.addEventListener("click", async () => {
-    addAccount(drop.querySelector(".drop-btn").innerText);
-    closePopup();
-  });
-  btnBox.appendChild(goBtn);
-  let cancelBtn = document.createElement("button");
-  cancelBtn.className = "cancel";
-  cancelBtn.innerText = "Cancel";
-  cancelBtn.style.marginTop = "40px";
-  cancelBtn.addEventListener("click", async () => {
-    closePopup();
-  });
-  btnBox.appendChild(cancelBtn);
-  popUp("Add Account", elem);
-}
-
-async function addAccount(platform) {
-  if ("Twitter" === platform){
-    window.open(`/twitter/login/${await rtk()}`, "_self");
-  }
-}
+loadParamsMessage();
 
 async function newPost() {
   let container = document.createElement("div");
@@ -181,16 +49,12 @@ async function newPost() {
   // date time selection
   let dateSelector = document.createElement("div");
   dateSelector.classList.add("date-selector");
-  // dateSelector.style.display = "flex";
-  // dateSelector.style.flexDirection = "row";
-  // dateSelector.style.padding = "20px";
   let dateLabel = document.createElement("label");
   dateLabel.innerText = "Scheduled Date: ";
   dateLabel.htmlFor = "scheduledDate";
   dateSelector.appendChild(dateLabel);
   let dateInput = document.createElement("input");
   dateInput.type = "datetime-local";
-  //dateInput.value = new Date().toString;
   dateInput.style.marginLeft = "10px";
   dateSelector.appendChild(dateInput);
   col2.appendChild(dateSelector);
@@ -205,173 +69,162 @@ async function newPost() {
   accountsView.classList.add("accounts-view");
   col1.appendChild(accountsView);
 
-  // account selection
-  let accountSelection = document.createElement("div");
-  accountSelection.classList.add("account-selection");
-  let twitterChk = document.createElement("input");
-  twitterChk.className = "checkbox";
-  twitterChk.type = "checkbox";
-  const result = await getTwitterAccounts();
-  const twitterAccounts = result.data;
-  // const twitterAccounts = ["sintelli_tech", "mindglowingart"]; // debug !!!
-  let options = [];
-  twitterAccounts.forEach((item) => {
-    let opt = document.createElement("div");
-    opt.className = "option";
-    opt.style.display = "flex";
-    opt.style.flexDirection = "row";
-    opt.style.padding = "10px";
-    opt.style.justifyContent = "space-between";
-    let optText = document.createElement("div");
-    optText.style.display = "flex";
-    optText.style.flexDirection = "row";
-    optText.style.marginLeft = "80px";
-    let optTextPre = document.createElement("h2");
-    optTextPre.style.fontSize = "14px";
-    optTextPre.style.fontWeight = "300";
-    optTextPre.innerText = "@";
-    optText.appendChild(optTextPre);
-    let optItem = document.createElement("h3");
-    optItem.style.fontSize = "14px";
-    optItem.style.fontWeight = "300";
-    optItem.innerText = item;
-    optText.appendChild(optItem);
-    opt.appendChild(optText);
-    let chk = document.createElement("input");
-    chk.type = "checkbox";
-    chk.className = "checkbox";
-    chk.addEventListener("click", async () => {
-      toggleChkChild(twitterChk, chk);
-    });
-    opt.appendChild(chk);
-    options.push(opt);
+  // account selector
+  const accounts = await getAccounts();
+  let accountSelector = document.createElement("div");
+  accountSelector.classList.add("account-selector");
+  if (accounts.length == 0) {
+    let msg = document.createElement("p");
+    msg.innerText = "Nothing to see here. Try adding an account first!";
+    accountSelector.appendChild(msg);
+  }
+  // facebook account selector
+  const fbAccounts = accounts.filter((e) => {
+    if (e.platform == "facebook") {
+      return e;
+    }
   });
-  let twitterAccountSelections = accordian(
-    "Twitter",
-    options,
-    '<i class="fa-brands fa-twitter"></i>',
-    twitterChk
-  );
-  accountSelection.appendChild(twitterAccountSelections);
-  twitterChk.addEventListener("click", async () => {
-    toggleChkMaster(twitterChk, twitterAccountSelections);
-  });
-  let selectedAccounts = {
-    twitter: [],
-  };
+  if (fbAccounts.length > 0) {
+    const fbAccountSelector = accountSelectorAccordian(fbAccounts, "facebook");
+    accountSelector.appendChild(fbAccountSelector);
+  }
+  // selector logic
+  let selectedAccountsIds = [];
+  let selectedAccounts = [];
   let accountSelectionButton = document.createElement("button");
   accountSelectionButton.innerText = "Choose Accounts";
   accountSelectionButton.classList.add("button1");
   col1.appendChild(accountSelectionButton);
   accountSelectionButton.addEventListener("click", () => {
-    prompt("Choose Accounts", "confirm", accountSelection, () => {
-      selectedAccounts = {
-        twitter: [],
-      };
-      twitterAccountSelections.querySelectorAll(".option").forEach((opt) => {
-        if (true == opt.querySelector(".checkbox").checked) {
-          selectedAccounts.twitter.push(opt.querySelector("h3").innerText);
-        }
-      });
-      accountsView.innerHTML = "";
-      for (const key in selectedAccounts) {
-        selectedAccounts[key].forEach((acc) => {
-          let account = document.createElement("div");
-          account.classList.add("selected-account");
-          // user images are not yet implemented in the api
-          // let img = document.createElement("img");
-          // img.src=`/${key}/attachments/userimg`;
-          // account.appendChild(img);
-          let accTypeBadge = document.createElement("i");
-          accTypeBadge.className = `fa-brands fa-${key}`;
-          account.appendChild(accTypeBadge);
-          let username = document.createElement("p");
-          username.innerText = acc;
-          account.appendChild(username);
-          accountsView.appendChild(account);
-        });
+    prompt("Choose Accounts", "confirm", accountSelector, () => {
+      selectedAccountsIds = [];
+      selectedAccounts = [];
+      if (accounts.length > 0) {
+        accountSelector
+          .querySelectorAll(".option")
+          .forEach((opt) => {
+            if (opt.querySelector(".checkbox").checked) {
+              const acc =
+                accounts[
+                  accounts
+                    .map((e) => {
+                      return e._id;
+                    })
+                    .indexOf(opt.querySelector(".id").innerText)
+                ];
+              selectedAccountsIds.push(acc._id);
+              selectedAccounts.push(acc);
+            }
+          });
       }
+      accountsView.innerHTML = "";
+      for (const obj of selectedAccounts) {
+        let account = document.createElement("div");
+        account.classList.add("selected-account");
+        // user images are not yet implemented in the api, uncomment the lines below to hard-code a test image
+        // let img = document.createElement("img");
+        // img.src=`/${key}/attachments/userimg`;
+        // account.appendChild(img);
+        let accTypeBadge = document.createElement("ion-icon");
+        accTypeBadge.name = `logo-${obj.platform}`;
+        account.appendChild(accTypeBadge);
+        let username = document.createElement("p");
+        username.innerText = obj.userEmail;
+        account.appendChild(username);
+        accountsView.appendChild(account);
+      }
+      closePrompt();
     });
   });
 
-  // poll settings
-  let pollSettings = document.createElement("div");
-  pollSettings.style.display = "flex";
-  pollSettings.style.flexDirection = "column";
-  pollSettings.style.alignItems = "center";
-  pollSettings.style.padding = "15px";
-  let pollDuration = document.createElement("div");
-  pollDuration.style.display = "flex";
-  pollDuration.style.flexDirection = "row";
-  pollDuration.style.padding = "10px";
-  let pollDurationLabel = document.createElement("label");
-  pollDurationLabel.innerText = "Duration: ";
-  pollDurationLabel.htmlFor = "pollDuration";
-  pollDuration.appendChild(pollDurationLabel);
-  let pollDurationMins = document.createElement("input");
-  pollDurationMins.name = "pollDuration";
-  pollDurationMins.type = "number";
-  pollDurationMins.min = "1";
-  pollDurationMins.style.height = "18px";
-  pollDurationMins.style.width = "60px";
-  pollDuration.appendChild(pollDurationMins);
-  let pollDurationText = document.createElement("p");
-  pollDurationText.innerText = "minutes";
-  pollDuration.appendChild(pollDurationText);
-  pollSettings.appendChild(pollDuration);
-  let pollOpts = document.createElement("div");
-  pollOpts.style.display = "flex";
-  pollOpts.style.flexDirection = "column";
-  pollOpts.style.alignItems = "center";
-  pollOpts.style.padding = "15px";
-  let pollOptsLabel = document.createElement("label");
-  pollOptsLabel.innerText = "Poll Options";
-  pollOpts.appendChild(pollOptsLabel);
-  multiAdd(pollOpts, "newpolloption");
-  pollSettings.appendChild(pollOpts);
+  let post = {};
+
+  // // poll settings
+  // let pollSettings = document.createElement("div");
+  // pollSettings.style.display = "flex";
+  // pollSettings.style.flexDirection = "column";
+  // pollSettings.style.alignItems = "center";
+  // pollSettings.style.padding = "15px";
+  // let pollDuration = document.createElement("div");
+  // pollDuration.style.display = "flex";
+  // pollDuration.style.flexDirection = "row";
+  // pollDuration.style.padding = "10px";
+  // let pollDurationLabel = document.createElement("label");
+  // pollDurationLabel.innerText = "Duration: ";
+  // pollDurationLabel.htmlFor = "pollDuration";
+  // pollDuration.appendChild(pollDurationLabel);
+  // let pollDurationMins = document.createElement("input");
+  // pollDurationMins.name = "pollDuration";
+  // pollDurationMins.type = "number";
+  // pollDurationMins.min = "1";
+  // pollDurationMins.style.height = "18px";
+  // pollDurationMins.style.width = "60px";
+  // pollDuration.appendChild(pollDurationMins);
+  // let pollDurationText = document.createElement("p");
+  // pollDurationText.innerText = "minutes";
+  // pollDuration.appendChild(pollDurationText);
+  // pollSettings.appendChild(pollDuration);
+  // let pollOpts = document.createElement("div");
+  // pollOpts.style.display = "flex";
+  // pollOpts.style.flexDirection = "column";
+  // pollOpts.style.alignItems = "center";
+  // pollOpts.style.padding = "15px";
+  // let pollOptsLabel = document.createElement("label");
+  // pollOptsLabel.innerText = "Poll Options";
+  // pollOpts.appendChild(pollOptsLabel);
+  // multiAdd(pollOpts, "newpolloption");
+  // pollSettings.appendChild(pollOpts);
 
   // post options
   let postOptions = document.createElement("div");
   postOptions.className = "post-options";
 
-  let post = {};
-  // poll options button
-  let pOBtn = document.createElement("button");
-  pOBtn.className = "button1";
-  pOBtn.innerText = "Poll Settings";
-  pOBtn.addEventListener("click", () => {
-    prompt("Poll Settings(Optional)", "confirm", pollSettings, () => {
-      let pollDuration = pollDurationMins.value || null;
-      let pollOptions = [];
-      let pollOptElems = document.querySelectorAll(".newpolloption");
-      pollOptElems.forEach((elem) => {
-        pollOptions.push(elem.value);
-      });
-      if (pollOptions.length < 1) {
-        pollOptions = null;
-        pollDuration = null;
-      }
-      if (pollDuration && pollOptions) {
-        post["pollDuration"] = pollDuration;
-        post["pollOptions"] = pollOptions;
-      }
-    });
-  });
-  postOptions.appendChild(pOBtn);
+  // // poll options button
+  // let pOBtn = document.createElement("button");
+  // pOBtn.className = "button1";
+  // pOBtn.innerText = "Poll Settings";
+  // pOBtn.addEventListener("click", () => {
+  //   prompt("Poll Settings(Optional)", "confirm", pollSettings, () => {
+  //     let pollDuration = pollDurationMins.value || null;
+  //     let pollOptions = [];
+  //     let pollOptElems = document.querySelectorAll(".newpolloption");
+  //     pollOptElems.forEach((elem) => {
+  //       pollOptions.push(elem.value);
+  //     });
+  //     if (pollOptions.length < 1) {
+  //       pollOptions = null;
+  //       pollDuration = null;
+  //     }
+  //     if (pollDuration && pollOptions) {
+  //       post["pollDuration"] = pollDuration;
+  //       post["pollOptions"] = pollOptions;
+  //     }
+  //   });
+  // });
+  // postOptions.appendChild(pOBtn);
 
   // add attachment button
+  let btnContainer = document.createElement("div");
+  btnContainer.className = "button-container";
   let attachBtn = document.createElement("button");
   attachBtn.className = "button1";
   attachBtn.innerText = "Attach Media";
+  let badge = new NotificationBadge(0);
+  btnContainer.appendChild(attachBtn);
+  btnContainer.appendChild(badge.getElement());
+  let attachments = [];
   attachBtn.addEventListener("click", async () => {
-    let gal = await gallery("/files", (filename) => {
-      post["attachment"] = filename;
+    const gallery = new Gallery("/file", (filename) => {
+      attachments.push(filename);
       closePrompt();
-      dot("#3260a8", attachBtn);
+      badge.addValue(1);
     });
-    prompt("Attach Media", "floating", gal);
+    let gal = await gallery.create();
+    prompt("Attach Media", "cancel", gal, () => {
+      gallery.stop(gallery.loadMsnry);
+    });
   });
-  postOptions.appendChild(attachBtn);
+  postOptions.appendChild(btnContainer);
 
   col2.appendChild(postOptions);
 
@@ -380,9 +233,34 @@ async function newPost() {
   scheduleBtn.className = "button1";
   scheduleBtn.innerText = "Schedule Post";
   scheduleBtn.addEventListener("click", async () => {
-    post["accounts"] = selectedAccounts;
+    post["accounts"] = selectedAccountsIds;
     post["text"] = postText.value;
     post["datetime"] = dateInput.value;
+    if (0 == post.accounts.length) {
+      popMsg(
+        "var(--yellow",
+        "var(--darker)",
+        "Please select at least 1 account"
+      );
+      return;
+    }
+    const sd = new Date(post.datetime);
+    const cd = new Date();
+    if ("" == post.datetime || sd - cd < 0) {
+      popMsg("var(--yellow", "var(--darker)", "Invalid date/time selected");
+      return;
+    }
+    if ("" == post.text && attachments.length == 0) {
+      popMsg(
+        "var(--yellow",
+        "var(--darker)",
+        "Please add either text or media to your post"
+      );
+      return;
+    }
+    if (attachments.length > 0) {
+      post["attachment"] = attachments;
+    }
     closePopup();
     loading();
     const res = await postScheduledPost(post);
@@ -399,46 +277,11 @@ async function newPost() {
   popUp("New Post", container);
 }
 
-// showPosts() // debug !!!
-
 async function showPosts() {
   let outerContainer = document.createElement("div");
   outerContainer.className = "posts-container";
   const result = await getPosts();
   const posts = result.data;
-  // const date = new Date(); // debug !!!
-  // const posts = [ // debug !!!
-  //   {
-  //     _id: "12345",
-  //     text: "some post text",
-  //     datetime: date,
-  //     data: {
-  //       twitter: {
-  //         status: "pending",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     _id: "56345",
-  //     text: "some post text",
-  //     datetime: date,
-  //     data: {
-  //       twitter: {
-  //         status: "posted",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     _id: "12346453465",
-  //     text: "some post text",
-  //     datetime: date,
-  //     data: {
-  //       twitter: {
-  //         status: "error",
-  //       },
-  //     },
-  //   },
-  // ];
   posts.forEach((post) => {
     let container = document.createElement("div");
     container.className = "post";
@@ -450,7 +293,7 @@ async function showPosts() {
     datetime.innerText = new Date(post.datetime).toLocaleString();
     container.appendChild(datetime);
     let deletePostBtn = iconButton(
-      `<i class="fa-solid fa-trash-can"></i>`,
+      `<ion-icon name="trash-outline"></ion-icon>`,
       null,
       "var(--red)"
     );
@@ -459,18 +302,29 @@ async function showPosts() {
       delText.style.fontWeight = "300";
       delText.innerHTML =
         "This won't delete the post from social media,<br> only from the database and/or schedule.";
-      prompt("Are you sure?", "confirm", delText, () => {
-        deletePost(post._id);
-        popDash();
+      prompt("Are you sure?", "confirm", delText, async () => {
+        await deletePost(post._id);
+        location.reload();
       });
     });
     container.appendChild(deletePostBtn);
     outerContainer.appendChild(container);
-    if ("pending" == post.data.twitter.status) {
-      container.style.borderRightColor = "var(--neutral-blue)";
-    } else if ("posted" == post.data.twitter.status) {
+    let finalStatus = "unknown";
+    for (const data of post.data) {
+      console.log(data.status.split(":"));
+      if (data.status.split(":")[0] == "pending") {
+        finalStatus = "pending";
+      } else if (data.status.split(":")[0] == "posted") {
+        finalStatus = "posted";
+      } else if (data.status.split(":")[0] == "error") {
+        finalStatus = "error";
+      }
+    }
+    if ("pending" == finalStatus) {
+      container.style.borderRightColor = "var(--neutral)";
+    } else if ("posted" == finalStatus) {
       container.style.borderRightColor = "var(--green)";
-    } else if ("error" == post.data.twitter.status) {
+    } else if ("error" == finalStatus) {
       container.style.borderRightColor = "var(--red)";
     }
   });
@@ -522,13 +376,133 @@ async function showPosts() {
 }
 
 async function popDash() {
-  const result = await getTwitterAccounts();
-  accountCount.innerText = `${result.data.length}`;
-  const posts = document.querySelectorAll(".posts-container");
-  posts.forEach((post) => {
-    post.remove();
+  appScreen.innerHTML = "";
+
+  // add account button
+  let addAccountBtn = document.createElement("button");
+  addAccountBtn.className = "button1";
+  addAccountBtn.innerText = "Add Account";
+  addAccountBtn.style.marginTop = "20px";
+  addAccountBtn.addEventListener("click", async () => {
+    addAccount();
   });
+  appScreen.appendChild(addAccountBtn);
+
+  let accounts = document.createElement("div");
+  accounts.className = "accounts";
+  appScreen.appendChild(accounts);
+
+  // accounts overview
+  function numAccounts(platform, bgColor, count) {
+    let accc = document.createElement("div");
+    accc.className = "account";
+    accc.style.background = bgColor;
+    let accountIcon = document.createElement("ion-icon");
+    accountIcon.className = "icon";
+    accountIcon.name = `logo-${platform}`;
+    accc.appendChild(accountIcon);
+    accounts.appendChild(accc);
+    let accountCount = document.createElement("h1");
+    accountCount.className = "text";
+    accountCount.innerText = count;
+    accc.appendChild(accountCount);
+  }
+
+  // schedule post button
+  let postBtn = document.createElement("button");
+  postBtn.className = "button1";
+  postBtn.innerText = "Schedule a Post";
+  postBtn.style.marginTop = "20px";
+  postBtn.style.marginBottom = "15px";
+  postBtn.addEventListener("click", async () => {
+    newPost();
+  });
+  appScreen.appendChild(postBtn);
+  const result = await getAccounts();
+  // account count
+  // Instagram
+  // numAccounts(
+  //   "instagram",
+  //   "#E1306C",
+  //   result.filter((e) => {
+  //     return e.platform == "instagram";
+  //   }).length || 0
+  // );
+  // // Twitter
+  // numAccounts(
+  //   "twitter",
+  //   "#1DA1F2",
+  //   result.filter((e) => {
+  //     return e.platform == "twitter";
+  //   }).length || 0
+  // );
+  // Facebook
+  numAccounts(
+    "facebook",
+    "#0165E1",
+    result.filter((e) => {
+      return e.platform == "facebook";
+    }).length || 0
+  );
+  //const posts = document.querySelectorAll(".posts-container");
+  //posts.forEach((post) => {
+  //  post.remove();
+  //});
   await showPosts();
+}
+
+function accountSelectorAccordian(accounts, platform, useAtSymbol) {
+  useAtSymbol = useAtSymbol || false;
+  if (accounts.length > 0) {
+    let mainChk = document.createElement("input");
+    mainChk.className = "checkbox";
+    mainChk.type = "checkbox";
+    let options = [];
+    accounts.forEach((item) => {
+      // container
+      let opt = document.createElement("div");
+      opt.className = "account-option-at";
+      opt.classList.add("option");
+      // hidden identifier
+      let hidId = document.createElement("label");
+      hidId.classList.add("id");
+      hidId.innerText = item._id;
+      hidId.hidden = true;
+      opt.appendChild(hidId);
+      // text container
+      let optText = document.createElement("div");
+      opt.appendChild(optText);
+      if (useAtSymbol) {
+        // @ symbol
+        let optTextPre = document.createElement("h2");
+        optTextPre.innerText = "@";
+        optText.appendChild(optTextPre);
+      }
+      // display name (username/tag/page name etc.)
+      let optItem = document.createElement("h3");
+      optItem.innerText = item.userEmail;
+      optText.appendChild(optItem);
+      // checkbox
+      let chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.className = "checkbox";
+      chk.addEventListener("click", async () => {
+        toggleChkChild(mainChk, chk);
+      });
+      opt.appendChild(chk);
+      options.push(opt);
+    });
+    let accountSelector = accordian(
+      platform.charAt(0).toUpperCase() + platform.slice(1),
+      options,
+      `<ion-icon name="logo-${[platform]}"></ion-icon>`,
+      mainChk
+    );
+    mainChk.addEventListener("click", async () => {
+      toggleChkMaster(mainChk, accountSelector);
+    });
+    return accountSelector;
+  }
 }
 
 async function toggleChkMaster(master, elem) {
@@ -547,12 +521,26 @@ async function toggleChkChild(master, child) {
     master.checked = false;
   }
 }
-// functions
+
+async function addAccount() {
+  let elem = document.createElement("div");
+  let accountsDrop = dropDown("choose a platform", ["Facebook Page"]);
+  elem.appendChild(accountsDrop);
+  prompt("Add Account", "confirm", elem, () => {
+    switch (accountsDrop.innerText) {
+      case "Facebook Page":
+        window.location.replace("/facebook/auth");
+        break;
+
+      default:
+        popMsg("var(--yellow)", "var(--darker)", "Please select a platform");
+        break;
+    }
+  });
+}
 
 window.addEventListener("DOMContentLoaded", () => {
   popDash();
   closePrompt();
-  loadMessage();
+  loadParamsMessage();
 });
-
-// popMsg() // debug !!!
