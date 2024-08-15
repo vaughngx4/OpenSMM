@@ -1,0 +1,92 @@
+---
+services:
+  opensmm-web:
+    image: sintelli/opensmm-web:latest
+    container_name: opensmm-web
+    ports:
+      - "8080:80"
+      - "8443:443"
+    restart: unless-stopped
+    depends_on:
+      - opensmm-api
+    environment:
+      DOMAIN: ${DOMAIN}
+      SSL_KEY: ${SSL_KEY}
+      SSL_CRT: ${SSL_CRT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      API_SCHEME: ${API_SCHEME}
+      API_DOMAIN: ${API_DOMAIN}
+      API_PORT: ${API_PORT}
+    volumes:
+      - ./web/www:/var/www
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - opensmm
+
+  opensmm-api:
+    image: sintelli/opensmm-api:latest
+    container_name: opensmm-api
+    command: "nodemon --verbose app.js"
+    restart: unless-stopped
+    depends_on:
+      - opensmm-db
+      - opensmm-redis
+    environment:
+      DOMAIN: ${DOMAIN}
+      DOMAIN_PORT: ${DOMAIN_PORT}
+      API_CORS_ALLOWED: ${API_CORS_ALLOWED}
+      ADMIN_USER: ${ADMIN_USER}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      API_PORT: ${API_PORT}
+      SECRET: ${SECRET}
+      SECRET2: ${SECRET2}
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+      LOG_LEVEL: ${LOG_LEVEL}
+      FACEBOOK_APP_ID: ${FACEBOOK_APP_ID}
+      FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET}
+      FACEBOOK_CONFIG_ID: ${FACEBOOK_CONFIG_ID}
+    volumes:
+      - ./data/api:/data
+      - ./data/logs:/logs
+      - ./api/app:/usr/opensmm/app
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - opensmm
+
+  opensmm-db:
+    image: mongo:latest
+    container_name: opensmm-db
+    environment:
+      - MONGO_INITDB_DATABASE=${DATABASE_NAME}
+      - MONGO_INITDB_ROOT_USERNAME=${DATABASE_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./data/db:/data/db
+    # ports:
+    #   - "27017:27017"
+    restart: unless-stopped
+    networks:
+      - opensmm
+
+  opensmm-redis:
+    image: redis:alpine
+    container_name: opensmm-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - ./data/redis/data:/var/lib/redis
+      - ./data/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - opensmm
+
+networks:
+  opensmm:
+    driver: bridge

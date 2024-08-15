@@ -1,13 +1,23 @@
-FROM node:lts-alpine3.15
-LABEL maintainer="vaughngx4 (vaughng@pm.me)"
+FROM node:20-alpine3.17
+LABEL maintainer="vaughngx4 (vaughng@sintelli-tech.com)"
+
 ENV HOME /home/opensmm
 ENV APP_TMP_DATA=/tmp
+
 RUN apk add --no-cache --upgrade \
-    su-exec
+    su-exec \
+    ffmpeg
+
 WORKDIR /usr/opensmm/app
 COPY ./app ./
+
 RUN npm install
-run chown -R node:node /usr/opensmm/app
+RUN npm install --global nodemon
+RUN chown -R node:node /usr/opensmm/app
+
 COPY ./entrypoint.sh /docker-entrypoint.sh
 COPY ./logo.sh /logo.sh
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+CMD su-exec node npm start

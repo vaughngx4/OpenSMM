@@ -1,12 +1,10 @@
-db.createUser(
+db.createUser({
+  user: "REF_USER",
+  pwd: "REF_PASS",
+  roles: [
     {
-        user  : "opensmm",
-        pwd   : "opensmm",
-        roles : [
-          {
-              role : "readWrite",
-              db   : "opensmm"
-          }
-        ]
-    }
-)
+      role: "readWrite",
+      db: "REF_DB",
+    },
+  ],
+});

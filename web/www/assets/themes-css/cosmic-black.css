@@ -1,0 +1,95 @@
+:root {
+    --cosmic-black: #10141F;
+    --cosmic-black2: #181c25;
+    --cosmic-darker-blue: #303C4C;
+    --cosmic-dark-blue: #3D485C;
+    --cosmic-blue: #5C6880;
+    --cosmic-light-blue: #7E8EA8;
+    --cosmic-lighter-blue: #8CA0BB;
+    --cosmic-highlight-blue: #d0e4fd;
+    --cosmic-highlight-blue2: #e7f2ff;
+    --cosmic-blue-grey: #4F5B6B;
+}
+
+body .body-section,
+.modal-content,
+.text-area,
+#infoHeading,
+.modal-content input,
+.prompt,
+.prompt-content input,
+.prompt-text {
+    background: linear-gradient(0deg, var(--cosmic-black) 0%, var(--cosmic-darker-blue) 100%);
+}
+
+.main .topbar,
+.navigation,
+#appScreen,
+.post-info > div,
+.popup {
+    background: linear-gradient(0deg, var(--cosmic-darker-blue) 0%, var(--cosmic-blue-grey) 100%);
+}
+
+.button1, 
+#loginBtn,
+button,
+.dropdown-item,
+.navigation.active a .icon,
+.file-input-label-item {
+    color: var(--cosmic-highlight-blue);
+    background-color: unset;
+    background: linear-gradient(0deg, var(--cosmic-blue) 0%, var(--cosmic-light-blue) 100%);
+}
+
+button:hover,
+.navigation ul li:hover,
+.dropdown-item:hover,
+.file-input-label-item:hover {
+    color: var(--cosmic-highlight-blue2);
+    background-color: unset;
+    background: linear-gradient(0deg, var(--cosmic-light-blue) 0%, var(--cosmic-lighter-blue) 100%);
+}
+
+.post {
+    background: linear-gradient(0deg, var(--cosmic-light-blue) 0%, var(--cosmic-lighter-blue) 100%);
+}
+
+.button1,
+.navigation ul li a,
+.toggle .icon,
+.search label input,
+.userimg .fa-solid,
+.search label input::placeholder,
+.fa-search::before,
+.prompt-text,
+.prompt-content p,
+label, p,
+.modal-content,
+#infoHeading,
+.modal-content input,
+.drop-btn,
+.modal-content p,
+.info-heading,
+.post p,
+.popup p {
+    color: var(--cosmic-highlight-blue);
+}
+
+
+.search label input,
+.account,
+.navigation ul li:first-child,
+.accounts-view,
+.text-area,
+.drop-btn,
+.post {
+    border-color: var(--cosmic-lighter-blue);
+}
+
+.modal-content {
+    box-shadow: var(--cosmic-dark-blue) 7px 7px 20px;
+}
+
+.footer {
+    background-color: var(--cosmic-black2);
+}

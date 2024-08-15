@@ -1,1 +1,3 @@
-www/assets/fontawesome
+www/assets/node_modules
+www/assets/package-lock.json
+www/assets/js/modules/masonry

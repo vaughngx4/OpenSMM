@@ -1,0 +1,98 @@
+:root {
+    --pitch-black: #373B41;
+    --pitch-darker-black: #1D1F21;
+    --pitch-dark-black: #212121;
+    --pitch-light-black: #8C8C8C;
+    --pitch-lighter-black: #C8CDCA;
+    --pitch-highlight-black: #F1F2F6;
+}
+
+body .body-section,
+.modal-content,
+.text-area,
+#infoHeading,
+.modal-content input,
+.prompt,
+.prompt-content input,
+.prompt-text {
+    background: linear-gradient(0deg, var(--pitch-dark-black) 0%, var(--pitch-black) 100%);
+}
+
+.main .topbar,
+.navigation,
+#appScreen,
+.post-info > div,
+.info-heading {
+    background: linear-gradient(0deg, var(--pitch-dark-black) 0%, var(--pitch-black) 100%);
+}
+
+.button1, 
+#loginBtn,
+button,
+.dropdown-item,
+.navigation.active a .icon,
+.popup,
+.file-input-label-item {
+    color: var(--pitch-darker-black);
+    background-color: unset;
+    background: linear-gradient(0deg, var(--pitch-black) 0%, var(--pitch-lighter-black) 100%);
+}
+
+button:hover,
+.navigation ul li:hover,
+.dropdown-item:hover,
+.file-input-label-item:hover {
+    color: var(--pitch-darker-black);
+    background-color: unset;
+    background: linear-gradient(0deg, var(--pitch-light-black) 0%, var(--pitch-lighter-black) 100%);
+}
+
+.post {
+    background: linear-gradient(0deg, var(--pitch-light-black) 0%, var(--pitch-lighter-black) 100%);
+}
+
+.navigation ul li a,
+.toggle .icon,
+.userimg .fa-solid,
+.fa-search::before,
+.prompt-text,
+.prompt-content p,
+label, p,
+.modal-content,
+#infoHeading,
+.modal-content input,
+.drop-btn,
+.modal-content p,
+.info-heading,
+.post p,
+.popup p {
+    color: var(--pitch-highlight-black);
+}
+
+.button1,
+.search label input,
+.search label input::placeholder {
+    color: var(--pitch-dark-black);
+}
+
+
+.search label input,
+.account,
+.navigation ul li:first-child,
+.accounts-view,
+.text-area,
+.drop-btn,
+.post,
+.prompt-content input {
+    border-color: var(--pitch-lighter-black);
+}
+
+.modal-content,
+.post-info > div,
+#appScreen {
+    box-shadow: var(--pitch-darker-black) 7px 7px 20px;
+}
+
+.footer {
+    background-color: var(--pitch-darker-black);
+}

@@ -1,6 +1,4 @@
 ---
-version: "3.7"
-
 services:
   opensmm-web:
     image: sintelli/opensmm-web:latest
@@ -16,12 +14,13 @@ services:
       SSL_KEY: ${SSL_KEY}
       SSL_CRT: ${SSL_CRT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      API_SCHEME: ${API_SCHEME}
+      API_DOMAIN: ${API_DOMAIN}
       API_PORT: ${API_PORT}
     security_opt:
       - no-new-privileges:true
     networks:
-      opensmm:
-        ipv4_address: ${DOCKER_SUBNET}.2
+      - opensmm
 
   opensmm-api:
     image: sintelli/opensmm-api:latest
@@ -32,28 +31,28 @@ services:
       - opensmm-redis
     environment:
       DOMAIN: ${DOMAIN}
-      CORS_ALLOWED: ${API_CORS_ALLOWED}
+      DOMAIN_PORT: ${DOMAIN_PORT}
+      API_CORS_ALLOWED: ${API_CORS_ALLOWED}
       ADMIN_USER: ${ADMIN_USER}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-      DB_USERNAME: ${DATABASE_USER}
-      DB_PASSWORD: ${DATABASE_PASSWORD}
-      DB_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       API_PORT: ${API_PORT}
-      SECRET_1: ${SECRET_1}
-      SECRET_2: ${SECRET_2}
-      TWITTER_CLIENT_ID: ${TWITTER_CLIENT_ID}
-      TWITTER_CLIENT_SECRET: ${TWITTER_CLIENT_SECRET}
+      SECRET: ${SECRET}
+      SECRET2: ${SECRET2}
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
-      DEBUG: ${DEBUG}
+      LOG_LEVEL: ${LOG_LEVEL}
+      FACEBOOK_APP_ID: ${FACEBOOK_APP_ID}
+      FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET}
+      FACEBOOK_CONFIG_ID: ${FACEBOOK_CONFIG_ID}
     volumes:
       - ./data/api:/data
-      - ./data/logs:/logs
     security_opt:
       - no-new-privileges:true
     networks:
-      opensmm:
-        ipv4_address: ${DOCKER_SUBNET}.3
+      - opensmm
 
   opensmm-db:
     image: mongo:latest
@@ -63,15 +62,11 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${DATABASE_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${DATABASE_PASSWORD}
     volumes:
-      - ./data/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - ./data/mongo/db:/data/db
-    # Ports exposed for debugging purposes
-    # ports:
-    #   - "27017:27017"
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./data/db:/data/db
     restart: unless-stopped
     networks:
-      opensmm:
-        ipv4_address: ${DOCKER_SUBNET}.4
+      - opensmm
 
   opensmm-redis:
     image: redis:alpine
@@ -83,13 +78,8 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=master
     networks:
-      opensmm:
-        ipv4_address: ${DOCKER_SUBNET}.5
+      - opensmm
 
 networks:
   opensmm:
     driver: bridge
-    ipam:
-      config:
-        - subnet: ${DOCKER_SUBNET}.0/16
-          gateway: ${DOCKER_SUBNET}.1

@@ -1,36 +1,73 @@
-<div class="sidebar">
-  <nav>
-    <div class="navigation">
-      <div class="toggle">
-        <span class="icon"><i class="fa-solid fa-angles-right"></i><i class="fa-solid fa-angles-left"></i></span>
-      </div>
-      <ul class="navigation-list">
-        <li class="navigation-item">
+<!DOCTYPE html>
+<html lang="en">
+  <div class="toggle">
+    <span class="icon">
+      <ion-icon class="caret-forward" name="caret-forward-outline"></ion-icon>
+      <ion-icon class="caret-backward" name="caret-back-outline"></ion-icon>
+    </span>
+  </div>
+  <div class="sidebar">
+    <ul>
+      <li class="logo" style="--bg: #333">
+        <a href="#">
+          <div class="icon"><ion-icon name="calendar-outline"></ion-icon></div>
+          <div class="text">OpenSMM</div>
+        </a>
+      </li>
+      <div class="menu-list">
+        <li id="sidebar-home" style="--bg: #f44336">
           <a href="/">
-            <!-- <span class="icon"><i class="fa-solid fa-thumbs-up"></i></span> -->
-            <span class="icon icon-logo"><div class="opensmm-logo"></div></span>
-            <span class="title"><h2>OpenSMM</h2></span>
+            <div class="icon">
+              <ion-icon name="home-outline"></ion-icon>
+            </div>
+            <div class="text">Home</div>
           </a>
         </li>
-        <li class="navigation-item">
+        <li id="sidebar-media" style="--bg: #ffa117">
+          <a href="/media">
+            <div class="icon">
+              <ion-icon name="images-outline"></ion-icon>
+            </div>
+            <div class="text">Media</div>
+          </a>
+        </li>
+        <li id="sidebar-settings" style="--bg: #e91e63">
           <a href="/settings">
-            <span class="icon"><i class="fas fa-cogs"></i></span>
-            <span class="title"><h2>Settings</h2></span>
+            <div class="icon">
+              <ion-icon name="settings-outline"></ion-icon>
+            </div>
+            <div class="text">Settings</div>
           </a>
         </li>
-        <li class="navigation-item">
-          <a href="/about">
-            <span class="icon"><i class="fas fa-info-circle"></i></span>
-            <span class="title"><h2>About</h2></span>
+      </div>
+      <li id="sidebar-about" style="--bg: #b145e9">
+        <a href="/about">
+          <div class="icon">
+            <ion-icon name="information-outline"></ion-icon>
+          </div>
+          <div class="text">About</div>
+        </a>
+      </li>
+      <div class="bottom">
+        <li style="--bg: #333">
+          <a href="#">
+            <div class="icon">
+              <div class="imgBx">
+                <img src="assets/img/user-default.png" alt="img" />
+              </div>
+            </div>
+            <div id="user-email" class="text">Username</div>
           </a>
         </li>
-        <li class="navigation-item">
+        <li style="--bg: #333">
           <a href="/logout">
-            <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
-            <span class="title"><h2>Log Out</h2></span>
+            <div class="icon">
+              <ion-icon name="log-out-outline"></ion-icon>
+            </div>
+            <div class="text">Logout</div>
           </a>
         </li>
-      </ul>
-    </div>
-  </nav>
-</div>
+      </div>
+    </ul>
+  </div>
+</html>

@@ -1,9 +1,10 @@
-const Agenda = require("agenda");
-const { dbURI } = require("./database");
+import Agenda from "agenda";
+import { dbURI } from "./database.js";
 
 const agenda = new Agenda({ db: { address: dbURI } });
+await agenda.start();
 
-async function schedule(name, date, callback) {
+export async function scheduleDateTime(name, date, callback) {
   agenda.define(
     `${name}`,
     { priority: "high", concurrency: 10 },
@@ -12,16 +13,13 @@ async function schedule(name, date, callback) {
       done();
     }
   );
-  await agenda.start();
   await agenda.schedule(date, `${name}`);
 }
 
-async function unschedule(name) {
+export async function unschedule(name) {
   return await agenda.cancel({ name: `${name}` });
 }
 
-async function getJobs() {
+export async function getJobs() {
   return await agenda.jobs();
 }
-
-module.exports = { schedule, unschedule, getJobs };

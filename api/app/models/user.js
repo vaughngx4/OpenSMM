@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema } from "mongoose";
 
-const userSchema = new Schema(
+export const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -11,16 +10,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    tokens: {
-      type: Array,
-      required: false,
-    },
-    privelages: {
-      type: Array,
-      required: false,
+    role: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
 );
-
-module.exports = { userSchema };

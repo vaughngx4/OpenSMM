@@ -1,5 +1,5 @@
-const redis = require("redis");
-const Logger = require("./logger");
+import { createClient } from "redis";
+import Logger from "./logger.js";
 const logger = new Logger("cache");
 
 async function initCache(rc) {
@@ -13,7 +13,7 @@ async function initCache(rc) {
     });
 }
 
-async function cache(key, value) {
+export async function cache(key, value) {
   let status = false;
   await rc
     .set(`${key}`, `${value}`)
@@ -28,7 +28,7 @@ async function cache(key, value) {
   return status;
 }
 
-async function uncache(key) {
+export async function uncache(key) {
   let status = false;
   await rc
     .del(`${key}`)
@@ -43,7 +43,7 @@ async function uncache(key) {
   return status;
 }
 
-async function getCache(key) {
+export async function getCache(key) {
   let status = false;
   await rc
     .get(`${key}`)
@@ -58,7 +58,7 @@ async function getCache(key) {
   return status;
 }
 
-const rc = redis.createClient({
+const rc = createClient({
   url: `redis://opensmm-redis:6379`,
   password: process.env.REDIS_PASSWORD,
 });
@@ -68,5 +68,3 @@ initCache(rc);
 rc.on("error", (err) => {
   logger.log("error", `${err}`);
 });
-
-module.exports = { cache, uncache, getCache };

@@ -1,0 +1,97 @@
+:root {
+    --pearl-white: #F0F1F5;
+    --pearl-darker-grey: #020202;
+    --pearl-dark-grey: #BBC3D0;
+    --pearl-grey: #E1E2E4;
+    --pearl-light-grey: #E3E4E6;
+    --pearl-lighter-grey: #F0F1F5;
+    --pearl-highlight-grey: #F1F2F6;
+}
+
+body .body-section,
+.modal-content,
+.text-area,
+#infoHeading,
+.modal-content input,
+.prompt,
+.prompt-content input,
+.prompt-text {
+    background: linear-gradient(0deg, var(--pearl-dark-grey) 0%, var(--pearl-white) 100%);
+}
+
+.main .topbar,
+.navigation,
+#appScreen,
+.post-info > div,
+.info-heading {
+    background: linear-gradient(0deg, var(--pearl-dark-grey) 0%, var(--pearl-grey) 100%);
+}
+
+.button1, 
+#loginBtn,
+button,
+.dropdown-item,
+.navigation.active a .icon,
+.popup,
+.file-input-label-item {
+    color: var(--pearl-darker-grey);
+    background-color: unset;
+    background: linear-gradient(0deg, var(--pearl-white) 0%, var(--pearl-lighter-grey) 100%);
+}
+
+button:hover,
+.navigation ul li:hover,
+.dropdown-item:hover,
+.file-input-label-item:hover {
+    color: var(--cosmic-highlight-blue2);
+    background-color: unset;
+    background: linear-gradient(0deg, var(--pearl-light-grey) 0%, var(--pearl-lighter-grey) 100%);
+}
+
+.post {
+    background: linear-gradient(0deg, var(--pearl-light-grey) 0%, var(--pearl-lighter-grey) 100%);
+}
+
+.button1,
+.navigation ul li a,
+.toggle .icon,
+.userimg .fa-solid,
+.fa-search::before,
+.prompt-text,
+.prompt-content p,
+label, p,
+.modal-content,
+#infoHeading,
+.modal-content input,
+.drop-btn,
+.modal-content p,
+.info-heading,
+.post p,
+.popup p {
+    color: var(--pearl-darker-grey);
+}
+
+.search label input,
+.search label input::placeholder {
+    color: var(--pearl-white);
+}
+
+
+.search label input,
+.account,
+.navigation ul li:first-child,
+.accounts-view,
+.text-area,
+.drop-btn,
+.post,
+.prompt-content input {
+    border-color: var(--pearl-lighter-grey);
+}
+
+.modal-content {
+    box-shadow: var(--pearl-lighter-grey) 7px 7px 20px;
+}
+
+.footer {
+    background-color: var(--pearl-grey);
+}

@@ -1,4 +1,4 @@
-import { changeTheme } from "./themes.js";
-import { allowToggle } from "./topbar.js";
-allowToggle();
+import { changeTheme } from "./modules/themes.js";
+import { nav } from "./nav.js";
+nav('about');
 changeTheme();

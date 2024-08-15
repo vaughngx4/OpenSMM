@@ -1,0 +1,33 @@
+body .body-section,
+.modal-content,
+.text-area,
+#infoHeading {
+    background: linear-gradient(0deg, var(--dark-blue) 0%, var(--blue) 100%);
+}
+
+.main .topbar,
+.navigation,
+#appScreen,
+.post-info > div {
+    background: linear-gradient(0deg, var(--lighter-blue) 0%, var(--lighter-blue2) 100%);
+}
+
+.button1, 
+#loginBtn,
+button,
+.file-input-label-item {
+    color: var(--lighter-blue5);
+    background-color: unset;
+    background: linear-gradient(0deg, var(--lighter-blue) 0%, var(--lighter-blue2) 100%);
+}
+
+button:hover,
+.file-input-label-item:hover {
+    color: var(--highlight-blue2);
+    background-color: unset;
+    background: linear-gradient(0deg, var(--highlight-blue) 0%, var(--lighter-blue3) 100%);
+}
+
+.post {
+    background: linear-gradient(0deg, var(--lighter-blue3) 0%, var(--lighter-blue4) 100%);
+}

@@ -2,13 +2,13 @@
  * Just. Clean. Logs.
  * Usage:
  * const logger = new Logger('mymodule');
- * logger.log('info', 'This is a log message');
+ * logger.log('info', 'This is a log message', rawData);
  * @summary LOGS!
  * @param {string} stat - Application or module the log data is coming from
  */
-const envDebug = process.env.DEBUG || "false";
-const debug = envDebug.toLowerCase();
-let print = false;
+let logLevels = ["info", "warn", "debug", "sensitive"];
+let logLevel = process.env.LOG_LEVEL || "info";
+logLevel = logLevel.toLowerCase();
 class Logger {
   constructor(stat) {
     this.stat = stat.toUpperCase();
@@ -18,15 +18,12 @@ class Logger {
    * @param {string} level - Log level i.e WARN, INFO, DEBUG, ERROR etc.
    * @param {string} message - Log message
    */
-  log(level, message) {
-    if (level.toLowerCase() == "debug" && debug == "true") {
-      print = true;
-    } else if (level.toLowerCase() == "debug" && debug == "false") {
-      print = false;
-    } else {
-      print = true;
-    }
-    if (print) {
+  log(level, message, rawData) {
+    rawData = rawData || false;
+    if (
+      logLevels.indexOf(level.toLocaleLowerCase()) <=
+      logLevels.indexOf(logLevel.toLocaleLowerCase())
+    ) {
       let seconds;
       const d = new Date(new Date().toUTCString());
       if (d.getSeconds() < 10) {
@@ -43,8 +40,11 @@ class Logger {
           ""
         )}`
       );
+      if (rawData) {
+        console.log(rawData);
+      }
     }
   }
 }
 
-module.exports = Logger;
+export default Logger;

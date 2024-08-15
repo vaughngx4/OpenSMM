@@ -1,6 +1,6 @@
-import { allowToggle } from "./topbar.js";
-import { addStyleSheet, removeStyleSheet, changeTheme } from "./themes.js";
-allowToggle();
+import { addStyleSheet, removeStyleSheet, changeTheme } from "./modules/themes.js";
+import { nav } from "./nav.js";
+nav('settings')
 changeTheme();
 
 // UI
@@ -28,11 +28,8 @@ function themeSelector() {
           break;
         }
       }
-      if (selectedTheme == "default") {
-        removeStyleSheet();
-      } else {
-        addStyleSheet(selectedTheme);
-      }
+      removeStyleSheet();
+      addStyleSheet(selectedTheme);
     });
   }
 }
