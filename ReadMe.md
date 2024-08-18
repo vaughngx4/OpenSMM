@@ -4,21 +4,21 @@
 ![forks](https://img.shields.io/github/forks/vaughngx4/OpenSMM?style=for-the-badge "")
 
 ## Description
-OpenSMM(Open Social Media Management) is a self-hosted social media management platform built to assist small businesses manage their social media more easily.
+OpenSMM (Open Social Media Management) is a self-hosted social media management platform built to assist businesses manage their social media more easily.
 
-## :red_circle: Please Note:
+## Please Note!
 - This project is in early development stages.
-- Seek help on Discord(links at the bottom) for general support.
-- All errors (should) print to Docker logs, if you encounter any that you can't fix(not config related) or something goes wrong but no errors are printed, open an issue.
+- Seek help on Discord for general support (links at the bottom of the page).
+- All errors (should) print to Docker logs, if you encounter any that you can't fix (i.e not config related) or something goes wrong but no errors are printed, open an issue.
 
 ### What Works
-- The interface and some basic media functions such as uploading
-- Facebook page text based posting
+- Media Gallery (upload and save media for posting)
+- Posting to Facebook Pages (text)
 
 ## Documentation
-- Documentation is a work in progress: [click to view docs](docs/ReadMe.md "OpenSMM Documentation")
+- [Click here to read the docs](docs/ReadMe.md "OpenSMM Documentation")
 
-## :large_blue_diamond: Installation
+## Installation
 The application is built for Docker, we will have images on Docker Hub when the application is usable. Here's how to get it running for now:
 
 Clone source:
@@ -50,37 +50,55 @@ Build/rebuild images and start containers (cache will be used if no changes are 
 ./rebuild.sh
 ```
 
-## :green_circle: Development
-### ToDo
-- ~~Authenticate Twitter API v2 OAuth2~~
-- ~~Add scheduling interface and cron scheduling~~
-- [x] Add scheduling support
-- [ ] Add poll support?
-- [x] Add attachment support
-- [x] Add validation to api
-- [ ] Add validation to UI
-- [x] Clean up UI and add popup responses
-- ~~Store attached images for reuse~~
-- [x] Store attachments for reuse
-- [ ] Add option to reschedule a post
-- [ ] Add option to add time slots
-- [ ] Add option to auto-schedule to next available time slot
-- ~~[ ] Add Twitter Support~~ (Twitter support was dropped after their rebrand to X, may add in the future)
-- [x] Add Facebook Page support
-- [ ] Add Facebook Page image support
-- [ ] Add Facebook Page video support
-- [ ] Add LinkedIn Page support
-- [ ] Add YouTube support
-- [ ] Add Pinterest support
-- [ ] Add Discord support
-- [ ] Add Instagram support
-- [ ] Add Instagram Business Support
+## Development
+Note that Twitter support was dropped after their rebrand to X. We may add support back in the future.
+
+### Social Platform Support
+- [x] Facebook Pages
+    - [x] Text
+    - [ ] Image
+    - [ ] Video
+- [ ] Instagram
+    - [ ] Image
+    - [ ] Video
+- [ ] Instagram Business
+    - [ ] Image
+    - [ ] Video
+- [ ] YouTube
+    - [ ] Video
+- [ ] Discord
+    - [ ] Text
+    - [ ] Image
+    - [ ] Video
+- [ ] LinkedIn Pages
+    - [ ] Text
+    - [ ] Image
+    - [ ] Video
+- [ ] Pinterest
+    - [ ] Image
+
+### Features
+- [x] Schedule posts
+- [x] Upload and save attachments
+- [ ] Reschedule old posts
+- [ ] Create predefined time slots for posting
+    - [ ] "Quick Post" option - post to next available time slot
+
+### Bug Fixes and Other Development
 - [x] Change auth to use token directly through PHP
+- [x] Add validation to api
+- [x] Clean up UI and add popup responses
+- [x] Store attachments for reuse
 - [ ] Fix app screen size and dynamic resize
 - [ ] Fix Gallery module not filling app screen width
+- [ ] Add validation to UI
 
-## :coffee: Buy Us a Coffee
-If you like what we're doing and want to see more, feel free to leave us a donation! Currently only accepting GitHub Sponsorships.
+## Contact Us
+You can get a hold of us on Discord https://discord.gg/TSnvnjE6zP
 
-## :telephone_receiver: Contact Us
-You can get a hold of us on Discord https://discord.gg/TSnvnjE6zP or send us a message https://sintelli-tech.com/contact
+OR
+
+Send us a message https://sintelli-tech.com/contact
+
+## Donate
+If you like what we're doing and want to see more, consider leaving us a donation by clicking the "Sponsor" button.
