@@ -1,13 +1,11 @@
 # Documentation
 
-## Notice
+If you still need help, check Discord: https://discord.gg/TSnvnjE6zP.
 
-Documentation is a work in progress, some information may be missing. Please see Discord for assistance.
+## General Setup
 
-## Setup
+- [Setting up the Meta API](meta.md "Meta API setup instructions")
 
-- [Facebook API Setup](facebook.md "Facebook API setup instructions")
+## Development Setup
 
-## Development
-
-- [Development Environment Setup](development.md "Development environment setup instructions")
+- [How to use the development environment](development.md "Development environment setup instructions")
