@@ -292,7 +292,7 @@ export async function post(post, account, scheduled) {
   let bodyContent = {
     message: post.text,
     published: true,
-    access_token: account.secondaryAccessToken,
+    access_token: account.token,
   };
   if (post.link) {
     bodyContent["link"] = post.link;
@@ -303,7 +303,7 @@ export async function post(post, account, scheduled) {
     );
     bodyContent["published"] = false;
   }
-  await fetch(`https://graph.facebook.com/v20.0/${account.secondaryId}/feed`, {
+  await fetch(`https://graph.facebook.com/v20.0/${account.id}/feed`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
