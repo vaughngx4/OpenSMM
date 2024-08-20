@@ -14,14 +14,11 @@ export async function route(exp) {
               _id: account._id,
               platform: account.platform,
               type: account.type,
-              userEmail: account.userEmail,
+              userEmail: account.name, // I havent changed the frontend variable name from "userEmail" to "name" yet
             });
           }
         }
-        logger.log(
-          "info",
-          `User [${req.user._id}] read their linked accounts`
-        );
+        logger.log("info", `User [${req.user._id}] read their linked accounts`);
         res.status(200).json({ status: "success", data: accounts });
       })
       .catch((error) => {

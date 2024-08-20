@@ -25,3 +25,8 @@ export function isNumeric(str) {
     !isNaN(parseFloat(str))
   ); // ...and ensure strings of whitespace fail
 }
+
+export function isString(data) {
+  if (typeof data != "string") return false;
+  return true;
+}

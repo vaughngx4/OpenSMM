@@ -18,28 +18,18 @@ export const accountSchema = new Schema(
       type: String,
       required: true,
     },
-    userEmail: {
+    name: {
       // how user will identify the account, i.e username, email addreess, facebook page name etc.
       type: String,
       required: true,
     },
-    primaryId: {
-      // usually user ID
+    id: {
+      // ID used by the social platform
       type: String,
       required: false,
     },
-    primaryAccessToken: {
-      // usually user access token
-      type: String,
-      required: false,
-    },
-    secondaryId: {
-      // other ID i.e Facebook page ID
-      type: String,
-      required: false,
-    },
-    secondaryAccessToken: {
-      // other access token i.e Facebook page access token (TOKEN USED TO POST)
+    token: {
+      // access token used to make posts
       type: String,
       required: false,
     },
