@@ -11,10 +11,6 @@ const APP_ID = process.env.FACEBOOK_APP_ID || "1234567890";
 const APP_SECRET = process.env.FACEBOOK_APP_SECRET || "1234567890";
 const CONFIG_ID = process.env.FACEBOOK_CONFIG_ID || "1234567890";
 
-// add check for duplicate login attempt so that we don't add the same account twice !!!
-// add route and logic for mutli-page selection
-// same user can show up in the db twice as owner of multiple pages - maybe adjust db?
-
 export async function route(exp) {
   exp.get("/facebook/auth", function (req, res) {
     // redirect user to authorize the app
@@ -101,58 +97,61 @@ export async function route(exp) {
       );
       return;
     }
-    if (
-      (
-        await Account.find({
-          user: req.user._id,
-          secondaryId: longLivedPageAccessTokenResponse.data.data[0].id,
-        })
-      ).length != 0
-    ) {
-      logger.log(
-        "info",
-        `duplicate login for page ${longLivedPageAccessTokenResponse.data.data[0].name}, skipping`
-      );
-      res.redirect(
-        `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-          `You've already logged in as an administrator for [${longLivedPageAccessTokenResponse.data.data[0].name}]`
-        )}`
-      );
-      return;
-    }
-    // if we got this far then all was successful, save details to db
-    const newAccount = new Account({
-      user: await toId(req.user._id),
-      platform: "facebook",
-      type: "page",
-      userEmail: longLivedPageAccessTokenResponse.data.data[0].name,
-      primaryId: userId,
-      primaryAccessToken: longLivedUserAccessToken,
-      secondaryId: longLivedPageAccessTokenResponse.data.data[0].id,
-      secondaryAccessToken:
-        longLivedPageAccessTokenResponse.data.data[0].access_token,
-    });
-    newAccount
-      .save()
-      .then((data) => {
-        logger.log(
-          "info",
-          `Successfully logged in to page admin: [${data.userEmail}]`
-        );
-        res.redirect(
-          `https://${DOMAIN}:${DOMAIN_PORT}?status=success&message=${encodeURIComponent(
-            `Successfully logged in to page admin: [${data.userEmail}]`
-          )}`
-        );
+    // save pages one at a time
+    const pages = longLivedPageAccessTokenResponse.data.data;
+    let errors = 0;
+    for (const page of pages) {
+      await Account.find({
+        user: req.user._id,
+        id: page.id,
       })
-      .catch((error) => {
-        logger.log("error", `Failed to save account data: ${error}`);
-        res.redirect(
-          `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-            "Login failed: Failed to save account data"
-          )}`
-        );
-      });
+        .then(async (data) => {
+          if (data.length > 0) {
+            // we found an existing login
+            logger.log(
+              "debug",
+              `duplicate login for page ${page.name}, updating access token`
+            );
+            data[0].token = page.access_token;
+            data[0].save().then((data) => {
+              logger.log("info", `Login for page ${data.name} was updated`);
+            });
+          } else {
+            // if we got this far then all was successful and there are no existing logins for this page
+            // save this page to the database
+            const newAccount = new Account({
+              user: await toId(req.user._id),
+              platform: "facebook",
+              type: "page",
+              name: page.name,
+              id: page.id,
+              token: page.access_token,
+            });
+            newAccount.save().then((data) => {
+              logger.log("info", `Successfully logged in to page ${data.name}`);
+            });
+          }
+        })
+        .catch((error) => {
+          logger.log("error", `Login for page ${page.name} failed`, error);
+          errors += 1;
+        });
+    }
+    let status = "error";
+    let message = "An unknown error occurred, please try again later.";
+    if (errors == 0) {
+      status = "success";
+      message = `Sucessfully logged in to ${pages.length} Facebook page(s).`;
+    } else {
+      message = `${errors} error(s) occurred while logging you in. ${
+        pages.length - errors
+      } of ${pages.length} pages were logged in.`;
+    }
+    res.redirect(
+      `https://${DOMAIN}:${DOMAIN_PORT}?status=${status}&message=${encodeURIComponent(
+        message
+      )}`
+    );
   });
 }
 
@@ -226,7 +225,11 @@ async function getLongLivedUserToken(accessToken) {
       return response.json();
     })
     .then((json) => {
-      logger.log("sensitive", "== Get Long Lived User Access Token Response ==", json);
+      logger.log(
+        "sensitive",
+        "== Get Long Lived User Access Token Response ==",
+        json
+      );
       result["data"] = json;
     })
     .catch((error) => {
@@ -251,7 +254,11 @@ async function getLongLivedPageToken(userId, accessToken) {
       return response.json();
     })
     .then((json) => {
-      logger.log("sensitive", "== Get Long Lived Page Access Token Response ==", json);
+      logger.log(
+        "sensitive",
+        "== Get Long Lived Page Access Token Response ==",
+        json
+      );
       result["data"] = json;
     })
     .catch((error) => {
