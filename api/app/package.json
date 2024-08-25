@@ -1,6 +1,6 @@
 {
   "name": "opensmm-api",
-  "version": "0.1.1-1",
+  "version": "0.1.2-7",
   "type": "module",
   "description": "OpenSMM API",
   "main": "app.js",
@@ -18,18 +18,18 @@
   },
   "homepage": "https://github.com/vaughngx4/OpenSMM#opensmm",
   "dependencies": {
-    "agenda": "^4.3.0",
+    "agenda": "^5.0.0",
     "bcryptjs": "^2.4.3",
     "busboy": "^1.6.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
-    "file-type": "^18.0.0",
+    "file-type": "^19.4.1",
     "fluent-ffmpeg": "^2.1.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.5.3",
+    "mongoose": "^8.5.4",
     "node-fetch": "^3.3.2",
-    "read-chunk": "^4.0.3",
+    "read-chunk": "^5.0.0",
     "redis": "^4.3.0",
     "sharp": "^0.33.4"
   }

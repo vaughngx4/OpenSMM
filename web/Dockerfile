@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:1.25.4-alpine3.18
 LABEL maintainer="vaughngx4 (vaughng@pm.me)"
 WORKDIR /
 RUN apk update && apk add --no-cache \

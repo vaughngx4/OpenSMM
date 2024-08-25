@@ -18,7 +18,7 @@ export const Post = model("Post", postSchema);
 export const Account = model("Account", accountSchema);
 
 export function start() {
-  connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  connect(dbURI)
     .then(() => {
       logger.log("info", "Database connection established");
     })
@@ -29,5 +29,5 @@ export function start() {
 }
 
 export async function toId(id) {
-  return await mongoose.Types.ObjectId(id);
+  return new mongoose.Types.ObjectId(id);
 }
