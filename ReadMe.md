@@ -1,9 +1,9 @@
 # OpenSMM
 | Section     | Version   |
 | ----------- | --------- |
-| Application | v0.1.1-1    |
-| API         | v0.1.1-1    |
-| Web UI      | v0.1.0      |
+| Application | v0.1.2-8    |
+| API         | v0.1.2-7    |
+| Web UI      | v0.1.0-1    |
 
 ![license](https://img.shields.io/github/license/vaughngx4/OpenSMM?style=for-the-badge "")
 ![stars](https://img.shields.io/github/stars/vaughngx4/OpenSMM?style=for-the-badge "")
