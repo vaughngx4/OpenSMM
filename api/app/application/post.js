@@ -114,9 +114,14 @@ export async function doPost(postId) {
   Post.findById(postId)
     .populate({
       path: "data",
-    })
-    .populate({
-      path: "data.account",
+      populate: {
+        path: "account",
+        model: "Account",
+        populate: {
+          path: "parent",
+          model: "Account",
+        },
+      },
     })
     .then(async (data) => {
       logger.log("debug", "Post found, starting post process...");
@@ -128,8 +133,8 @@ export async function doPost(postId) {
         }
       }
     })
-    .catch((err) => {
-      logger.log("error", `Post failed: ${err}`);
+    .catch((error) => {
+      logger.log("error", "post failed", error);
     });
 }
 

@@ -1,5 +1,5 @@
 import { authenticateToken } from "./authentication.js";
-import { Account, toId } from "./database.js";
+import { Account } from "./database.js";
 import Logger from "./logger.js";
 const logger = new Logger("accounts");
 
@@ -10,11 +10,15 @@ export async function route(exp) {
         let accounts = [];
         if (data.length > 0) {
           for (const account of data) {
+            if("facebook" == account.platform && "user" == account.type) {
+              continue;
+            }
             accounts.push({
               _id: account._id,
               platform: account.platform,
               type: account.type,
               userEmail: account.name, // I havent changed the frontend variable name from "userEmail" to "name" yet
+              picture: account.picture,
             });
           }
         }

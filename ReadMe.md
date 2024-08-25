@@ -19,7 +19,7 @@ OpenSMM (Open Social Media Management) is a self-hosted social media management 
 
 ### What Works
 - Media Gallery (upload and save media for posting)
-- Posting to Facebook Pages (text)
+- Posting to Facebook Pages (text and images)
 
 ## Documentation
 - [Click here to read the docs](docs/ReadMe.md "OpenSMM Documentation")
@@ -62,7 +62,7 @@ Note that Twitter support was dropped after their rebrand to X. We may add suppo
 ### Social Platform Support
 - [x] Facebook Pages
     - [x] Text
-    - [ ] Image
+    - [x] Image
     - [ ] Video
 - [ ] Instagram
     - [ ] Image

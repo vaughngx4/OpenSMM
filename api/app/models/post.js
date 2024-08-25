@@ -32,8 +32,8 @@ export const postSchema = new Schema(
       required: false,
     },
     attachment: {
-      // attachment is stored as local path
-      type: String,
+      // attachment is stored as an array of local paths
+      type: Array,
       required: false,
     },
     datetime: {
