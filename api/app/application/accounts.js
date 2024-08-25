@@ -10,6 +10,9 @@ export async function route(exp) {
         let accounts = [];
         if (data.length > 0) {
           for (const account of data) {
+            if("facebook" == account.platform && "user" == account.type) {
+              continue;
+            }
             accounts.push({
               _id: account._id,
               platform: account.platform,
