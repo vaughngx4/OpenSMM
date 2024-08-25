@@ -1,8 +1,11 @@
 import fetch from "node-fetch";
+import { readFile } from "node:fs/promises";
 import { Account, toId } from "../database.js";
 import { setStatus } from "../post.js";
 import { authenticateToken } from "../authentication.js";
 import Logger from "../logger.js";
+import { fileInfo } from "../files.js";
+import { basename } from "path";
 const logger = new Logger("facebook");
 
 const DOMAIN = process.env.DOMAIN || "localhost";
@@ -61,7 +64,6 @@ export async function route(exp) {
     const accessToken = accessTokenReponse.data.access_token;
     // verify token
     const accessTokenVerification = await verifyToken("USER", accessToken);
-    // if valid, use access token to get long lived user access token
     if (accessTokenVerification.error) {
       res.redirect(
         `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
@@ -71,6 +73,7 @@ export async function route(exp) {
       return;
     }
     const userId = accessTokenVerification.data.data.user_id;
+    // if valid, use access token to get long lived user access token
     const longLivedUserAccessTokenResponse = await getLongLivedUserToken(
       accessToken
     );
@@ -82,9 +85,23 @@ export async function route(exp) {
       );
       return;
     }
-    // use long lived user access token to get long lived page access token
     const longLivedUserAccessToken =
       longLivedUserAccessTokenResponse.data.access_token;
+    // login as user (pages need a parent account)
+    const userLoginResponse = await userLogin(
+      req.user._id,
+      userId,
+      longLivedUserAccessToken
+    );
+    if (userLoginResponse.error) {
+      res.redirect(
+        `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
+          userLoginResponse.error
+        )}`
+      );
+      return;
+    }
+    // use long lived user access token to get long lived page access token
     const longLivedPageAccessTokenResponse = await getLongLivedPageToken(
       userId,
       longLivedUserAccessToken
@@ -113,7 +130,7 @@ export async function route(exp) {
               `duplicate login for page ${page.name}, updating access token`
             );
             data[0].token = page.access_token;
-            data[0].save().then((data) => {
+            await data[0].save().then((data) => {
               logger.log("info", `Login for page ${data.name} was updated`);
             });
           } else {
@@ -126,8 +143,9 @@ export async function route(exp) {
               name: page.name,
               id: page.id,
               token: page.access_token,
+              parent: userLoginResponse.data._id,
             });
-            newAccount.save().then((data) => {
+            await newAccount.save().then((data) => {
               logger.log("info", `Successfully logged in to page ${data.name}`);
             });
           }
@@ -155,6 +173,7 @@ export async function route(exp) {
   });
 }
 
+// verify a token
 async function verifyToken(type, token) {
   let result = {
     isValid: false,
@@ -186,6 +205,7 @@ async function verifyToken(type, token) {
   return result;
 }
 
+// exchange code for short-lived user access token
 async function getUserAccessToken(code) {
   let result = {};
   await fetch(
@@ -213,6 +233,7 @@ async function getUserAccessToken(code) {
   return result;
 }
 
+// get long lived user token
 async function getLongLivedUserToken(accessToken) {
   const result = {};
   await fetch(
@@ -242,6 +263,7 @@ async function getLongLivedUserToken(accessToken) {
   return result;
 }
 
+// get list of pages and tokens
 async function getLongLivedPageToken(userId, accessToken) {
   const result = {};
   await fetch(
@@ -271,7 +293,88 @@ async function getLongLivedPageToken(userId, accessToken) {
   return result;
 }
 
+// get user information
+async function getUserInfo(id, token) {
+  const result = {};
+  await fetch(
+    `https://graph.facebook.com/v20.0/${id}/?fields=id,name,picture&access_token=${token}`,
+    {
+      method: "GET",
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      logger.log("sensitive", "== Get User Information ==", json);
+      result["data"] = json;
+    })
+    .catch((error) => {
+      result["error"] = "Failed to get user info";
+      logger.log("error", "Failed to get user info", error);
+    });
+  return result;
+}
+
+// save user login
+async function userLogin(userId, fbUserId, longLivedUserAccessToken) {
+  let result = {};
+  // use long lived user access token to get user info
+  const userInfoResponse = await getUserInfo(
+    fbUserId,
+    longLivedUserAccessToken
+  );
+  if (userInfoResponse.error) {
+    result["error"] = userInfoResponse.error; // this is slightly redundant, but easier to understand
+    return result;
+  }
+  // save user account
+  await Account.find({ platform: "facebook", type: "user", id: fbUserId })
+    .then(async (data) => {
+      if (data.length > 0) {
+        // we found an existing login
+        logger.log(
+          "debug",
+          `duplicate login for user ${userInfoResponse.data.name}, updating access token`
+        );
+        data[0].token = longLivedUserAccessToken;
+        data[0].picture = userInfoResponse.data.picture.data.url;
+        await data[0].save().then((data) => {
+          logger.log("info", `Login for user ${data.name} was updated`);
+          result["data"] = data;
+        });
+      } else {
+        // if we got this far then all was successful and there are no existing logins for this user
+        // save this user to the database
+        const newUserAccount = new Account({
+          user: await toId(userId),
+          platform: "facebook",
+          type: "user",
+          name: userInfoResponse.data.name,
+          picture: userInfoResponse.data.picture.data.url,
+          id: fbUserId,
+          token: longLivedUserAccessToken,
+        });
+        await newUserAccount.save().then((data) => {
+          result["data"] = data;
+          logger.log("info", `Successfully logged in as user ${data.name}`);
+        });
+      }
+    })
+    .catch((error) => {
+      logger.log(
+        "error",
+        `Login for user ${userInfoResponse.data.name} failed`,
+        error
+      );
+      result["error"] = `Login for user ${userInfoResponse.data.name} failed`;
+    });
+  return result;
+}
+
 // currently unused. May be used in the future for posting unpublished posts
+// check if a post can be posted as unpublished and scheduled (more than 10
+// minutes and less than 30 days from now, as required by Facebook)
 export async function isScheduled(post) {
   // 0 = cannot be scheduled
   // 1 = can be scheduled
@@ -287,6 +390,7 @@ export async function isScheduled(post) {
   return result;
 }
 
+// publish a (page) post - used in automation - calls other functions
 export async function post(post, account, scheduled) {
   scheduled = scheduled || false;
   let bodyContent = {
@@ -294,8 +398,66 @@ export async function post(post, account, scheduled) {
     published: true,
     access_token: account.token,
   };
+  let attachmentHandles = [];
   if (post.link) {
     bodyContent["link"] = post.link;
+  }
+  // if there are attachments, upload them
+  if (post.attachment) {
+    for (const file of post.attachment) {
+      const info = await fileInfo(file);
+      if (info.description == "video") {
+        // resumable video upload
+        let token = account.token;
+        // if (account.type == "page") {
+        //   token = account.parent.token;
+        // }
+        const initUploadResponse = await initiateUpload(token, file);
+        if (initUploadResponse.error) {
+          await setStatus(post, account, "error:file upload error");
+          return;
+        }
+        const uploadResponse = await upload(
+          token,
+          file,
+          initUploadResponse.data.id
+        );
+        if (uploadResponse.error) {
+          await setStatus(post, account, "error:file upload error");
+          return;
+        }
+        const publishVideoResponse = await publishVideo(
+          account.id,
+          account.token,
+          info.name,
+          `opensmm-published-video: ${info.name}`,
+          uploadResponse.data.h
+        );
+        if (publishVideoResponse.error) {
+          await setStatus(post, account, "error:video publish error");
+          return;
+        }
+        attachmentHandles.push(publishVideoResponse.data.id);
+      } else if (info.description == "image") {
+        // formData image upload
+        const uploadPhotoResponse = await uploadPhoto(
+          account.token,
+          account.id,
+          file
+        );
+        if (uploadPhotoResponse.error) {
+          await setStatus(post, account, "error:photo upload error");
+          return;
+        }
+        attachmentHandles.push(uploadPhotoResponse.data.id);
+      }
+    }
+    if (attachmentHandles.length > 0) {
+      bodyContent["attached_media"] = [];
+      for (const handle of attachmentHandles) {
+        bodyContent["attached_media"].push({ media_fbid: handle });
+      }
+    }
   }
   if (scheduled) {
     bodyContent["scheduled_publish_time"] = Math.floor(
@@ -321,4 +483,199 @@ export async function post(post, account, scheduled) {
         logger.log("info", `Post with ID [${json.id}] was created`);
       }
     });
+}
+
+// initiate resumable upload
+async function initiateUpload(token, filePath) {
+  let result = {};
+  const info = await fileInfo(filePath);
+  await fetch(
+    `https://graph.facebook.com/v20.0/${APP_ID}/uploads?file_name=${info.name}&file_length=${info.length}&type=${info.mime}&access_token=${token}`,
+    {
+      method: "POST",
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      logger.log("sensitive", "== Initiate Upload Response ==", json);
+      if (json.id) {
+        result["data"] = json;
+      } else {
+        result["error"] =
+          "No ID was returned when we tried to initiate an upload";
+        logger.log(
+          "error",
+          "No ID was returned when we tried to initiate an upload"
+        );
+      }
+    })
+    .catch((error) => {
+      result["error"] = "Failed to initiate upload";
+      logger.log("error", "Failed to initiate upload", error);
+    });
+  return result;
+}
+
+// start upload
+async function upload(token, filePath, sessionId, fileOffset, retries) {
+  let result = {};
+  fileOffset = fileOffset || 0;
+  const maxRetries = 5; // number of times to retry/resume a failed upload
+  retries = retries || maxRetries;
+  const rawData = await readFile(filePath);
+  const blob = new Blob(rawData);
+  await fetch(`https://graph.facebook.com/v20.0/${sessionId}`, {
+    method: "POST",
+    headers: {
+      Authorization: "OAuth " + token,
+      file_offset: fileOffset,
+    },
+    body: blob,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then(async (json) => {
+      logger.log("sensitive", "== Upload Response ==", json);
+      if (json.h) {
+        result["data"] = json;
+      } else {
+        const uploadInfoResponse = await getUploadInfo(sessionId, token);
+        if (uploadInfoResponse.error) {
+          result["error"] = error;
+          return;
+        }
+        if (uploadInfoResponse.data.id && uploadInfoResponse.data.file_offset) {
+          if (retries != 0) {
+            logger.log(
+              "error",
+              `upload ${uploadInfoResponse.data.id} failed at ${uploadInfoResponse.data.file_offset}, trying to resume in 5 seconds (${retries}/${maxRetries})`
+            );
+            setTimeout(async () => {
+              await upload(
+                token,
+                filePath,
+                json.id,
+                json.file_offset,
+                retries - 1
+              );
+            }, 5000);
+            return;
+          }
+          result[("error", "No more retries/resumes, upload failed")];
+          logger.log("error", "No more retries/resumes, upload failed");
+        } else {
+          result[
+            "error"
+          ] = `No ID, handle or file offset was returned when we tried to start upload ${sessionId}`;
+          logger.log(
+            "error",
+            `No ID, handle or file offset was returned when we tried to start upload ${sessionId}`
+          );
+        }
+      }
+    })
+    .catch((error) => {
+      result["error"] = "Failed to start upload";
+      logger.log("error", "Failed to start upload", error);
+    });
+  return result;
+}
+
+async function retryUpload() {
+
+}
+
+// get data to resume failed upload
+async function getUploadInfo(sessionId, token) {
+  let result = {};
+  await fetch(`https://graph.facebook.com/v20.0/${sessionId}`, {
+    method: "GET",
+    headers: {
+      Authorization: "OAuth " + token,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      logger.log("sensitive", "== Failed Upload Info Response ==", json);
+      if (json.id) {
+        result["data"] = json;
+      } else {
+        result["error"] =
+          "No ID or file offset was returned when we tried to get upload info";
+        logger.log(
+          "error",
+          "No ID or file offset was returned when we tried to get upload info"
+        );
+      }
+    })
+    .catch((error) => {
+      result["error"] = "Failed to get upload info";
+      logger.log("error", "Failed to get upload info", error);
+    });
+  return result;
+}
+
+// publish an already uploaded video
+async function publishVideo(id, token, title, description, videoHandle) {
+  let result = {};
+  const body = new FormData();
+  body.set("access_token", token);
+  body.set("title", title);
+  body.set("description", description);
+  body.set("fbuploader_video_file_chunk", videoHandle);
+  await fetch(`https://graph.facebook.com/v20.0/${id}/videos`, {
+    method: "POST",
+    body,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then(async (json) => {
+      logger.log("sensitive", "== Publish Video Response ==", json);
+      if (json.id) {
+        result["data"] = json;
+        logger.log("info", "Video was published successfully");
+      } else {
+        result["error"] = "No video ID was included in the response";
+        logger.log("error", "No video ID was included in the response");
+      }
+    })
+    .catch((error) => {
+      result["error"] = "Failed to publish video";
+      logger.log("error", "Failed to publish video", error);
+    });
+  return result;
+}
+
+// upload a photo
+async function uploadPhoto(token, id, filePath) {
+  const result = {};
+  const rawData = await readFile(filePath);
+  const blob = new Blob([rawData]);
+  const body = new FormData();
+  body.set("source", blob, basename(filePath));
+  await fetch(
+    `https://graph.facebook.com/v20.0/${id}/photos?published=false&access_token=${token}`,
+    {
+      method: "POST",
+      body,
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      logger.log("sensitive", "== Photo Upload Response ==", json);
+      result["data"] = json;
+    })
+    .catch((error) => {
+      result["error"] = "Failed to upload photo";
+      logger.log("error", "Failed to upload photo", error);
+    });
+  return result;
 }

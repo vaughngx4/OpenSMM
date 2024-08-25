@@ -1,5 +1,5 @@
 import { authenticateToken } from "./authentication.js";
-import { Account, toId } from "./database.js";
+import { Account } from "./database.js";
 import Logger from "./logger.js";
 const logger = new Logger("accounts");
 
@@ -15,6 +15,7 @@ export async function route(exp) {
               platform: account.platform,
               type: account.type,
               userEmail: account.name, // I havent changed the frontend variable name from "userEmail" to "name" yet
+              picture: account.picture,
             });
           }
         }

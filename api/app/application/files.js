@@ -1,4 +1,11 @@
-import { existsSync, mkdirSync, createWriteStream, unlink, readdir } from "fs";
+import {
+  existsSync,
+  mkdirSync,
+  createWriteStream,
+  unlink,
+  readdir,
+  statSync,
+} from "fs";
 import * as readChunk from "read-chunk";
 import * as fileType from "file-type";
 import { authenticateToken } from "./authentication.js";
@@ -6,6 +13,7 @@ import Logger from "./logger.js";
 import ffmpeg from "fluent-ffmpeg";
 import sharp from "sharp";
 import { isNumeric } from "./validate.js";
+import { basename } from "path";
 const logger = new Logger("filesystem");
 
 const supportedImageMimes = [
@@ -67,12 +75,10 @@ export async function route(exp) {
           res.status(500).json({ status: "error", message: "No such file" });
         }
       } else {
-        res
-          .status(400)
-          .json({
-            status: "error",
-            message: "Bad request: thumbnail index must be an integer",
-          });
+        res.status(400).json({
+          status: "error",
+          message: "Bad request: thumbnail index must be an integer",
+        });
       }
     }
   );
@@ -153,10 +159,10 @@ async function processFile(dir, filename) {
   const type = await fileType.fileTypeFromBuffer(buffer);
   logger.log("debug", `File is of type ${type.mime}`);
   if (-1 != supportedImageMimes.indexOf(type.mime)) {
-    imageThumbs(dir, filename);
+    await imageThumbs(dir, filename);
     return true;
   } else if (-1 != supportedVideoMimes.indexOf(type.mime)) {
-    videoThumbs(dir, filename);
+    await videoThumbs(dir, filename);
     return true;
   } else {
     logger.log("warn", `Unsupported file type: ${type.mime}`);
@@ -184,7 +190,7 @@ async function imageThumbs(dir, filename) {
 
 async function videoThumbs(dir, filename) {
   let filenames;
-  ffmpeg(dir + filename)
+  await ffmpeg(dir + filename)
     .on("filenames", (_filenames) => {
       filenames = _filenames;
       logger.log(
@@ -193,19 +199,41 @@ async function videoThumbs(dir, filename) {
       );
     })
     .on("end", async () => {
-      logger.log("debug", "Video thumbnails step 1/2 (ffmpeg) complete");
+      logger.log("debug", "Video thumbnails step 1/2 (ffmpeg - screenshots) complete");
       await filenames.forEach(async (file, index) => {
         await sharp(dir + "thumbnails/" + file)
           .webp()
           .toFile(dir + "thumbnails/" + filename + index + ".webp");
       });
-      logger.log("debug", "Video thumbnails step 2/2 (sharp) complete");
+      logger.log("debug", "Video thumbnails step 2/2 (sharp - conversion) complete");
     })
     .on("error", (err) => {
       logger.log("error", `Error creating thumbmails: ${err.message}`);
     })
-    .takeScreenshots(
-      { count: 2, timemarks: ["00:00:02.000", "6"], size: "150x100" },
-      dir + "thumbnails/"
-    );
+    .takeScreenshots({
+      count: 1,
+      size: "300x200",
+      folder: dir + "thumbnails/",
+    });
+}
+
+export async function fileInfo(filePath) {
+  logger.log("debug", `Getting file info for file ${basename(filePath)}`);
+  const buffer = readChunk.readChunkSync(filePath, { length: 4100 });
+  const type = await fileType.fileTypeFromBuffer(buffer);
+  const stats = statSync(filePath);
+  let description = "";
+  if (-1 != supportedVideoMimes.indexOf(type.mime)) {
+    description = "video";
+  } else if (-1 != supportedImageMimes.indexOf(type.mime)) {
+    description = "image";
+  }
+  return {
+    name: basename(filePath),
+    length: stats.size,
+    ext: type.ext,
+    mime: type.mime,
+    description,
+    path: filePath,
+  };
 }
