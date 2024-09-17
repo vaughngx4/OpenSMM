@@ -11,6 +11,7 @@ export  function validateLogin(login) {
 export function validatePost(post) {
   const JoiSchema = Joi.object({
     accounts: Joi.array().items(Joi.string()).required(),
+    title: Joi.string().optional(),
     text: Joi.string().optional(),
     attachment: Joi.array().items(Joi.string()).optional().default([]),
     datetime: Joi.date().iso().required(),

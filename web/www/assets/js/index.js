@@ -34,6 +34,18 @@ async function newPost() {
   col2.classList.add("post-info-col2");
   postInfo.appendChild(col2);
 
+  // title label
+  let titleLabel = document.createElement("label");
+  titleLabel.htmlFor = "postTitle";
+  titleLabel.innerText = "Title";
+  col2.appendChild(titleLabel);
+
+  // title
+  let postTitle = document.createElement("input");
+  postTitle.className = "input";
+  postTitle.name = "postTitle";
+  col2.appendChild(postTitle);
+
   // text label
   let textLabel = document.createElement("label");
   textLabel.htmlFor = "postText";
@@ -88,6 +100,16 @@ async function newPost() {
     const fbAccountSelector = accountSelectorAccordian(fbAccounts, "facebook");
     accountSelector.appendChild(fbAccountSelector);
   }
+  // youtube account selector
+  const ytAccounts = accounts.filter((e) => {
+    if (e.platform == "google" && e.type == "youtube") {
+      return e;
+    }
+  });
+  if (ytAccounts.length > 0) {
+    const ytAccountSelector = accountSelectorAccordian(ytAccounts, "youtube");
+    accountSelector.appendChild(ytAccountSelector);
+  }
   // selector logic
   let selectedAccountsIds = [];
   let selectedAccounts = [];
@@ -100,22 +122,20 @@ async function newPost() {
       selectedAccountsIds = [];
       selectedAccounts = [];
       if (accounts.length > 0) {
-        accountSelector
-          .querySelectorAll(".option")
-          .forEach((opt) => {
-            if (opt.querySelector(".checkbox").checked) {
-              const acc =
-                accounts[
-                  accounts
-                    .map((e) => {
-                      return e._id;
-                    })
-                    .indexOf(opt.querySelector(".id").innerText)
-                ];
-              selectedAccountsIds.push(acc._id);
-              selectedAccounts.push(acc);
-            }
-          });
+        accountSelector.querySelectorAll(".option").forEach((opt) => {
+          if (opt.querySelector(".checkbox").checked) {
+            const acc =
+              accounts[
+                accounts
+                  .map((e) => {
+                    return e._id;
+                  })
+                  .indexOf(opt.querySelector(".id").innerText)
+              ];
+            selectedAccountsIds.push(acc._id);
+            selectedAccounts.push(acc);
+          }
+        });
       }
       accountsView.innerHTML = "";
       for (const obj of selectedAccounts) {
@@ -234,6 +254,7 @@ async function newPost() {
   scheduleBtn.innerText = "Schedule Post";
   scheduleBtn.addEventListener("click", async () => {
     post["accounts"] = selectedAccountsIds;
+    post["title"] = postTitle.value;
     post["text"] = postText.value;
     post["datetime"] = dateInput.value;
     if (0 == post.accounts.length) {
@@ -444,6 +465,14 @@ async function popDash() {
       return e.platform == "facebook";
     }).length || 0
   );
+  // YouTube
+  numAccounts(
+    "youtube",
+    "#FF0000",
+    result.filter((e) => {
+      return e.platform == "google" && e.type == "youtube";
+    }).length || 0
+  );
   //const posts = document.querySelectorAll(".posts-container");
   //posts.forEach((post) => {
   //  post.remove();
@@ -524,12 +553,24 @@ async function toggleChkChild(master, child) {
 
 async function addAccount() {
   let elem = document.createElement("div");
-  let accountsDrop = dropDown("choose a platform", ["Facebook Page"]);
+  let accountsDrop = dropDown("choose a platform", [
+    "Facebook Page",
+    "Instagram Professional",
+    "YouTube",
+  ]);
   elem.appendChild(accountsDrop);
   prompt("Add Account", "confirm", elem, () => {
     switch (accountsDrop.innerText) {
+      case "YouTube":
+        window.location.replace("/auth/youtube");
+        break;
+
       case "Facebook Page":
-        window.location.replace("/facebook/auth");
+        window.location.replace("/auth/facebook");
+        break;
+
+      case "Instagram Professional":
+        window.location.replace("/auth/instagram");
         break;
 
       default:

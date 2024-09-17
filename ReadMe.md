@@ -64,10 +64,7 @@ Note that Twitter support was dropped after their rebrand to X. We may add suppo
     - [x] Text
     - [x] Image
     - [ ] Video
-- [ ] Instagram
-    - [ ] Image
-    - [ ] Video
-- [ ] Instagram Business
+- [ ] Instagram Professional (Business and Craator accounts)
     - [ ] Image
     - [ ] Video
 - [ ] YouTube
@@ -97,6 +94,8 @@ Note that Twitter support was dropped after their rebrand to X. We may add suppo
 - [x] Store attachments for reuse
 - [ ] Fix app screen size and dynamic resize
 - [ ] Fix Gallery module not filling app screen width
+- [ ] Add video player to Gallery module
+- [ ] Add option to delete file from Gallery
 - [ ] Add validation to UI
 
 ## Contact Us

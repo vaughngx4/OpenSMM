@@ -1,25 +1,26 @@
 import fetch from "node-fetch";
 import { readFile } from "node:fs/promises";
-import { Account, toId } from "../database.js";
+import { Account, Post, toId } from "../database.js";
 import { setStatus } from "../post.js";
 import { authenticateToken } from "../authentication.js";
 import Logger from "../logger.js";
 import { fileInfo } from "../files.js";
 import { basename } from "path";
-const logger = new Logger("facebook");
+const logger = new Logger("instagram");
+import { stripNonsense } from "./common.js";
+import { scheduleDateTime } from "../schedule.js";
 
 const DOMAIN = process.env.DOMAIN || "localhost";
 const DOMAIN_PORT = process.env.DOMAIN_PORT || "";
-const APP_ID = process.env.FACEBOOK_APP_ID || "1234567890";
-const APP_SECRET = process.env.FACEBOOK_APP_SECRET || "1234567890";
-const CONFIG_ID = process.env.FACEBOOK_CONFIG_ID || "1234567890";
+const APP_ID = process.env.INSTAGRAM_APP_ID || "1234567890";
+const APP_SECRET = process.env.INSTAGRAM_APP_SECRET || "1234567890";
 
 export async function route(exp) {
-  exp.get("/facebook/auth", function (req, res) {
+  exp.get("/instagram/auth", function (req, res) {
     // redirect user to authorize the app
     try {
       res.redirect(
-        `https://www.facebook.com/v20.0/dialog/oauth?client_id=${APP_ID}&config_id=${CONFIG_ID}&response_type=code&redirect_uri=https://${DOMAIN}:${DOMAIN_PORT}/callback/facebook`
+        `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=${APP_ID}&redirect_uri=https://${DOMAIN}:${DOMAIN_PORT}/callback/instragram&response_type=code&scope=business_basic%2Cbusiness_manage_messages%2Cbusiness_manage_comments%2Cbusiness_content_publish`
       );
     } catch (error) {
       res.status(500).json({
@@ -28,13 +29,13 @@ export async function route(exp) {
       });
     }
   });
-  exp.get("/facebook/callback", authenticateToken, async (req, res) => {
+  exp.get("/instagram/callback", authenticateToken, async (req, res) => {
     // show error message if authorization failed
     if (req.query.error) {
-      logger.log("error", `Facebook login failed [${req.params.error_reason}]`);
+      logger.log("error", `login failed [${req.params.error_reason}]`);
       res.redirect(
         `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-          `Login failed with error: ${req.query.error_reason}`
+          `Login failed with error: ${stripNonsense(req.query.error_reason)}`
         )}`
       );
       return;
@@ -43,11 +44,11 @@ export async function route(exp) {
     if (!req.query.code) {
       logger.log(
         "error",
-        "No access code was included in the response from Facebook"
+        "No access code was included in the response from Instagram"
       );
       res.redirect(
         `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-          "Login failed: Facebook denied the request for an access code"
+          "Login failed: Instagram denied the request for an access code"
         )}`
       );
       return;
@@ -56,162 +57,108 @@ export async function route(exp) {
     if (accessTokenReponse.error) {
       res.redirect(
         `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-          accessTokenReponse.error
+          stripNonsense(accessTokenReponse.error)
         )}`
       );
       return;
     }
-    const accessToken = accessTokenReponse.data.access_token;
-    // verify token
-    const accessTokenVerification = await verifyToken("USER", accessToken);
-    if (accessTokenVerification.error) {
-      res.redirect(
-        `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-          accessTokenVerification.error
-        )}`
-      );
-      return;
-    }
-    const userId = accessTokenVerification.data.data.user_id;
+    const shortLivedAccessToken = accessTokenReponse.data.data.access_token;
+    const userId = accessTokenReponse.data.data.user_id;
     // if valid, use access token to get long lived user access token
     const longLivedUserAccessTokenResponse = await getLongLivedUserToken(
-      accessToken
+      shortLivedAccessToken
     );
     if (longLivedUserAccessTokenResponse.error) {
       res.redirect(
         `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-          longLivedUserAccessTokenResponse.error
+          stripNonsense(longLivedUserAccessTokenResponse.error)
         )}`
       );
       return;
     }
     const longLivedUserAccessToken =
       longLivedUserAccessTokenResponse.data.access_token;
-    // login as user (pages need a parent account)
-    const userLoginResponse = await userLogin(
-      req.user._id,
-      userId,
-      longLivedUserAccessToken
-    );
-    if (userLoginResponse.error) {
-      res.redirect(
-        `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-          userLoginResponse.error
-        )}`
-      );
-      return;
-    }
-    // use long lived user access token to get long lived page access token
-    const longLivedPageAccessTokenResponse = await getLongLivedPageToken(
-      userId,
-      longLivedUserAccessToken
-    );
-    if (longLivedPageAccessTokenResponse.error) {
-      res.redirect(
-        `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
-          longLivedPageAccessTokenResponse.error
-        )}`
-      );
-      return;
-    }
-    // save pages one at a time
-    const pages = longLivedPageAccessTokenResponse.data.data;
-    let errors = 0;
-    for (const page of pages) {
-      await Account.find({
-        user: req.user._id,
-        id: page.id,
-      })
-        .then(async (data) => {
-          if (data.length > 0) {
-            // we found an existing login
-            logger.log(
-              "debug",
-              `duplicate login for page ${page.name}, updating access token`
+    const expiresIn = longLivedUserAccessTokenResponse.data.expires_in;
+    // save account
+    await Account.find({
+      user: req.user._id,
+      platform: "instagram",
+      id: userId,
+    })
+      .then(async (data) => {
+        if (data.length > 0) {
+          // we found an existing login
+          logger.log(
+            "debug",
+            `duplicate login for account ${data[0].name}, updating access token`
+          );
+          data[0].token = longLivedUserAccessToken;
+          data[0].token_expires_in = expiresIn;
+          await data[0].save().then((data) => {
+            logger.log("info", `Login for account ${data.name} was updated`);
+          });
+        } else {
+          // if we got this far then all was successful and there are no existing logins for this page
+          // save this page to the database
+          const userInfo = getUserInfo(userId, longLivedUserAccessToken);
+          if (userInfo.error) {
+            res.redirect(
+              `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
+                "Failed to get user information"
+              )}`
             );
-            data[0].token = page.access_token;
-            await data[0].save().then((data) => {
-              logger.log("info", `Login for page ${data.name} was updated`);
-            });
-          } else {
-            // if we got this far then all was successful and there are no existing logins for this page
-            // save this page to the database
-            const newAccount = new Account({
-              user: await toId(req.user._id),
-              platform: "facebook",
-              type: "page",
-              name: page.name,
-              id: page.id,
-              token: page.access_token,
-              parent: userLoginResponse.data._id,
-            });
-            await newAccount.save().then((data) => {
-              logger.log("info", `Successfully logged in to page ${data.name}`);
-            });
+            return;
           }
-        })
-        .catch((error) => {
-          logger.log("error", `Login for page ${page.name} failed`, error);
-          errors += 1;
-        });
-    }
-    let status = "error";
-    let message = "An unknown error occurred, please try again later.";
-    if (errors == 0) {
-      status = "success";
-      message = `Sucessfully logged in to ${pages.length} Facebook page(s).`;
-    } else {
-      message = `${errors} error(s) occurred while logging you in. ${
-        pages.length - errors
-      } of ${pages.length} pages were logged in.`;
-    }
-    res.redirect(
-      `https://${DOMAIN}:${DOMAIN_PORT}?status=${status}&message=${encodeURIComponent(
-        message
-      )}`
-    );
+          const newAccount = new Account({
+            user: await toId(req.user._id),
+            platform: "instagram",
+            type: userInfo.data.account_type,
+            name: userInfo.data.username,
+            picture: userInfo.data.profile_picture_url,
+            id: userId,
+            token: longLivedUserAccessToken,
+            token_expires_in: expiresIn,
+          });
+          await newAccount.save().then(async (data) => {
+            const expirationDate = new Date() + expiresIn / 60;
+            const refreshDate = new Date(Math.abs(expirationDate - 60 * 24)); // 24 hours before token expiration
+            await scheduleDateTime(
+              `instagram-refresh-${data.id}`,
+              refreshDate,
+              async () => {
+                await refreshToken(data);
+              }
+            );
+            logger.log(
+              "info",
+              `Successfully logged in to Instagram account ${data.name}`
+            );
+            res.redirect(
+              `https://${DOMAIN}:${DOMAIN_PORT}?status=success&message=${encodeURIComponent(
+                `Sucessfully logged in to Instagram account ${data.name}`
+              )}`
+            );
+          });
+        }
+      })
+      .catch((error) => {
+        logger.log("error", `Login for user ${username} failed`, error);
+        res.redirect(
+          `https://${DOMAIN}:${DOMAIN_PORT}?status=error&message=${encodeURIComponent(
+            `Login for ${username} failed`
+          )}`
+        );
+      });
   });
-}
-
-// verify a token
-async function verifyToken(type, token) {
-  let result = {
-    isValid: false,
-  };
-  await fetch(
-    `https://graph.facebook.com/debug_token?input_token=${token}&access_token=${APP_ID}|${APP_SECRET}`,
-    {
-      method: "GET",
-    }
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((json) => {
-      logger.log("sensitive", "== Verify Token Response ==", json);
-      if (json.data.type == type && json.data.app_id == APP_ID) {
-        result = {
-          isValid: true,
-          data: json,
-        };
-      } else {
-        logger.log("error", `Invalid token: type or app ID mismatch`);
-      }
-    })
-    .catch((error) => {
-      result["error"] = error;
-      logger.log("error", `Failed to validate token: ${error}`);
-    });
-  return result;
 }
 
 // exchange code for short-lived user access token
 async function getUserAccessToken(code) {
   let result = {};
   await fetch(
-    `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${APP_ID}&client_secret=${APP_SECRET}&code=${code}&redirect_uri=https://${DOMAIN}:${DOMAIN_PORT}/callback/facebook`,
+    `https://api.instagram.com/oauth/access_token?client_id=${APP_ID}&client_secret=${APP_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=https://${DOMAIN}:${DOMAIN_PORT}/callback/instagram`,
     {
-      method: "GET",
+      method: "POST",
     }
   )
     .then((response) => {
@@ -237,7 +184,7 @@ async function getUserAccessToken(code) {
 async function getLongLivedUserToken(accessToken) {
   const result = {};
   await fetch(
-    `https://graph.facebook.com/v20.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${APP_ID}&client_secret=${APP_SECRET}&fb_exchange_token=${accessToken}`,
+    `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${APP_SECRET}&access_token=${accessToken}`,
     {
       method: "GET",
     }
@@ -255,19 +202,16 @@ async function getLongLivedUserToken(accessToken) {
     })
     .catch((error) => {
       result["error"] = error;
-      logger.log(
-        "error",
-        `Failed to get long lived user access token: ${error}`
-      );
+      logger.log("error", "Failed to get long lived user access token", error);
     });
   return result;
 }
 
-// get list of pages and tokens
-async function getLongLivedPageToken(userId, accessToken) {
+// refresh long lived user access token
+async function refreshToken(account) {
   const result = {};
   await fetch(
-    `https://graph.facebook.com/v20.0/${userId}/accounts?access_token=${accessToken}`,
+    `https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${account.token}`,
     {
       method: "GET",
     }
@@ -276,19 +220,43 @@ async function getLongLivedPageToken(userId, accessToken) {
       return response.json();
     })
     .then((json) => {
-      logger.log(
-        "sensitive",
-        "== Get Long Lived Page Access Token Response ==",
-        json
-      );
+      logger.log("sensitive", "== Refresh Token Response ==", json);
       result["data"] = json;
+      if (json.access_token) {
+        Account.find({
+          user: account.user,
+          platform: account.platform,
+          type: account.type,
+          id: account.id,
+        }).then(async (data) => {
+          if (data.length > 0) {
+            data[0].token = json.access_token;
+            data[0].token_expires_in = json.expires_in;
+            await data[0].save().then(async (data) => {
+              const expirationDate = new Date() + data.token_expires_in / 60;
+              const refreshDate = new Date(Math.abs(expirationDate - 60 * 24)); // 24 hours before token expiration
+              await scheduleDateTime(
+                `instagram-refresh-${data.id}`,
+                refreshDate,
+                async () => {
+                  await refreshToken(data);
+                }
+              );
+              logger.log(
+                "info",
+                `Successful token refresh for account ${data.name}`
+              );
+            });
+          }
+        });
+      } else {
+        result["error"] = "Failed to refresh access token";
+        logger.log("error", "Failed to refresh access token", error);
+      }
     })
     .catch((error) => {
-      result["error"] = "Failed to get long lived page access token";
-      logger.log(
-        "error",
-        `Failed to get long lived page access token: ${error}`
-      );
+      result["error"] = "Failed to refresh access token";
+      logger.log("error", "Failed to refresh access token", error);
     });
   return result;
 }
@@ -297,7 +265,7 @@ async function getLongLivedPageToken(userId, accessToken) {
 async function getUserInfo(id, token) {
   const result = {};
   await fetch(
-    `https://graph.facebook.com/v20.0/${id}/?fields=id,name,picture&access_token=${token}`,
+    `https://graph.instagram.com/v20.0/me?fields=user_id,username,account_type,profile_picture_url&access_token=${token}`,
     {
       method: "GET",
     }
@@ -316,81 +284,32 @@ async function getUserInfo(id, token) {
   return result;
 }
 
-// save user login
-async function userLogin(userId, fbUserId, longLivedUserAccessToken) {
-  let result = {};
-  // use long lived user access token to get user info
-  const userInfoResponse = await getUserInfo(
-    fbUserId,
-    longLivedUserAccessToken
-  );
-  if (userInfoResponse.error) {
-    result["error"] = userInfoResponse.error; // this is slightly redundant, but easier to understand
-    return result;
-  }
-  // save user account
-  await Account.find({ platform: "facebook", type: "user", id: fbUserId })
-    .then(async (data) => {
+// checks how many posts the user has left for the next 24 hours (API limit is 50 a day)
+async function checkRateLimit(account, datetime) {
+  let result = {
+    data: { remaning_posts: 50 },
+  };
+  await Post.find({ account: { _id: account._id } })
+    .then((data) => {
       if (data.length > 0) {
-        // we found an existing login
-        logger.log(
-          "debug",
-          `duplicate login for user ${userInfoResponse.data.name}, updating access token`
-        );
-        data[0].token = longLivedUserAccessToken;
-        data[0].picture = userInfoResponse.data.picture.data.url;
-        await data[0].save().then((data) => {
-          logger.log("info", `Login for user ${data.name} was updated`);
-          result["data"] = data;
-        });
-      } else {
-        // if we got this far then all was successful and there are no existing logins for this user
-        // save this user to the database
-        const newUserAccount = new Account({
-          user: await toId(userId),
-          platform: "facebook",
-          type: "user",
-          name: userInfoResponse.data.name,
-          picture: userInfoResponse.data.picture.data.url,
-          id: fbUserId,
-          token: longLivedUserAccessToken,
-        });
-        await newUserAccount.save().then((data) => {
-          result["data"] = data;
-          logger.log("info", `Successfully logged in as user ${data.name}`);
-        });
+        for (const post of data) {
+          if (
+            post.datetime - 60 * 12 < datetime &&
+            datetime < post.datetime + 60 * 12
+          ) {
+            remainingPosts -= 1;
+          }
+        }
       }
     })
     .catch((error) => {
-      logger.log(
-        "error",
-        `Login for user ${userInfoResponse.data.name} failed`,
-        error
-      );
-      result["error"] = `Login for user ${userInfoResponse.data.name} failed`;
+      result["error"] = "Failed to check rate limit";
+      logger.log("error", "Failed to check rate limit", error);
     });
   return result;
 }
 
-// currently unused. May be used in the future for posting unpublished posts
-// check if a post can be posted as unpublished and scheduled (more than 10
-// minutes and less than 30 days from now, as required by Facebook)
-export async function isScheduled(post) {
-  // 0 = cannot be scheduled
-  // 1 = can be scheduled
-  // 2 = recheck after 30 days
-  let result = 0;
-  const d = new Date();
-  const diffMins = Math.abs(post.datetime - d);
-  if (10 < diffMins && 30 > diffMins / 60 / 24) {
-    result = 1;
-  } else if (30 < diffMins / 60 / 24) {
-    result = 2;
-  }
-  return result;
-}
-
-// publish a (page) post - used in automation - calls other functions
+// publish a post - used in automation - calls other functions
 export async function post(post, account, scheduled) {
   scheduled = scheduled || false;
   let bodyContent = {
@@ -583,8 +502,6 @@ async function upload(token, filePath, sessionId, fileOffset, retries) {
     });
   return result;
 }
-
-async function retryUpload() {}
 
 // get data to resume failed upload
 async function getUploadInfo(sessionId, token) {

@@ -13,6 +13,6 @@ function redirect($url, $statusCode = 307)
   die();
 }
 
-$redir = str_replace('/callback/facebook', '/api?path=/facebook/callback', $_SERVER['REQUEST_URI']);
+$redir = str_replace('/auth/facebook', '/api?path=/facebook/auth', $_SERVER['REQUEST_URI']);
 echo $redir;
 redirect($redir);

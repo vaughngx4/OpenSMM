@@ -4,6 +4,8 @@ import Logger from "./application/logger.js";
 import { start as startDb } from "./application/database.js";
 import * as auth from "./application/authentication.js";
 import * as facebook from "./application/socials/facebook.js"; 
+import * as instagram from "./application/socials/instagram.js"; 
+import * as youtube from "./application/socials/youtube.js"; 
 import * as post from "./application/post.js";
 import * as files from "./application/files.js";
 import * as accounts from "./application/accounts.js";
@@ -27,6 +29,8 @@ facebook.route(exp);
 post.route(exp);
 files.route(exp);
 accounts.route(exp);
+instagram.route(exp);
+youtube.route(exp);
 
 exp.listen(port, () => {
   logger.log("info", `Listening on port ${port}`);

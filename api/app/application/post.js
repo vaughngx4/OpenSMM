@@ -2,8 +2,9 @@ import { scheduleDateTime, unschedule } from "./schedule.js";
 import { authenticateToken } from "./authentication.js";
 import { validatePost } from "./validate.js";
 import Logger from "./logger.js";
-import { Post } from "./database.js";
+import { Account, Post } from "./database.js";
 import * as facebook from "./socials/facebook.js";
+import * as youtube from "./socials/youtube.js";
 const logger = new Logger("post");
 
 const tzo = process.env.TIMEZONE_OFFSET || "+0";
@@ -25,8 +26,40 @@ export async function route(exp) {
       const datetime = new Date(
         `${new Date(json.datetime).toUTCString()}${tzo}`
       );
+      let scheduledDate = datetime;
       let data = [];
       for (const account of json.accounts) {
+        const realAccount = await Account.findById(account).catch((error) => {
+          logger.log("error", `Failed to look up account ${account}`, error);
+          res
+            .status(500)
+            .json({ status: "error", message: "Failed to look up an account" });
+        });
+        if (realAccount.platform == "instagram") {
+          const rateLimitResponse = await checkRateLimit(realAccount, datetime);
+          if (rateLimitResponse.error) {
+            res
+              .status(500)
+              .json({ status: "error", message: rateLimitResponse.error });
+            return;
+          }
+          if (rateLimitResponse.remaining_posts == 0) {
+            logger.log(
+              "error",
+              `Could not create post, Instagram user ${realAccount.name} has reached their rate limit for this 24 hour period`
+            );
+            res.status(500).json({
+              status: "error",
+              message: `Could not create post, Instagram user ${realAccount.name} has reached their rate limit for this 24 hour period`,
+            });
+            return;
+          }
+        } else if (
+          realAccount.platform == "google" &&
+          realAccount.type == "youtube"
+        ) {
+          scheduledDate = getScheduledDate(datetime, 180); // max 3 hours in advance
+        }
         logger.log("debug", "Account referenced, adding to post data");
         data.push({
           account,
@@ -48,10 +81,14 @@ export async function route(exp) {
       );
       post
         .save()
-        .then((data) => {
-          scheduleDateTime(data._id.toString(), datetime, async () => {
-            doPost(data._id);
-          }).then(() => {
+        .then(async (data) => {
+          await scheduleDateTime(
+            data._id.toString(),
+            scheduledDate,
+            async () => {
+              doPost(data._id);
+            }
+          ).then(() => {
             logger.log("info", "A post was scheduled successfully");
             res.status(200).json({
               status: "success",
@@ -121,13 +158,24 @@ export async function doPost(postId) {
           path: "parent",
           model: "Account",
         },
+        populate: {
+          path: "user",
+          model: "User",
+        },
       },
     })
     .then(async (data) => {
       logger.log("debug", "Post found, starting post process...");
       for (const postData of data.data) {
         switch (postData.account.platform) {
+          case "google":
+            if (postData.account.type == "youtube") {
+              logger.log("debug", "Post is for platform Google and of type YouTube: calling post function");
+              await youtube.post(data, postData.account);
+            }
+            break;
           case "facebook":
+            logger.log("debug", "Post is for platform Facebook and of type Page: calling post function");
             await facebook.post(data, postData.account);
             break;
         }
@@ -168,4 +216,25 @@ export async function setStatus(post, account, status, postId) {
     .catch((error) => {
       logger.log("error", `Error setting post status/ID`, error);
     });
+}
+
+// get time to make API call using post `datetime`
+// `datetime` is the time we want the post to go live
+// `scheduledTime` is the time we make the API call
+function getScheduledDate(datetime, maxPrePostMins) {
+  maxPrePostMins = maxPrePostMins || 60;
+  // max time in advance to make the API call (milliseconds)
+  let maxPrePostMs = maxPrePostMins * 1000 * 60;
+  // time we are trying to post at (milliseconds)
+  let scheduledTime = datetime - maxPrePostMs;
+  // time now (milliseconds)
+  const now = Date.now();
+  // difference between `scheduledTime` and `now` (milliseconds)
+  const diff = scheduledTime - now;
+  // if we are trying to post in 10 seconds or less
+  if (diff <= 1000 * 10) {
+    // change it to 30 seconds in the future
+    scheduledTime = now + 1000 * 30;
+  }
+  return new Date(scheduledTime);
 }

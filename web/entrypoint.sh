@@ -36,4 +36,4 @@ else
     echo >&3 "$0: No files found in /docker-entrypoint.d/, skipping configuration"
 fi
 
-exec "$@"
+sh -c "/usr/sbin/nginx && php-fpm81 -O && tail -f /dev/null"

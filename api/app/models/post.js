@@ -21,25 +21,35 @@ const dataSchema = new Schema({
 
 export const postSchema = new Schema(
   {
+    title: {
+      // optional post title
+      type: String,
+      required: false,
+    },
     text: {
-      // text to be published
+      // optional post text
       type: String,
       required: false,
     },
     link: {
-      // url to be uncluded with text
+      // optional url
       type: String,
       required: false,
     },
     attachment: {
-      // attachment is stored as an array of local paths
+      // optional attachment stored as array of local paths
       type: Array,
       required: false,
     },
     datetime: {
-      // date/time to publish, scheduled time may differ - post may be created unpublished
+      // date/time to publish, scheduled date/time may differ
       type: Date,
       required: true,
+    },
+    notify: {
+      // optional whether or not to notify followers on supported platforms
+      type: Boolean,
+      required: false,
     },
     data: [dataSchema],
   },

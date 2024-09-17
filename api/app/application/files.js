@@ -229,7 +229,7 @@ export async function fileInfo(filePath) {
     description = "image";
   }
   return {
-    name: basename(filePath),
+    name: basename(filePath).replace(/\.[^/.]+$/, ""),
     length: stats.size,
     ext: type.ext,
     mime: type.mime,

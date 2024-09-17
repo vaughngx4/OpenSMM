@@ -39,6 +39,16 @@ export const accountSchema = new Schema(
       type: String,
       required: true,
     },
+    token_expires_in:{
+      // optional seconds until token expiration
+      type: String,
+      required: false,
+    },
+    refresh_token:{
+      // optional refresh token
+      type: String,
+      required: false,
+    },
     parent: {
       // optional account that this account was added from, if any
       type: Schema.Types.ObjectId,

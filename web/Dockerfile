@@ -51,4 +51,3 @@ EXPOSE 443/tcp
 VOLUME /var/www
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD /usr/sbin/nginx && php-fpm81 -O && tail -f /dev/null

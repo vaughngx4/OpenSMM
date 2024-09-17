@@ -1,7 +1,7 @@
 FROM node:20-alpine3.17
 LABEL maintainer="vaughngx4 (vaughng@sintelli-tech.com)"
 
-ENV HOME /home/opensmm
+ENV HOME=/home/opensmm
 ENV APP_TMP_DATA=/tmp
 
 RUN apk add --no-cache --upgrade \
@@ -20,4 +20,4 @@ COPY ./logo.sh /logo.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-CMD su-exec node npm start
+CMD ["su-exec node npm", "start"]

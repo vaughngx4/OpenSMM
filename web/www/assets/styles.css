@@ -862,10 +862,6 @@ body .body-section {
   border: 1px solid var(--lighter4);
 }
 
-.prompt-content p {
-  margin-bottom: 20px;
-}
-
 .prompt-content .confirm {
   margin-right: 10px;
 }
